@@ -24,6 +24,7 @@ When introducing changes to the project, always follow the directory structure b
 - `./src/pages` - Astro pages
 - `./src/pages/api` - API endpoints
 - `./src/middleware/index.ts` - Astro middleware
+- `./src/models` - Data models, interfaces, and static data definitions
 - `./src/db` - Supabase clients and types
 - `./src/types.ts` - Shared types for backend and frontend (Entities, DTOs)
 - `./src/components` - Client-side components written in Astro (static) and React (dynamic)
