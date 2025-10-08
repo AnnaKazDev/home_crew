@@ -61,7 +61,7 @@ export default function ChoresList() {
   })).filter(cat => cat.chores.length > 0);
 
   return (
-    <div className="min-h-screen bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[80vh] overflow-hidden">
         {/* Header with search */}
         <div className="p-6 border-b border-gray-200">
