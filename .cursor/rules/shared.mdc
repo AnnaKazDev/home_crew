@@ -47,3 +47,125 @@ When modifying the directory structure, always update this section.
 - Use guard clauses to handle preconditions and invalid states early.
 - Implement proper error logging and user-friendly error messages.
 - Consider using custom error types or error factories for consistent error handling.
+
+## Commit Message Guidelines
+
+### Format
+All commit messages must follow the **Conventional Commits** standard combined with project ticket numbers:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+Where:
+- `<type>` - commit type (see below)
+- `<scope>` - optional context (component, feature, etc.)
+- `<description>` - brief description in imperative mood
+- Body and footer are optional for detailed explanations
+
+### Ticket Number (when present)
+If the current branch name contains a ticket number matching the pattern `[A-Z]{2,4}-\d+`, **the commit message MUST start with that ticket number followed by a space**.
+If the branch name does not contain a ticket number, start the commit message directly with the Conventional Commit type.
+
+Branch naming pattern: `[A-Z]{2,4}-\d+` (e.g., `USR-902`, `FEAT-123`, `BUG-456`)
+
+**Examples:**
+- Branch: `USR-902-refactor-button` → Commit: `USR-902 feat(button): add hover state`
+- Branch: `refactor-button` → Commit: `feat(button): add hover state`
+
+### Commit Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `feat` | New feature | `feat(auth): add password reset` |
+| `fix` | Bug fix | `fix(calendar): resolve date navigation` |
+| `docs` | Documentation | `docs(readme): update setup instructions` |
+| `style` | Code style (formatting, etc.) | `style(button): format component` |
+| `refactor` | Code refactoring | `refactor(tasks): simplify state management` |
+| `test` | Testing | `test(auth): add login unit tests` |
+| `chore` | Maintenance tasks | `chore(deps): update dependencies` |
+| `perf` | Performance improvements | `perf(tasks): optimize rendering` |
+| `ci` | CI/CD changes | `ci(deploy): update pipeline` |
+| `build` | Build system changes | `build(webpack): configure bundler` |
+
+### Breaking Changes
+For breaking changes, add `!` after type/scope and explain in footer:
+
+```
+feat(api)!: remove deprecated endpoints
+
+BREAKING CHANGE: The /v1/users endpoint has been removed. Use /v2/users instead.
+```
+
+### Commit Message Examples
+
+**Good examples:**
+```
+USR-123 feat(auth): implement user registration
+USR-456 fix(tasks): resolve drag-drop on mobile
+USR-789 docs(api): add endpoint documentation
+USR-101 refactor(components): extract reusable button component
+USR-202 test(tasks): add integration tests for task creation
+```
+
+**Bad examples:**
+```
+fixed bug
+USR-123 Fixed the login issue
+USR-456 add new feature
+USR-789 updated code
+```
+
+### Scope Guidelines
+
+Use scopes to provide context:
+- `auth` - authentication/authorization
+- `tasks` - task management
+- `calendar` - date/calendar functionality
+- `ui` - user interface components
+- `api` - API endpoints
+- `db` - database changes
+- `config` - configuration files
+
+### Additional Rules
+
+1. **Imperative mood**: Use imperative verbs ("add", "fix", "update", not "added", "fixed", "updated")
+2. **Capitalization**: Start description with lowercase letter
+3. **Length**: Keep subject line under 72 characters
+4. **Ticket first**: Always start with ticket number from branch
+5. **English only**: All commit messages must be in English
+6. **Atomic commits**: Each commit should contain one logical change
+
+### Breaking Bad Habits
+
+❌ Don't:
+- Use generic messages like "update", "fix", "changes"
+- Include ticket numbers in description
+- Write in past tense
+- Make commits too broad
+
+✅ Do:
+- Be specific and descriptive
+- Use proper commit types
+- Start with ticket number
+- Write clear, actionable descriptions
+
+### Tooling Integration
+
+Consider using tools to enforce these rules:
+- **commitizen**: Interactive commit message creation
+- **commitlint**: Linting commit messages
+- **husky**: Git hooks for validation
+
+### Verification
+
+Before pushing, verify your commits:
+1. Does it start with the correct ticket number?
+2. Is the type appropriate for the change?
+3. Is the description clear and imperative?
+4. Is the scope relevant (if provided)?
+5. Does it follow the length guidelines?
