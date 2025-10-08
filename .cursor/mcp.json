@@ -4,6 +4,10 @@
         "command": "npx",
         "args": ["@przeprogramowani/10x-mvp-tracker"],
         "transport": "stdio"
-      }
+      },
+      "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "YOUR_API_KEY"]
     }
-  }
+    }
+}
