@@ -64,7 +64,12 @@ _Target success metric_: **≥ 2 chores added per active member per day**.
   nvm install 22.14.0
   nvm use 22.14.0
   ```
-- A Supabase project (or PostgreSQL database) and corresponding credentials.
+- **Supabase CLI** (for local development)
+  ```bash
+  npm install -g supabase
+  # or
+  brew install supabase/tap/supabase
+  ```
 
 ### Installation
 ```bash
@@ -75,10 +80,16 @@ cd home-crew
 # 2. Install dependencies
 npm install      # or pnpm install
 
-# 3. Configure environment
-cp .env.example .env   # add Supabase keys, JWT secret, etc.
+# 3. Initialize Supabase (if not already done)
+supabase init
 
-# 4. Start dev server
+# 4. Start Supabase locally
+supabase start
+
+# 5. Configure environment
+cp .env.example .env   # add local Supabase keys from step 4
+
+# 6. Start dev server
 npm run dev
 ```
 Open http://localhost:3001 to view the app.
