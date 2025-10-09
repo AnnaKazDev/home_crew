@@ -28,6 +28,7 @@ Key features
 - Daily calendar view with “To Do” and “Done” columns  
 - Drag-and-drop or click to mark tasks complete  
 - Task assignment to any household member  
+- Points accumulate for completed chores (gamification; reward UI post-MVP)  
 - Audit log stored in PostgreSQL  
 - GDPR-compliant data storage & right-to-erasure
 
@@ -134,6 +135,12 @@ npm run preview   # Local preview of production build
 - Statistics dashboard or data export  
 - Native mobile apps  
 - Real-time updates (optional enhancement only)
+
+---
+
+## Roadmap / Planned Features
+
+- **Gamification & Rewards** – accumulate points for each completed chore and exchange them for configurable rewards (e.g., extra screen time, cinema ticket etc). Points are stored already; reward UI planned post-MVP.
 
 ---
 
