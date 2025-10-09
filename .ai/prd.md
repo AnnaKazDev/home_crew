@@ -27,6 +27,7 @@ FR-13  Dane o obowiązkach przechowywane są w sposób zapewniający skalowalno�
 FR-14  Dane osobowe userów i ich obowiązków domowych przechowywane zgodnie z RODO
 FR-15  Prawo do wglądu i usunięcia danych (konto wraz z obowiązkami) na wniosek usera.
 FR-16  Tylko zalogowany user moze widzieć widok dzienny, listę zadań/obowiązków itd.
+FR-17  System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); po oznaczeniu "Done" punkty są dodawane do konta użytkownika. Punkty kumulują się i mogą być wykorzystane do nagród (np. 1 h gry na komputerze). W MVP tylko gromadzenie punktów, bez ekranu nagród.
 
 
 ## 4. Granice produktu
@@ -34,6 +35,7 @@ FR-16  Tylko zalogowany user moze widzieć widok dzienny, listę zadań/obowiąz
 • Jedno gospodarstwo na jedno konto admina; brak obsługi wielu gospodarstw.  
 • Brak eksportu danych i panelu statystyk w MVP.  
 • Realtime odświeżanie opcjonalne (rozważane tylko dla zmiany statusu).
+• UI nagród i wymiany punktów poza MVP (punkty są zapisywane w bazie).
 
 ## 5. Historyjki użytkowników
 
@@ -140,6 +142,14 @@ FR-16  Tylko zalogowany user moze widzieć widok dzienny, listę zadań/obowiąz
 **Kryteria akceptacji:**
 1. Akcja „Usuń" z potwierdzeniem
 2. Zadanie znika z widoku danego dnia
+
+### US-012: Zdobywanie punktów
+**Jako** członek rodziny **chcę** otrzymywać punkty za każde ukończone zadanie, **aby** mieć motywację i móc je później wymienić na nagrody.
+
+**Kryteria akceptacji:**
+1. Po oznaczeniu zadania "Done" liczba punktów przypisana do zadania dodaje się do mojego konta.
+2. Punkty są przechowywane w profilu użytkownika.
+3. W MVP brak widoku nagród; punkty można zobaczyć w profilu (lub tylko w bazie).
 
 
 ## 6. Metryki sukcesu
