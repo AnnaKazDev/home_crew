@@ -3,6 +3,9 @@
 ## 1. Tables
 
 ### 1.1 `users`
+
+This table is managed by Supabase Auth
+
 | Column               | Type          | Constraints                                    |
 |----------------------|--------------|------------------------------------------------|
 | id                   | uuid         | primary key, default `gen_random_uuid()`       |
