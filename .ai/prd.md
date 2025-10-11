@@ -8,14 +8,14 @@ Wszystkie operacje są logowane w bazie danych.
 
 ## 2. Problem użytkownika
 Domownicy nie mają przejrzystego sposobu śledzenia, kto i kiedy wykonał dany obowiązek/zadanie domowe. 
-Prowadzi to do sporów o sprawiedliwy podział pracy i trudności w przypominaniu sobie kolejności wykonywania zadań.
+Prowadzi to do sporów o sprawiedliwy podział pracy i trudności w przypominaniu sobie kolejności wykonywania zadań oraz planowania przyszłych zadań/harmonogramu prac.
 
 ## 3. Wymagania funkcjonalne
 FR-01  Rejestracja użytkownika z wyborem roli „Admin rodziny” lub „Członek rodziny”.  
 FR-02  Autoryzacja: e-mail, hasło + reset hasła via e-mail. Login (imię/nick) jest osobnym polem w profilu.
 FR-03  Admin tworzy gospodarstwo domowe (nazwa) i otrzymuje 6-cyfrowy PIN; członek dołącza, podając PIN.  
 FR-04  Dzienny widok kalendarza z dwoma kolumnami: To Do / Done; możliwość przełączania dni (przeszłe / przyszłe) oraz przyciskiem dodawania obowiązków do danego dnia (button "Dodaj").  
-FR-05  Lista 50 zadań wbudowanych + możliwość dodania/edycji/usunięcia własnych zadań (tytuł, pora dnia (rano, popołudniu, wieczorem), emoji z puli ~50 ikon).
+FR-05  Lista 50 zadań wbudowanych + możliwość dodania/edycji/usunięcia własnych zadań (tytuł, pora dnia (rano, popołudniu, wieczorem, w nocy), emoji z puli ikon). Dodane zadanie powiększa pulę zadań wbudowanych (predefiniowanych).
 FR-06  Przeciąganie lub klik do zmiany statusu zadania (To Do → Done, odwrotnie). 
 FR-07  Moliwość przypisania członka rodziny (siebie lub kogoś innego) do zadania (zarówno w statusie To Do jak i Done)
 FR-08  Limit 50 zadań dziennie na gospodarstwo; po przekroczeniu przycisk „Dodaj” jest ukrywany.  
@@ -27,7 +27,7 @@ FR-13  Dane o obowiązkach przechowywane są w sposób zapewniający skalowalno�
 FR-14  Dane osobowe userów i ich obowiązków domowych przechowywane zgodnie z RODO
 FR-15  Prawo do wglądu i usunięcia danych (konto wraz z obowiązkami) na wniosek usera.
 FR-16  Tylko zalogowany user moze widzieć widok dzienny, listę zadań/obowiązków itd.
-FR-17  System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); po oznaczeniu "Done" punkty są dodawane do konta użytkownika. Punkty kumulują się i mogą być wykorzystane do nagród (np. 1 h gry na komputerze). W MVP tylko gromadzenie punktów, bez ekranu nagród.
+FR-17  System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); po oznaczeniu "Done" punkty są dodawane do konta użytkownika. Punkty kumulują się i mogą być wykorzystane do nagród (np. 1h gry na komputerze). W MVP tylko gromadzenie punktów, bez ekranu nagród/statystyk.
 
 
 ## 4. Granice produktu
@@ -76,7 +76,7 @@ FR-17  System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); 
 1. Dwie kolumny widoczne
 2. Zadania przypisane odpowiednio do statusu
 3. Widok responsywny na mobile
-4. W danym zadaniu widzę: tytuł, opcjonalnie czas, emoji, osobę przypisaną
+4. W danym zadaniu widzę: tytuł, kategorię z jakiej jest dane zadanie, opcjonalnie: czas, emoji, osobę przypisaną
 
 ---
 
@@ -90,20 +90,20 @@ FR-17  System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); 
 ---
 
 ### US-006: Dodanie zadania
-**Jako użytkownik chcę dodać nowe zadanie z tytułem (obowiązkowe), porą dnia (rano, popołudniu, wieczorem) (opcjonalnie) i emoji (opcjonalnie).**
+**Jako użytkownik chcę dodać nowe zadanie do listy predefiniowanych zadań (~50 zadań) widocznych dla wszystkich członków danej rodziny. Zadanie posiada odpowiednie pola.**
 
 **Kryteria akceptacji:**
 1. Formularz dodawania otwiera się
-2. Walidacja pola tytułu (50 znaków) i limit emoji (1)
-3. Po zapisaniu zadanie pojawia się w kolumnie To Do
+2. Walidacja: tytuł (50 znaków - obowiązkowe), kategoria (obowiązkowe), limit emoji (1 - opcjonalnie), liczba punktów, pora dnia (opcjonalne);
+3. Po zapisaniu zadanie pojawia się na liście predefiniowyanych zadań. Stamtąd mona je wybrac i dodać - wtedy pojawi się w kolumnie To Do.
 
 ---
 
-### US-007: Wybór z listy
-**Jako użytkownik chcę wybrać zadanie z predefiniowanej listy 50 pozycji, by szybciej tworzyć obowiązki.**
+### US-007: Wybór zadania/obowiązku domowego z listy zadań
+**Jako użytkownik chcę wybrać zadanie z predefiniowanej listy (znajdują się tam predefiniowane zadania w ilości ~50 oraz te, które zostały dodane przez członków danej rodziny, jako customowe.)**
 
 **Kryteria akceptacji:**
-1. Lista predefiniowana wyświetla 50 pozycji
+1. Lista predefiniowana wyświetla ~50 pozycji oraz ewentualnie dodanie zadania customowe - dodane przez członków danego gospodarstwa domowego.
 2. Wybranie pozycji dodaje ją do dzisiejszej listy
 
 ---
@@ -122,7 +122,7 @@ FR-17  System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); 
 
 **Kryteria akceptacji:**
 1. Drag-and-drop lub przycisk „Zrobione"
-2. Status zadania zmieniony; aktualizacja widoczna wszystkim
+2. Status zadania zmieniony; aktualizacja widoczna dla wszystkich
 
 ---
 
@@ -130,9 +130,8 @@ FR-17  System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); 
 **Jako użytkownik chcę edytować tytuł/porę/emoji zadania, także z przeszłych dni.**
 
 **Kryteria akceptacji:**
-1. Edycja dostępna
-2. Zmiany zapisują się; log audytowy aktualizowany
-3. Edytować status mogę każdego zadania, natomiast tytuł, czas i emoji tylko zadania dopisanego przeze mnie
+1. Nie ma mozliwości edycji zadania w zakresie MVP
+2. Jedyna dostępna opcja to jest usunięcie danego zadania z widoku dziennego i ewentualnie dodanie nowego
 
 ---
 
