@@ -2,21 +2,19 @@
 
 ## 1. Tables
 
-### 1.1 `users`
+### 1.1 `profiles`
 
-This table is managed by Supabase Auth
+Uzupełniająca tabela profilu użytkownika; główna tabela uwierzytelniania to `auth.users` tworzona przez Supabase. Kolumna `id` w `profiles` == `auth.users.id`.
 
-| Column               | Type          | Constraints                                    |
-|----------------------|--------------|------------------------------------------------|
-| id                   | uuid         | primary key, default `gen_random_uuid()`       |
-| email                | text         | not null, unique                               |
-| encrypted_password   | text         | not null                                       |
-| name                 | text         | not null, unique                                              |
-| avatar_url           | text         |                                                |
-| total_points         | integer      | not null, default 0                            |
-| created_at           | timestamptz  | not null, default `now()`                      |
-| updated_at           | timestamptz  | not null, default `now()`                      |
-| deleted_at           | timestamptz  |                                                |
+| Column      | Type         | Constraints                                                             |
+|-------------|-------------|-------------------------------------------------------------------------|
+| id          | uuid        | primary key, references `auth.users(id)` on delete cascade              |
+| name        | text        | not null                                                                |
+| avatar_url  | text        |                                                                         |
+| total_points| integer     | not null, default 0                                                     |
+| created_at  | timestamptz | not null, default `now()`                                               |
+| updated_at  | timestamptz | not null, default `now()`                                               |
+| deleted_at  | timestamptz |                                                                         |
 
 ---
 
@@ -37,7 +35,7 @@ This table is managed by Supabase Auth
 |----------|--------|----------------------------------------------------------------------------------|
 | id       | uuid   | primary key, default `gen_random_uuid()`                                         |
 | household_id | uuid | not null, references `households(id)` on delete cascade                         |
-| user_id  | uuid   | not null, references `users(id)` on delete cascade, unique                       |
+| user_id  | uuid   | not null, references `profiles(id)` on delete cascade, unique                    |
 | role     | household_role | not null, default `'member'`, check in (`'admin'`,`'member'`)            |
 | joined_at| timestamptz | not null, default `now()`                                                   |
 
@@ -59,7 +57,7 @@ Additional uniqueness & limits:
 | category            | text            | not null                                                                                                     |
 | points              | smallint        | not null, check `points BETWEEN 0 AND 100 AND points % 5 = 0`                                                 |
 | predefined          | boolean         | not null, default false                                                                                       |
-| created_by_user_id  | uuid            | references `users(id)`                                                                                        |
+| created_by_user_id  | uuid            | references `profiles(id)`                                                                                     |
 | created_at          | timestamptz     | not null, default `now()`                                                                                    |
 | deleted_at          | timestamptz     |                                                                                                               |
 
@@ -74,7 +72,7 @@ Unique constraint `(household_id, lower(title))` to avoid duplikatów w katalogu
 | household_id     | uuid            | not null, references `households(id)` on delete cascade                                                                   |
 | date             | date            | not null                                                                                                                 |
 | chore_catalog_id | uuid            | not null, references `chores_catalog(id)`                                                                                |
-| assignee_id      | uuid            | references `users(id)`                                                                                                    |
+| assignee_id      | uuid            | references `profiles(id)`                                                                                                 |
 | time_of_day      | time_of_day_type| not null, default `'any'`                                                                                                 |
 | status           | chore_status    | not null, default `'todo'`                                                                                                |
 | points           | smallint        | not null (copied from catalog at insert time)                                                                             |
@@ -93,7 +91,7 @@ Trigger `enforce_daily_limit` checks COUNT(*) < 50 per `(household_id, date)` (i
 |-----------------------|-------------|------------------------------------------------------------|
 | id                    | bigserial   | primary key                                               |
 | daily_chore_id        | uuid        | not null, references `daily_chores(id)`                    |
-| changed_by_user_id    | uuid        | not null, references `users(id)`                           |
+| changed_by_user_id    | uuid        | not null, references `profiles(id)`                        |
 | previous_status       | chore_status|                                                            |
 | new_status            | chore_status|                                                            |
 | previous_assignee_id  | uuid        |                                                            |
@@ -107,7 +105,7 @@ Trigger `enforce_daily_limit` checks COUNT(*) < 50 per `(household_id, date)` (i
 | Column           | Type                 | Constraints                                                   |
 |------------------|----------------------|---------------------------------------------------------------|
 | id               | bigserial            | primary key                                                  |
-| user_id          | uuid                 | not null, references `users(id)`                              |
+| user_id          | uuid                 | not null, references `profiles(id)`                           |
 | daily_chore_id   | uuid                 | references `daily_chores(id)`                                 |
 | points           | integer              | not null                                                     |
 | event_type       | points_event_type    | not null (`'add'`, `'subtract'`)                              |
@@ -127,11 +125,11 @@ CREATE TYPE points_event_type AS ENUM ('add', 'subtract');
 ---
 
 ## 2. Relationships
-- `households` 1 ────< `household_members` >──── 1 `users`  (each user belongs to exactly one household)
+- `households` 1 ────< `household_members` >──── 1 `profiles`  (each user belongs to exactly one household)
 - `households` 1 ────< `chores_catalog` (for custom tasks)
 - `chores_catalog` 1 ────< `daily_chores`
 - `daily_chores` 1 ────< `chore_status_log`
-- `users` 1 ────< `points_events`
+- `profiles` 1 ────< `points_events`
 - `daily_chores` 1 ────< `points_events`
 
 ## 3. Indexes
@@ -174,7 +172,13 @@ CREATE POLICY update_own ON daily_chores
       (SELECT role FROM current_user_household_members LIMIT 1) = 'admin')
   );
 ```
-Apply analogous policies to the remaining tables.
+Apply analogous policies to the remaining tables.  RLS example for profiles:
+```sql
+CREATE POLICY select_public_profiles ON profiles
+  FOR SELECT USING (true);
+CREATE POLICY manage_own_profile ON profiles
+  FOR ALL USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+```
 
 ## 5. Additional Notes
 - **Soft-delete**: `deleted_at` columns combined with RLS filter `deleted_at IS NULL` preserve history without permanent removal.
