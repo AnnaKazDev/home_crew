@@ -87,10 +87,13 @@ supabase init
 # 4. Start Supabase locally
 supabase start
 
-# 5. Configure environment
+# 5. Run database migrations
+supabase db reset --local
+
+# 6. Configure environment
 cp .env.example .env   # add local Supabase keys from step 4
 
-# 6. Start dev server
+# 7. Start dev server
 npm run dev
 ```
 Open http://localhost:3001 to view the app.
