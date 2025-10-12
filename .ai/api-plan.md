@@ -186,7 +186,29 @@ Business Logic Mapping
 
 ---
 
-## 6. Assumptions
+## 6. Server Logging
+
+Minimal, yet sufficient, logging for the MVP:
+
+* **Edge Function console logs** – Any `console.error()` or uncaught exception inside Supabase Edge Functions is automatically captured and visible in the Supabase dashboard (Logs → Functions).
+* **Structured entry** – Astro middleware attaches a `request_id` (`crypto.randomUUID()`) to `locals`. On error we log:
+
+```json
+{
+  "level": "error",
+  "request_id": "<uuid>",
+  "route": "<method> <path>",
+  "status": 500,
+  "message": "<error message>"
+}
+```
+
+* **Retention** – Supabase keeps function logs for 7 days on the free tier (longer on paid plans), adequate for initial debugging.
+* **Next steps** – Forward logs to Logflare (built-in) or external sinks (Datadog, Grafana Loki) and configure alerting (e.g., Slack) for elevated 5xx rates.
+
+---
+
+## 7. Assumptions
 
 - All routes require authentication unless explicitly noted.
 - Supabase edge functions (TypeScript) will implement these endpoints, deployed under `/functions/v1/*` and exposed via Astro pages `/api/*`.
