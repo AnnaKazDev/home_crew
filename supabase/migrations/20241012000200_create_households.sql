@@ -44,6 +44,7 @@ create function check_household_members_limit()
 returns trigger
 language plpgsql
 security definer
+set search_path = ''
 as $$
 begin
   if (
