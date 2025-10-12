@@ -55,6 +55,7 @@ create function restrict_daily_chores_edit()
 returns trigger
 language plpgsql
 security definer
+set search_path = ''
 as $$
 begin
   if new.household_id != old.household_id or
