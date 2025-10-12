@@ -90,6 +90,9 @@ supabase start
 # 5. Run database migrations
 supabase db reset --local
 
+# Optional: Disable RLS for development (removes all security policies)
+# supabase migration up --include-all  # Run all migrations including development ones
+
 # 6. Configure environment
 cp .env.example .env   # add local Supabase keys from step 4
 
@@ -97,6 +100,54 @@ cp .env.example .env   # add local Supabase keys from step 4
 npm run dev
 ```
 Open http://localhost:3001 to view the app.
+
+### Database Management
+
+#### Row Level Security (RLS) Control
+
+Your project includes special migrations to control database security policies per environment:
+
+##### **Production Mode (Default - Recommended)**
+When you run standard migrations, RLS is **enabled** with full security policies:
+```bash
+# Standard setup with RLS enabled
+supabase db reset --local          # Local development
+supabase db reset --linked         # Production/staging
+```
+✅ **RLS enabled** - full data security
+✅ **Security policies** active
+✅ **Data protected** per user/household
+
+##### **Development Mode (Optional)**
+For easier development and testing, you can disable RLS to access all data freely:
+```bash
+# 1. First run standard migrations
+supabase db reset --local
+
+# 2. Then disable RLS for development
+supabase migration up --file 20241013000000_disable_rls_for_development.sql
+```
+⚠️  **RLS disabled** - full access to all data
+⚠️  **No security restrictions**
+⚠️  **Local development only!**
+
+##### **Restore Production Security**
+To re-enable RLS after development work:
+```bash
+# Restore full security
+supabase migration up --file 20241014000000_reenable_rls_for_production.sql
+```
+✅ **RLS re-enabled**
+✅ **All security policies** restored
+
+##### **When to Use Each Mode**
+
+| Environment | RLS Status | Usage |
+|-------------|------------|-------|
+| **Production** | ✅ Enabled | Always - security critical |
+| **Staging** | ✅ Enabled | Security testing |
+| **Local Dev** | ❌ Disabled | Easy testing, debugging |
+| **Local Dev** | ✅ Enabled | Testing security features |
 
 ### Building for production
 ```bash
