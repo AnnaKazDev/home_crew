@@ -40,7 +40,7 @@ create policy "Users can update own profile" on profiles
 create function public.handle_new_user()
 returns trigger
 security definer
-set search_path = public
+set search_path = ''
 language plpgsql
 as $$
 begin
