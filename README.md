@@ -94,7 +94,15 @@ supabase db reset --local
 # supabase migration up --include-all  # Run all migrations including development ones
 
 # 6. Configure environment
-cp .env.example .env   # add local Supabase keys from step 4
+cp .env.example .env   # create .env file from template
+
+# Get Supabase connection details (from Supabase CLI 2.48.x+)
+supabase status -o env
+
+# Copy the output SUPABASE_URL and SUPABASE_KEY to your .env file
+# Example output:
+# SUPABASE_URL=http://127.0.0.1:54321
+# SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # 7. Start dev server
 npm run dev
