@@ -1,5 +1,5 @@
 ---
-description: 
+description: Guildlines for writting Postgres migrations
 globs: 
 alwaysApply: false
 ---
