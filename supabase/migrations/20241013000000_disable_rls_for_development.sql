@@ -32,11 +32,11 @@ drop policy if exists "Members can create chores" on daily_chores;
 drop policy if exists "Assignee or admin can update chores" on daily_chores;
 alter table daily_chores disable row level security;
 
--- audit_logs table
-drop policy if exists "Members can view their household logs" on audit_logs;
-alter table audit_logs disable row level security;
+-- audit_logs table (chore_status_log)
+drop policy if exists "Members can view their household logs" on chore_status_log;
+alter table chore_status_log disable row level security;
 
--- points table
-drop policy if exists "Users can view their points" on points;
-drop policy if exists "System can manage points" on points;
-alter table points disable row level security;
+-- points table (points_events)
+drop policy if exists "Users can view their points" on points_events;
+drop policy if exists "System can manage points" on points_events;
+alter table points_events disable row level security;
