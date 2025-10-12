@@ -31,6 +31,7 @@ create function check_daily_chores_limit()
 returns trigger
 language plpgsql
 security definer
+set search_path = ''
 as $$
 begin
   if (
