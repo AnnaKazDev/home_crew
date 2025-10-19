@@ -1,0 +1,68 @@
+insert into public.chores_catalog (title, category, points, time_of_day, emoji, predefined, household_id, created_by_user_id) values
+  ('Wash dishes', 'Kitchen', 40, 'any', '🍽️', true, null, null),
+  ('Wipe down countertops', 'Kitchen', 20, 'any', '🧽', true, null, null),
+  ('Clean stovetop', 'Kitchen', 40, 'any', '🔥', true, null, null),
+  ('Empty dishwasher', 'Kitchen', 20, 'any', '✨', true, null, null),
+  ('Take out trash', 'Kitchen', 20, 'any', '🗑️', true, null, null),
+  ('Sweep kitchen floor', 'Kitchen', 20, 'any', '🧹', true, null, null),
+  ('Mop kitchen floor', 'Kitchen', 40, 'any', '🪣', true, null, null),
+  ('Clean refrigerator', 'Kitchen', 60, 'any', '🧊', true, null, null),
+  ('Organize pantry', 'Kitchen', 40, 'any', '🥫', true, null, null),
+  ('Clean microwave', 'Kitchen', 20, 'any', '📱', true, null, null),
+
+  ('Do laundry', 'Laundry', 60, 'any', '👕', true, null, null),
+  ('Fold clothes', 'Laundry', 25, 'any', '🧺', true, null, null),
+  ('Put away laundry', 'Laundry', 20, 'any', '👔', true, null, null),
+  ('Iron clothes', 'Laundry', 45, 'any', '🔧', true, null, null),
+  ('Clean lint trap', 'Laundry', 15, 'any', '🌀', true, null, null),
+
+  ('Make bed', 'Bedroom', 5, 'any', '🛏️', true, null, null),
+  ('Change bed sheets', 'Bedroom', 35, 'any', '🛌', true, null, null),
+  ('Dust bedroom', 'Bedroom', 20, 'any', '💨', true, null, null),
+  ('Organize closet', 'Bedroom', 50, 'any', '👗', true, null, null),
+  ('Vacuum bedroom', 'Bedroom', 40, 'any', '🔌', true, null, null),
+
+  ('Clean toilet', 'Bathroom', 60, 'any', '🚽', true, null, null),
+  ('Clean shower', 'Bathroom', 60, 'any', '🚿', true, null, null),
+  ('Clean sink', 'Bathroom', 30, 'any', '🚰', true, null, null),
+  ('Wipe mirror', 'Bathroom', 20, 'any', '🪞', true, null, null),
+  ('Mop bathroom floor', 'Bathroom', 45, 'any', '💧', true, null, null),
+  ('Restock toilet paper', 'Bathroom', 10, 'any', '🧻', true, null, null),
+  ('Clean bathroom cabinet', 'Bathroom', 35, 'any', '💊', true, null, null),
+  ('Wash bath mats', 'Bathroom', 25, 'any', '🧼', true, null, null),
+
+  ('Vacuum living room', 'Living Room', 40, 'any', '🛋️', true, null, null),
+  ('Dust furniture', 'Living Room', 25, 'any', '🪑', true, null, null),
+  ('Organize books', 'Living Room', 35, 'any', '📚', true, null, null),
+  ('Fluff pillows', 'Living Room', 10, 'any', '🛋️', true, null, null),
+  ('Clean windows', 'Living Room', 45, 'any', '🪟', true, null, null),
+  ('Tidy coffee table', 'Living Room', 15, 'any', '☕', true, null, null),
+
+  ('Water plants', 'General', 15, 'any', '🌱', true, null, null),
+  ('Dust ceiling fans', 'General', 30, 'any', '🌀', true, null, null),
+  ('Wipe light switches', 'General', 20, 'any', '💡', true, null, null),
+  ('Clean doorknobs', 'General', 15, 'any', '🚪', true, null, null),
+  ('Organize mail', 'General', 25, 'any', '📬', true, null, null),
+  ('Clean baseboards', 'General', 40, 'any', '📏', true, null, null),
+  ('Vacuum stairs', 'General', 45, 'any', '🪜', true, null, null),
+  ('Replace air filters', 'General', 35, 'any', '🌬️', true, null, null),
+  ('Check smoke detectors', 'General', 20, 'any', '🔔', true, null, null),
+
+  ('Sweep porch', 'Outdoor', 30, 'any', '🏡', true, null, null),
+  ('Water lawn', 'Outdoor', 25, 'any', '🌾', true, null, null),
+  ('Rake leaves', 'Outdoor', 40, 'any', '🍂', true, null, null),
+  ('Clean garage', 'Outdoor', 60, 'any', '🚗', true, null, null),
+
+  ('Feed cat', 'Pets', 5, 'morning', '🐈', true, null, null),
+  ('Feed cat', 'Pets', 5, 'afternoon', '🐈', true, null, null),
+  ('Feed cat', 'Pets', 5, 'evening', '🐈', true, null, null),
+
+  ('Feed dog', 'Pets', 5, 'morning', '🐕', true, null, null),
+  ('Feed dog', 'Pets', 5, 'afternoon', '🐕', true, null, null),
+  ('Feed dog', 'Pets', 5, 'evening', '🐕', true, null, null),
+
+  ('Walk dog', 'Pets', 10, 'morning', '🦮', true, null, null),
+  ('Walk dog', 'Pets', 10, 'afternoon', '🦮', true, null, null),
+  ('Walk dog', 'Pets', 10, 'evening', '🦮', true, null, null),
+
+  ('Clean litter box', 'Pets', 30, 'any', '🐈', true, null, null);

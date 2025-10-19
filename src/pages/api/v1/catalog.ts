@@ -42,27 +42,36 @@ export const GET: APIRoute = async (context) => {
 
     const type = typeParam as 'all' | 'predefined' | 'custom';
 
-    // Get household for the current user
     const supabase = supabaseClient as SupabaseClient;
-    const { data: householdMember, error: householdError } = await supabase
-      .from('household_members')
-      .select('household_id')
-      .eq('user_id', DEFAULT_USER_ID)
-      .single();
 
-    if (householdError || !householdMember) {
-      console.error('Household lookup error:', householdError);
-      return new Response(
-        JSON.stringify({ error: 'Household not found' }),
-        { status: 404, headers: { 'Content-Type': 'application/json' } }
-      );
+    // For predefined queries we don't need household context
+    let householdId: string | null = null;
+
+    if (type !== 'predefined') {
+      const { data: householdMember, error: householdError } = await supabase
+        .from('household_members')
+        .select('household_id')
+        .eq('user_id', DEFAULT_USER_ID)
+        .single();
+
+      if (householdError || !householdMember) {
+        console.error('Household lookup error:', householdError);
+        return new Response(
+          JSON.stringify({ error: 'Household not found' }),
+          { status: 404, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+      householdId = householdMember.household_id;
     }
-
-    const householdId = householdMember.household_id;
 
     // Fetch catalog items
     try {
-      const catalogItems = await getCatalogItems(supabase, householdId, type);
+      const catalogItems = await getCatalogItems(
+        supabase,
+        householdId ?? '',
+        type
+      );
 
       return new Response(
         JSON.stringify(catalogItems),
