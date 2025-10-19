@@ -248,6 +248,111 @@ Content-Type: application/json
 }
 ```
 
+### GET /v1/catalog
+Fetches all active catalog items for the user's household.
+
+**Request**
+```bash
+GET /api/v1/catalog
+```
+
+**Response – 200 OK**
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "Take out trash",
+    "category": "cleaning",
+    "points": 10,
+    "time_of_day": "evening",
+    "emoji": "🗑️",
+    "predefined": false,
+    "created_by_user_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+    "created_at": "2025-10-19T12:34:56.789Z",
+    "deleted_at": null
+  }
+]
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **404** | `Household not found` | User is not a member of any household. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### PATCH /v1/catalog/{id}
+Updates an existing catalog item (partial update – only provided fields are updated).
+
+**Request**
+```bash
+PATCH /api/v1/catalog/{id}
+Content-Type: application/json
+```
+
+**Body** (all fields optional)
+```json
+{
+  "title": "Take out trash from all rooms",
+  "points": 15,
+  "emoji": "🗑️✨"
+}
+```
+
+| Field | Type | Validation |
+|-------|------|-----------|
+| `title` | string | 1–50 characters, trimmed |
+| `category` | string | Non-empty |
+| `points` | number | 0–100, divisible by 5 |
+| `time_of_day` | enum | `'morning'`, `'afternoon'`, `'evening'`, `'night'`, `'any'` |
+| `emoji` | string | Single emoji or short text |
+
+**Response – 200 OK**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "title": "Take out trash from all rooms",
+  "category": "cleaning",
+  "points": 15,
+  "time_of_day": "evening",
+  "emoji": "🗑️✨",
+  "predefined": false,
+  "created_by_user_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+  "created_at": "2025-10-19T12:34:56.789Z",
+  "deleted_at": null
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Validation error` | Invalid request body or missing required ID parameter. |
+| **404** | `Item not found` | Catalog item does not exist or belongs to a different household. |
+| **404** | `Household not found` | User is not a member of any household. |
+| **409** | `Duplicate title` | Another item in the catalog has the same title. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### DELETE /v1/catalog/{id}
+Soft-deletes a catalog item (marks as deleted; data remains for audit purposes).
+
+**Request**
+```bash
+DELETE /api/v1/catalog/{id}
+```
+
+**Response – 204 No Content**
+(Empty response body)
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Item ID is required` | Missing ID parameter. |
+| **404** | `Item not found` | Catalog item does not exist or belongs to a different household. |
+| **404** | `Household not found` | User is not a member of any household. |
+| **500** | `Internal server error` | Server error during processing. |
+
 ---
 
 ## Project Scope

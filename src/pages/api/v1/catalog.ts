@@ -1,9 +1,66 @@
 import type { APIRoute } from 'astro';
-import { CreateCatalogItemCmdSchema, createCatalogItem } from '@/lib/choresCatalog.service';
+import { 
+  CreateCatalogItemCmdSchema, 
+  createCatalogItem,
+  getCatalogItems,
+  updateCatalogItem,
+  deleteCatalogItem,
+  UpdateCatalogItemCmdSchema 
+} from '@/lib/choresCatalog.service';
 import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from '@/db/supabase.client';
 import type { Database } from '@/db/database.types';
 
 export const prerender = false;
+
+/**
+ * GET /v1/catalog
+ * Fetches all active catalog items for the user's household
+ * 
+ * Response: 200 OK with CatalogItemDTO[]
+ */
+export const GET: APIRoute = async () => {
+  try {
+    // Get household for the current user
+    const supabase = supabaseClient as SupabaseClient;
+    const { data: householdMember, error: householdError } = await supabase
+      .from('household_members')
+      .select('household_id')
+      .eq('user_id', DEFAULT_USER_ID)
+      .single();
+
+    if (householdError || !householdMember) {
+      console.error('Household lookup error:', householdError);
+      return new Response(
+        JSON.stringify({ error: 'Household not found' }),
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const householdId = householdMember.household_id;
+
+    // Fetch catalog items
+    try {
+      const catalogItems = await getCatalogItems(supabase, householdId);
+
+      return new Response(
+        JSON.stringify(catalogItems),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    } catch (serviceError) {
+      console.error('Service error fetching catalog items:', serviceError);
+      return new Response(
+        JSON.stringify({ error: 'Internal server error' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+  } catch (error) {
+    console.error('Unexpected error in GET /v1/catalog:', error);
+    return new Response(
+      JSON.stringify({ error: 'Internal server error' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+};
 
 /**
  * POST /v1/catalog
