@@ -78,11 +78,19 @@ export type CatalogItemDTO = Pick<
   | 'deleted_at'
 >
 
-export interface CreateCatalogItemCmd
-  extends Pick<
-    CatalogRow,
-    'title' | 'category' | 'points' | 'time_of_day' | 'emoji'
-  > {}
+/**
+ * Command model for adding a custom chore to the catalog (API POST /v1/catalog)
+ * `time_of_day` and `emoji` are optional from the client – server will fill defaults.
+ */
+export interface CreateCatalogItemCmd {
+  title: CatalogRow['title']
+  category: CatalogRow['category']
+  points: CatalogRow['points']
+  /** Defaults to `'any'` when omitted */
+  time_of_day?: Enums<'time_of_day_type'>
+  /** Optional visual indicator */
+  emoji?: CatalogRow['emoji']
+}
 
 export type UpdateCatalogItemCmd = Partial<CreateCatalogItemCmd>
 
