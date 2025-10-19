@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-interface PredefinedChore {
+interface Chore {
   id: string;
   title: string;
   emoji: string;
   category: string;
+  predefined: boolean;
+  points: number;
+  time_of_day: string;
 }
 
 interface ChoresData {
-  chores: PredefinedChore[];
-  groupedChores: Record<string, PredefinedChore[]>;
+  chores: Chore[];
+  groupedChores: Record<string, Chore[]>;
   categories: string[];
   total: number;
 }
@@ -21,9 +24,23 @@ export default function ChoresList() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetch('/api/chores')
+    fetch('/api/v1/catalog?type=all')
       .then(response => response.json())
-      .then((data: ChoresData) => {
+      .then((chores: Chore[]) => {
+        // Group by category
+        const grouped = chores.reduce((acc, chore) => {
+          if (!acc[chore.category]) acc[chore.category] = [];
+          acc[chore.category].push(chore);
+          return acc;
+        }, {} as Record<string, Chore[]>);
+
+        const data: ChoresData = {
+          chores,
+          groupedChores: grouped,
+          categories: Object.keys(grouped),
+          total: chores.length,
+        };
+
         setData(data);
         setLoading(false);
       })
@@ -103,6 +120,11 @@ export default function ChoresList() {
                         <span className="text-xl">{chore.emoji}</span>
                         <span className="text-sm font-medium text-gray-900 truncate">
                           {chore.title}
+                          {!chore.predefined && (
+                            <span className="ml-1 text-xs text-blue-600 font-normal">
+                              (custom)
+                            </span>
+                          )}
                         </span>
                       </div>
                     ))}
