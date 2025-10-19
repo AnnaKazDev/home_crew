@@ -13,9 +13,10 @@
 2. [Tech Stack](#tech-stack)  
 3. [Getting Started Locally](#getting-started-locally)  
 4. [Available Scripts](#available-scripts)  
-5. [Project Scope](#project-scope)  
-6. [Project Status](#project-status)  
-7. [License](#license)
+5. [API Reference](#api-reference)  
+6. [Project Scope](#project-scope)  
+7. [Project Status](#project-status)  
+8. [License](#license)
 
 ---
 
@@ -176,6 +177,76 @@ npm run preview   # Local preview of production build
 | `npm run lint`    | Lint all source files                      |
 | `npm run lint:fix`| Lint and auto-fix issues                    |
 | `npm run format`  | Prettier formatting for JSON/CSS/MD        |
+
+---
+
+## API Reference
+
+### POST /v1/catalog
+Creates a new custom chore in the household's catalog.
+
+**Request**
+```bash
+POST /api/v1/catalog
+Content-Type: application/json
+```
+
+**Body**
+```json
+{
+  "title": "Take out trash",
+  "category": "cleaning",
+  "points": 10,
+  "time_of_day": "evening",
+  "emoji": "🗑️"
+}
+```
+
+| Field | Type | Required | Validation |
+|-------|------|----------|-----------|
+| `title` | string | ✓ | 1–50 characters, trimmed |
+| `category` | string | ✓ | Non-empty |
+| `points` | number | ✓ | 0–100, divisible by 5 |
+| `time_of_day` | enum | ✗ | `'morning'`, `'afternoon'`, `'evening'`, `'night'`, `'any'` (default: `'any'`) |
+| `emoji` | string | ✗ | Single emoji or short text |
+
+**Response – 201 Created**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "title": "Take out trash",
+  "category": "cleaning",
+  "points": 10,
+  "time_of_day": "evening",
+  "emoji": "🗑️",
+  "predefined": false,
+  "created_by_user_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+  "created_at": "2025-10-19T12:34:56.789Z",
+  "deleted_at": null
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Validation error` | Invalid request body (missing/invalid fields). Details array included. |
+| **404** | `Household not found` | User is not a member of any household. |
+| **409** | `Duplicate title` | A chore with this title already exists in the household. |
+| **500** | `Internal server error` | Server error during processing. |
+
+**Example Error (400)**
+```json
+{
+  "error": "Validation error",
+  "details": [
+    {
+      "path": "points",
+      "message": "Points must be divisible by 5"
+    }
+  ]
+}
+```
 
 ---
 
