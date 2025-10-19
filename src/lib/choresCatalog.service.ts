@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/db/database.types';
-import type { CatalogItemDTO, CreateCatalogItemCmd, UpdateCatalogItemCmd } from '@/types';
+import type { CatalogItemDTO } from '@/types';
 
 /**
  * Zod schema for validating CreateCatalogItemCmd
