@@ -249,12 +249,21 @@ Content-Type: application/json
 ```
 
 ### GET /v1/catalog
-Fetches all active catalog items for the user's household.
+Fetches catalog items for the user's household (predefined and/or custom).
 
 **Request**
 ```bash
 GET /api/v1/catalog
+GET /api/v1/catalog?type=all
+GET /api/v1/catalog?type=predefined
+GET /api/v1/catalog?type=custom
 ```
+
+**Query Parameters**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `type` | enum | `all` | Filter type: `all` (predefined + custom), `predefined` (global only), or `custom` (household only) |
 
 **Response – 200 OK**
 ```json
@@ -278,6 +287,7 @@ GET /api/v1/catalog
 
 | Status | Error | Description |
 |--------|-------|-------------|
+| **400** | `Invalid type parameter` | Invalid query parameter value. Must be: `all`, `predefined`, or `custom`. |
 | **404** | `Household not found` | User is not a member of any household. |
 | **500** | `Internal server error` | Server error during processing. |
 
