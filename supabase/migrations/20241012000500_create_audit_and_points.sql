@@ -59,3 +59,6 @@ create policy "System can manage points"
   on points_events for insert
   with check (auth.uid() in (select user_id from current_user_household_members));
 
+
+
+
