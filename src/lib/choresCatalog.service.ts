@@ -149,18 +149,38 @@ export async function createCatalogItem(
  * 
  * @param supabase - SupabaseClient instance
  * @param householdId - The household ID to fetch items for
+ * @param type - Filter type: 'all' (default), 'predefined', or 'custom'
  * @returns Promise<CatalogItemDTO[]> - Array of catalog items
  * @throws Error if database operation fails
  */
 export async function getCatalogItems(
   supabase: SupabaseClient<Database>,
-  householdId: string
+  householdId: string,
+  type: 'all' | 'predefined' | 'custom' = 'all'
 ): Promise<CatalogItemDTO[]> {
-  const { data: items, error } = await supabase
+  let query = supabase
     .from('chores_catalog')
     .select('*')
-    .eq('household_id', householdId)
-    .is('deleted_at', null)
+    .is('deleted_at', null);
+
+  // Apply filtering based on type
+  if (type === 'predefined') {
+    // Only global predefined items
+    query = query
+      .eq('predefined', true)
+      .is('household_id', null);
+  } else if (type === 'custom') {
+    // Only custom items for this household
+    query = query
+      .eq('household_id', householdId)
+      .eq('predefined', false);
+  } else {
+    // All items: predefined (global) + custom (for this household)
+    query = query
+      .or(`and(predefined.eq.true,household_id.is.null),and(household_id.eq.${householdId},predefined.eq.false)`);
+  }
+
+  const { data: items, error } = await query
     .order('created_at', { ascending: false });
 
   if (error) {

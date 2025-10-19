@@ -14,12 +14,34 @@ export const prerender = false;
 
 /**
  * GET /v1/catalog
- * Fetches all active catalog items for the user's household
+ * Fetches catalog items for the user's household
+ * Query params: type (optional, default: 'all')
+ *   - 'all': predefined + custom items (default)
+ *   - 'predefined': only global predefined items
+ *   - 'custom': only custom items for this household
  * 
  * Response: 200 OK with CatalogItemDTO[]
  */
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (context) => {
   try {
+    // Parse query parameter
+    const url = new URL(context.request.url);
+    const typeParam = url.searchParams.get('type') || 'all';
+    
+    // Validate type parameter
+    const validTypes = ['all', 'predefined', 'custom'];
+    if (!validTypes.includes(typeParam)) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid type parameter',
+          details: `type must be one of: ${validTypes.join(', ')}`
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const type = typeParam as 'all' | 'predefined' | 'custom';
+
     // Get household for the current user
     const supabase = supabaseClient as SupabaseClient;
     const { data: householdMember, error: householdError } = await supabase
@@ -40,7 +62,7 @@ export const GET: APIRoute = async () => {
 
     // Fetch catalog items
     try {
-      const catalogItems = await getCatalogItems(supabase, householdId);
+      const catalogItems = await getCatalogItems(supabase, householdId, type);
 
       return new Response(
         JSON.stringify(catalogItems),
