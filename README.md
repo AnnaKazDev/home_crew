@@ -363,6 +363,184 @@ DELETE /api/v1/catalog/{id}
 | **404** | `Household not found` | User is not a member of any household. |
 | **500** | `Internal server error` | Server error during processing. |
 
+## Households API
+
+### POST /v1/households
+Creates a new household and makes the authenticated user its administrator.
+
+**Request**
+```bash
+POST /api/v1/households
+Content-Type: application/json
+Authorization: Bearer <jwt_token>
+```
+
+**Body**
+```json
+{
+  "name": "Smith Family"
+}
+```
+
+| Field | Type | Required | Validation |
+|-------|------|----------|-----------|
+| `name` | string | ✓ | 3–100 characters, trimmed |
+
+**Response – 201 Created**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Smith Family",
+  "pin": "123456"
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid JSON in request body` | Malformed JSON request. |
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **409** | `User already belongs to a household` | User is already a member of another household. |
+| **422** | `Validation error` | Invalid request body (missing/invalid fields). Details array included. |
+| **500** | `Internal server error` | Server error during processing. |
+
+**Example Error (422)**
+```json
+{
+  "error": "Validation error",
+  "details": [
+    {
+      "path": "name",
+      "message": "Household name must be at least 3 characters"
+    }
+  ]
+}
+```
+
+### GET /v1/households/current
+Retrieves information about the current user's household.
+
+**Request**
+```bash
+GET /api/v1/households/current
+Authorization: Bearer <jwt_token>
+```
+
+**Response – 200 OK** (for admin)
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Smith Family",
+  "timezone": "UTC",
+  "pin": "123456"
+}
+```
+
+**Response – 200 OK** (for member)
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Smith Family",
+  "timezone": "UTC"
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **404** | `User not in any household` | User is not a member of any household. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### POST /v1/households/join
+Joins an existing household using a 6-digit PIN code.
+
+**Request**
+```bash
+POST /api/v1/households/join
+Content-Type: application/json
+Authorization: Bearer <jwt_token>
+```
+
+**Body**
+```json
+{
+  "pin": "123456"
+}
+```
+
+| Field | Type | Required | Validation |
+|-------|------|----------|-----------|
+| `pin` | string | ✓ | Exactly 6 digits |
+
+**Response – 200 OK**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Smith Family",
+  "timezone": "UTC"
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid JSON in request body` | Malformed JSON request. |
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **404** | `Invalid PIN` | PIN does not match any existing household. |
+| **404** | `PIN has expired` | PIN has expired (24-hour validity). |
+| **409** | `User already belongs to a household` | User is already a member of another household. |
+| **422** | `Validation error` | Invalid PIN format. Details array included. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### PATCH /v1/households/{id}
+Updates household information (admin only).
+
+**Request**
+```bash
+PATCH /api/v1/households/{id}
+Content-Type: application/json
+Authorization: Bearer <jwt_token>
+```
+
+**Body** (all fields optional)
+```json
+{
+  "name": "Smith Family Home",
+  "timezone": "America/New_York"
+}
+```
+
+| Field | Type | Validation |
+|-------|------|-----------|
+| `name` | string | 3–100 characters, trimmed |
+| `timezone` | string | Valid timezone identifier |
+
+**Response – 200 OK**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Smith Family Home",
+  "timezone": "America/New_York",
+  "pin": "123456"
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid JSON in request body` | Malformed JSON request. |
+| **400** | `Household ID is required` | Missing household ID parameter. |
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **403** | `Not a member of this household` | User is not a member of the specified household. |
+| **403** | `Only household administrators can update household information` | User is not an admin of this household. |
+| **422** | `Validation error` | Invalid request body fields. Details array included. |
+| **500** | `Internal server error` | Server error during processing. |
+
 ---
 
 ## Project Scope
