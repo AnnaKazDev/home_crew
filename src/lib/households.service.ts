@@ -4,6 +4,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/db/database.types";
 import type { HouseholdDTO, CreateHouseholdDTO } from "@/types";
 
+type CreateHouseholdCmdType = z.infer<typeof CreateHouseholdCmdSchema>;
+type JoinHouseholdCmdType = z.infer<typeof JoinHouseholdCmdSchema>;
+type UpdateHouseholdCmdType = z.infer<typeof UpdateHouseholdCmdSchema>;
+
 /**
  * Zod schema for validating CreateHouseholdCmd
  * Validates request body when creating a new household
@@ -41,9 +45,6 @@ export const UpdateHouseholdCmdSchema = z.object({
   timezone: z.string().optional(),
 });
 
-type CreateHouseholdCmdType = z.infer<typeof CreateHouseholdCmdSchema>;
-type JoinHouseholdCmdType = z.infer<typeof JoinHouseholdCmdSchema>;
-type UpdateHouseholdCmdType = z.infer<typeof UpdateHouseholdCmdSchema>;
 
 /**
  * Generates a unique 6-digit PIN for household invites with bcrypt hash
@@ -368,3 +369,6 @@ export async function updateHousehold(
     pin: updatedHousehold.current_pin,
   };
 }
+
+
+
