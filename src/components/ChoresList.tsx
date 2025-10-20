@@ -126,6 +126,7 @@ export default function ChoresList() {
                             </span>
                           )}
                         </span>
+                        <span className="text-sm">- {chore.points} points</span>
                       </div>
                     ))}
                   </div>
