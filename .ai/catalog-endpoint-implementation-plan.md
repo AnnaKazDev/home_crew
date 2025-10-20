@@ -44,7 +44,7 @@ Przykład:
 
 ## 5. Przepływ danych
 1. Klient wysyła `POST /v1/catalog` z JSON body.
-2. Astro API route (`src/pages/api/v1/catalog.ts`):
+2. Astro API route (`src/pages/api/v1/catalog/index.ts`):
    1. Pobiera `supabase` z `context.locals` i sesję (`getSession()`).
    2. Waliduje body poprzez Zod -> `CreateCatalogItemCmd`.
    3. Ustala `userId = session.user.id`.
@@ -80,7 +80,7 @@ Przykład:
 ## 9. Etapy wdrożenia
 1. **Zod schema** (CreateCatalogItemCmdSchema) w `src/lib/choresCatalog.services.ts`.
 2. **Serwis** `createCatalogItem()` + export w tym pliku.
-3. **Endpoint** `src/pages/api/v1/catalog.ts`:
+3. **Endpoint** `src/pages/api/v1/catalog/index.ts`:
    - GET session, walidacja, pobranie household, wywołanie serwisu, obsługa błędów.
 4. **Dokumentacja** README/API-ref — dodaj sekcję endpointu.
 5. **CI** — uruchom testy; brak zmian w migracjach.
