@@ -62,7 +62,7 @@ Errors: 401 Unauthorized, 422 Validation failed.
 POST `/households` request
 ```json
 {
-  "name": "string (≤ 100)"
+  "name": "string (3-100 characters)"
 }
 ```
 Response 201
@@ -75,7 +75,45 @@ POST `/households/join` request
 { "pin": "123456" }
 ```
 
-Validation: name required, <=100; 6-digit PIN verified & not expired; limit one household per profile.
+GET `/households/current` response
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "timezone": "string"
+}
+```
+
+PATCH `/households/:id` request
+```json
+{
+  "name": "string (3-100 characters)",
+  "timezone": "string (optional, defaults to 'UTC')"
+}
+```
+
+GET `/households/current` response (for admin)
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "timezone": "string",
+  "pin": "string (6 digits, only for admin)"
+}
+```
+
+GET `/households/current` response (for member)
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "timezone": "string"
+}
+```
+
+Validation: name required, 3-100 characters; 6-digit PIN verified & not expired; limit one household per profile; only household admin can update household or view PIN.
+
+Errors: 401 Unauthorized, 403 Forbidden (not admin), 404 Not found, 409 Conflict (already member), 422 Validation failed.
 
 ### 2.4 Household Members
 
@@ -157,7 +195,7 @@ Rate limiting: 100 requests / minute / IP via Astro middleware.
 | Resource | Validation Rules |
 |----------|------------------|
 | Profile | `name` non-empty ≤100; `avatar_url` valid URL. |
-| Household | `name` non-empty ≤100; max 1 per user. |
+| Household | `name` non-empty, 3-100 characters; max 1 per user. |
 | HouseholdMember | max 10 members per household (trigger). |
 | ChoreCatalog | `title` non-empty ≤50; `points` 0-100; `category` non-empty; `time_of_day` enum. Unique `(household_id,lower(title))`. |
 | DailyChore | Limit 50 / household / day; unique composite key; only `status`, `assignee_id` updatable. |

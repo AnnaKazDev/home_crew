@@ -5,19 +5,14 @@
 -- Tables: households
 -- Dependencies: households table
 
--- Add current_pin column to store the actual PIN for admin access
+-- Add current_pin column with default value and make it NOT NULL
+-- Generate random 6-digit PINs for existing households
 alter table public.households
-add column current_pin char(6);
+add column current_pin char(6) not null default lpad(floor(random() * 999999)::text, 6, '0');
 
--- Update existing households to have a PIN (generate random 6-digit PINs)
--- Note: This will only affect households created before this migration
-update public.households
-set current_pin = lpad(floor(random() * 999999)::text, 6, '0')
-where current_pin is null;
-
--- Make current_pin not null after populating existing records
+-- Add unique constraint to prevent duplicate PINs between households
 alter table public.households
-alter column current_pin set not null;
+add constraint households_current_pin_unique unique (current_pin);
 
 -- Add comment
 comment on column public.households.current_pin is 'Current 6-digit PIN for household invites (visible to admin only)';

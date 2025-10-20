@@ -1,7 +1,7 @@
-import { z } from 'zod';
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/db/database.types';
-import type { CatalogItemDTO } from '@/types';
+import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/db/database.types";
+import type { CatalogItemDTO } from "@/types";
 
 /**
  * Zod schema for validating CreateCatalogItemCmd
@@ -10,26 +10,18 @@ import type { CatalogItemDTO } from '@/types';
 export const CreateCatalogItemCmdSchema = z.object({
   title: z
     .string()
-    .min(1, 'Title cannot be empty')
-    .max(50, 'Title must be 50 characters or less')
+    .min(1, "Title cannot be empty")
+    .max(50, "Title must be 50 characters or less")
     .transform((val) => val.trim()),
-  category: z
-    .string()
-    .min(1, 'Category cannot be empty'),
+  category: z.string().min(1, "Category cannot be empty"),
   points: z
     .number()
-    .int('Points must be an integer')
-    .min(0, 'Points must be at least 0')
-    .max(100, 'Points must be at most 100')
-    .refine((val) => val % 5 === 0, 'Points must be divisible by 5'),
-  time_of_day: z
-    .enum(['morning', 'afternoon', 'evening', 'night', 'any'])
-    .default('any')
-    .optional(),
-  emoji: z
-    .string()
-    .optional()
-    .nullable(),
+    .int("Points must be an integer")
+    .min(0, "Points must be at least 0")
+    .max(100, "Points must be at most 100")
+    .refine((val) => val % 5 === 0, "Points must be divisible by 5"),
+  time_of_day: z.enum(["morning", "afternoon", "evening", "night", "any"]).default("any").optional(),
+  emoji: z.string().optional().nullable(),
 });
 
 /**
@@ -39,28 +31,20 @@ export const CreateCatalogItemCmdSchema = z.object({
 export const UpdateCatalogItemCmdSchema = z.object({
   title: z
     .string()
-    .min(1, 'Title cannot be empty')
-    .max(50, 'Title must be 50 characters or less')
+    .min(1, "Title cannot be empty")
+    .max(50, "Title must be 50 characters or less")
     .transform((val) => val.trim())
     .optional(),
-  category: z
-    .string()
-    .min(1, 'Category cannot be empty')
-    .optional(),
+  category: z.string().min(1, "Category cannot be empty").optional(),
   points: z
     .number()
-    .int('Points must be an integer')
-    .min(0, 'Points must be at least 0')
-    .max(100, 'Points must be at most 100')
-    .refine((val) => val % 5 === 0, 'Points must be divisible by 5')
+    .int("Points must be an integer")
+    .min(0, "Points must be at least 0")
+    .max(100, "Points must be at most 100")
+    .refine((val) => val % 5 === 0, "Points must be divisible by 5")
     .optional(),
-  time_of_day: z
-    .enum(['morning', 'afternoon', 'evening', 'night', 'any'])
-    .optional(),
-  emoji: z
-    .string()
-    .optional()
-    .nullable(),
+  time_of_day: z.enum(["morning", "afternoon", "evening", "night", "any"]).optional(),
+  emoji: z.string().optional().nullable(),
 });
 
 type CreateCatalogItemCmdType = z.infer<typeof CreateCatalogItemCmdSchema>;
@@ -68,7 +52,7 @@ type UpdateCatalogItemCmdType = z.infer<typeof UpdateCatalogItemCmdSchema>;
 
 /**
  * Service function to create a new custom chore in the catalog
- * 
+ *
  * @param supabase - SupabaseClient instance
  * @param householdId - The household ID for which to create the chore
  * @param userId - The user ID creating the chore
@@ -84,33 +68,34 @@ export async function createCatalogItem(
 ): Promise<CatalogItemDTO> {
   // Check for duplicate title (case-insensitive, non-deleted only)
   const { data: existingItem, error: checkError } = await supabase
-    .from('chores_catalog')
-    .select('id')
-    .eq('household_id', householdId)
-    .ilike('title', data.title)
-    .is('deleted_at', null)
+    .from("chores_catalog")
+    .select("id")
+    .eq("household_id", householdId)
+    .ilike("title", data.title)
+    .is("deleted_at", null)
     .single();
 
   // If query returned a result (not just "no rows"), we have a duplicate
   if (existingItem) {
-    throw new Error('DUPLICATE_TITLE');
+    throw new Error("DUPLICATE_TITLE");
   }
 
   // Handle unexpected errors in the check query
-  if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows returned
-    console.error('Error checking duplicate title:', checkError);
-    throw new Error('Database error while checking for duplicates');
+  if (checkError && checkError.code !== "PGRST116") {
+    // PGRST116 = no rows returned
+    console.error("Error checking duplicate title:", checkError);
+    throw new Error("Database error while checking for duplicates");
   }
 
   // Insert new catalog item
   const { data: newItem, error: insertError } = await supabase
-    .from('chores_catalog')
+    .from("chores_catalog")
     .insert({
       household_id: householdId,
       title: data.title,
       category: data.category,
       points: data.points,
-      time_of_day: data.time_of_day ?? 'any',
+      time_of_day: data.time_of_day ?? "any",
       emoji: data.emoji ?? null,
       created_by_user_id: userId,
       predefined: false, // Custom chores are always non-predefined
@@ -119,12 +104,12 @@ export async function createCatalogItem(
     .single();
 
   if (insertError) {
-    console.error('Error creating catalog item:', insertError);
-    throw new Error('Failed to create catalog item');
+    console.error("Error creating catalog item:", insertError);
+    throw new Error("Failed to create catalog item");
   }
 
   if (!newItem) {
-    throw new Error('Failed to retrieve created catalog item');
+    throw new Error("Failed to retrieve created catalog item");
   }
 
   // Map to DTO
@@ -146,7 +131,7 @@ export async function createCatalogItem(
 
 /**
  * Service function to fetch all active catalog items for a household
- * 
+ *
  * @param supabase - SupabaseClient instance
  * @param householdId - The household ID to fetch items for
  * @param type - Filter type: 'all' (default), 'predefined', or 'custom'
@@ -156,36 +141,29 @@ export async function createCatalogItem(
 export async function getCatalogItems(
   supabase: SupabaseClient<Database>,
   householdId: string,
-  type: 'all' | 'predefined' | 'custom' = 'all'
+  type: "all" | "predefined" | "custom" = "all"
 ): Promise<CatalogItemDTO[]> {
-  let query = supabase
-    .from('chores_catalog')
-    .select('*')
-    .is('deleted_at', null);
+  let query = supabase.from("chores_catalog").select("*").is("deleted_at", null);
 
   // Apply filtering based on type
-  if (type === 'predefined') {
+  if (type === "predefined") {
     // Only global predefined items
-    query = query
-      .eq('predefined', true)
-      .is('household_id', null);
-  } else if (type === 'custom') {
+    query = query.eq("predefined", true).is("household_id", null);
+  } else if (type === "custom") {
     // Only custom items for this household
-    query = query
-      .eq('household_id', householdId)
-      .eq('predefined', false);
+    query = query.eq("household_id", householdId).eq("predefined", false);
   } else {
     // All items: predefined (global) + custom (for this household)
-    query = query
-      .or(`and(predefined.eq.true,household_id.is.null),and(household_id.eq.${householdId},predefined.eq.false)`);
+    query = query.or(
+      `and(predefined.eq.true,household_id.is.null),and(household_id.eq.${householdId},predefined.eq.false)`
+    );
   }
 
-  const { data: items, error } = await query
-    .order('created_at', { ascending: false });
+  const { data: items, error } = await query.order("created_at", { ascending: false });
 
   if (error) {
-    console.error('Error fetching catalog items:', error);
-    throw new Error('Failed to fetch catalog items');
+    console.error("Error fetching catalog items:", error);
+    throw new Error("Failed to fetch catalog items");
   }
 
   if (!items) {
@@ -209,7 +187,7 @@ export async function getCatalogItems(
 
 /**
  * Service function to update a catalog item
- * 
+ *
  * @param supabase - SupabaseClient instance
  * @param householdId - The household ID (for authorization)
  * @param itemId - The catalog item ID to update
@@ -225,16 +203,16 @@ export async function updateCatalogItem(
 ): Promise<CatalogItemDTO> {
   // Verify item exists and belongs to this household
   const { data: existingItem, error: checkError } = await supabase
-    .from('chores_catalog')
-    .select('*')
-    .eq('id', itemId)
-    .eq('household_id', householdId)
-    .is('deleted_at', null)
+    .from("chores_catalog")
+    .select("*")
+    .eq("id", itemId)
+    .eq("household_id", householdId)
+    .is("deleted_at", null)
     .single();
 
   if (checkError || !existingItem) {
-    console.error('Error checking existing item:', checkError);
-    throw new Error('NOT_FOUND');
+    console.error("Error checking existing item:", checkError);
+    throw new Error("NOT_FOUND");
   }
 
   // Build update payload - only include provided fields
@@ -253,35 +231,35 @@ export async function updateCatalogItem(
   // If title is being updated, check for duplicates
   if (data.title !== undefined) {
     const { data: duplicateItem } = await supabase
-      .from('chores_catalog')
-      .select('id')
-      .eq('household_id', householdId)
-      .ilike('title', data.title)
-      .neq('id', itemId)
-      .is('deleted_at', null)
+      .from("chores_catalog")
+      .select("id")
+      .eq("household_id", householdId)
+      .ilike("title", data.title)
+      .neq("id", itemId)
+      .is("deleted_at", null)
       .single();
 
     if (duplicateItem) {
-      throw new Error('DUPLICATE_TITLE');
+      throw new Error("DUPLICATE_TITLE");
     }
   }
 
   // Update the item
   const { data: updatedItem, error: updateError } = await supabase
-    .from('chores_catalog')
+    .from("chores_catalog")
     .update(updatePayload)
-    .eq('id', itemId)
-    .eq('household_id', householdId)
+    .eq("id", itemId)
+    .eq("household_id", householdId)
     .select()
     .single();
 
   if (updateError) {
-    console.error('Error updating catalog item:', updateError);
-    throw new Error('Failed to update catalog item');
+    console.error("Error updating catalog item:", updateError);
+    throw new Error("Failed to update catalog item");
   }
 
   if (!updatedItem) {
-    throw new Error('Failed to retrieve updated catalog item');
+    throw new Error("Failed to retrieve updated catalog item");
   }
 
   return mapToDTO(updatedItem);
@@ -289,7 +267,7 @@ export async function updateCatalogItem(
 
 /**
  * Service function to soft-delete a catalog item
- * 
+ *
  * @param supabase - SupabaseClient instance
  * @param householdId - The household ID (for authorization)
  * @param itemId - The catalog item ID to delete
@@ -302,35 +280,35 @@ export async function deleteCatalogItem(
 ): Promise<void> {
   // Verify item exists and belongs to this household
   const { data: existingItem, error: checkError } = await supabase
-    .from('chores_catalog')
-    .select('id')
-    .eq('id', itemId)
-    .eq('household_id', householdId)
-    .is('deleted_at', null)
+    .from("chores_catalog")
+    .select("id")
+    .eq("id", itemId)
+    .eq("household_id", householdId)
+    .is("deleted_at", null)
     .single();
 
   if (checkError || !existingItem) {
-    console.error('Error checking item for deletion:', checkError);
-    throw new Error('NOT_FOUND');
+    console.error("Error checking item for deletion:", checkError);
+    throw new Error("NOT_FOUND");
   }
 
   // Soft delete by setting deleted_at
   const { error: deleteError } = await supabase
-    .from('chores_catalog')
+    .from("chores_catalog")
     .update({ deleted_at: new Date().toISOString() })
-    .eq('id', itemId)
-    .eq('household_id', householdId);
+    .eq("id", itemId)
+    .eq("household_id", householdId);
 
   if (deleteError) {
-    console.error('Error deleting catalog item:', deleteError);
-    throw new Error('Failed to delete catalog item');
+    console.error("Error deleting catalog item:", deleteError);
+    throw new Error("Failed to delete catalog item");
   }
 }
 
 /**
  * Helper function to map a catalog row to CatalogItemDTO
  */
-function mapToDTO(item: Database['public']['Tables']['chores_catalog']['Row']): CatalogItemDTO {
+function mapToDTO(item: Database["public"]["Tables"]["chores_catalog"]["Row"]): CatalogItemDTO {
   return {
     id: item.id,
     title: item.title,
