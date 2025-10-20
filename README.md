@@ -541,6 +541,108 @@ Authorization: Bearer <jwt_token>
 | **422** | `Validation error` | Invalid request body fields. Details array included. |
 | **500** | `Internal server error` | Server error during processing. |
 
+## Household Members API
+
+### GET /v1/members
+Retrieves all members of the current user's household.
+
+**Request**
+```bash
+GET /api/v1/members
+Authorization: Bearer <jwt_token>
+```
+
+**Response – 200 OK**
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "user_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+    "name": "John Smith",
+    "avatar_url": "https://example.com/avatar.jpg",
+    "role": "admin",
+    "joined_at": "2025-10-19T12:34:56.789Z"
+  }
+]
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **404** | `User not in household` | User is not a member of any household. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### PATCH /v1/members/{id}
+Updates a household member's role (admin only).
+
+**Request**
+```bash
+PATCH /api/v1/members/{id}
+Content-Type: application/json
+Authorization: Bearer <jwt_token>
+```
+
+**Body**
+```json
+{
+  "role": "admin"
+}
+```
+
+| Field | Type | Required | Validation |
+|-------|------|----------|-----------|
+| `role` | enum | ✓ | Must be either `admin` or `member` |
+
+**Response – 200 OK**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "user_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+  "name": "John Smith",
+  "avatar_url": "https://example.com/avatar.jpg",
+  "role": "admin",
+  "joined_at": "2025-10-19T12:34:56.789Z"
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Validation error` | Invalid request body (invalid role value). Details array included. |
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **403** | `Not household admin` | User is not an administrator of this household. |
+| **404** | `Member not found` | Member does not exist or belongs to a different household. |
+| **409** | `Cannot remove last admin` | Attempting to demote the last remaining administrator. |
+| **409** | `Cannot remove self` | Attempting to remove oneself from the household. |
+| **422** | `Validation error` | Invalid role value. Details array included. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### DELETE /v1/members/{id}
+Removes a member from the household (admin only, soft delete).
+
+**Request**
+```bash
+DELETE /api/v1/members/{id}
+Authorization: Bearer <jwt_token>
+```
+
+**Response – 204 No Content**
+(Empty response body)
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **403** | `Not household admin` | User is not an administrator of this household. |
+| **404** | `Member not found` | Member does not exist or belongs to a different household. |
+| **409** | `Cannot remove last admin` | Attempting to remove the last remaining administrator. |
+| **409** | `Cannot remove self` | Attempting to remove oneself from the household. |
+| **500** | `Internal server error` | Server error during processing. |
+
 ---
 
 ## Project Scope

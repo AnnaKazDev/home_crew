@@ -123,7 +123,44 @@ Errors: 401 Unauthorized, 403 Forbidden (not admin), 404 Not found, 409 Conflict
 | PATCH | `/v1/members/:id` | Update role (admin only). |
 | DELETE | `/v1/members/:id` | Remove member (admin). |
 
-Validation: `role` must be `admin` or `member`; member count ≤10 enforced by trigger; only household admin can change roles or delete.
+GET `/v1/members` response
+```json
+[
+  {
+    "id": "uuid",
+    "user_id": "uuid",
+    "name": "string",
+    "avatar_url": "string | null",
+    "role": "admin | member",
+    "joined_at": "2025-10-20T10:30:00Z"
+  }
+]
+```
+
+PATCH `/v1/members/:id` request
+```json
+{
+  "role": "admin | member"
+}
+```
+
+PATCH `/v1/members/:id` response
+```json
+{
+  "id": "uuid",
+  "user_id": "uuid",
+  "name": "string",
+  "avatar_url": "string | null",
+  "role": "admin | member",
+  "joined_at": "2025-10-20T10:30:00Z"
+}
+```
+
+DELETE `/v1/members/:id` response: `204 No Content`
+
+Validation: `role` must be `admin` or `member`; member count ≤10 enforced by trigger; only household admin can change roles or delete; cannot remove last admin or self.
+
+Errors: 401 Unauthorized, 403 Forbidden (not admin), 404 Not found (user not in household or member not found), 409 Conflict (cannot remove last admin or self), 422 Validation failed (invalid role).
 
 Note: Household context is derived from the authenticated user (each profile belongs to exactly one household). Therefore `household_id` is resolved server-side via the `current_user_household_members` view and is not part of the URL or request body.
 
