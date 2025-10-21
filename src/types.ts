@@ -134,6 +134,17 @@ export type ChoreStatusLogDTO = Pick<
   | "created_at"
 >;
 
+/**
+ * Options for filtering and pagination when retrieving user points events
+ */
+export interface GetPointsEventsOptions {
+  cursor?: string;
+  limit?: number;
+  event_type?: Enums<"points_event_type">;
+  from_date?: string;
+  to_date?: string;
+}
+
 /* -------------------------------------------------- *
  * 6. Generic pagination wrapper
  * -------------------------------------------------- */

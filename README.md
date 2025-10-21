@@ -903,6 +903,53 @@ DELETE /api/v1/daily-chores/550e8400-e29b-41d4-a716-446655440000
 | **404** | `Household not found` | User is not a member of any household. |
 | **500** | `Internal server error` | Server error during processing. |
 
+## Points Events API
+
+### GET /v1/points-events
+Retrieves paginated list of points events for the authenticated user with optional filtering.
+
+**Request**
+```bash
+GET /api/v1/points-events
+GET /api/v1/points-events?limit=20&event_type=add
+GET /api/v1/points-events?from_date=2025-01-01&to_date=2025-12-31
+GET /api/v1/points-events?cursor=eyJpZCI6MTIzfQ%3D%3D&limit=10
+```
+
+**Query Parameters**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `cursor` | string | None | Base64 encoded cursor for pagination |
+| `limit` | integer | 20 | Number of items per page (1-100) |
+| `event_type` | enum | None | Filter by event type: `add` or `subtract` |
+| `from_date` | string | None | Filter events from this date (YYYY-MM-DD format) |
+| `to_date` | string | None | Filter events to this date (YYYY-MM-DD format) |
+
+**Response – 200 OK**
+```json
+{
+  "data": [
+    {
+      "id": 123,
+      "points": 25,
+      "event_type": "add",
+      "created_at": "2025-10-21T10:30:00Z",
+      "daily_chore_id": "550e8400-e29b-41d4-a716-446655440000"
+    }
+  ],
+  "next_cursor": "eyJpZCI6MTI0fQ=="
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Validation failed` | Invalid query parameters (limit out of range, invalid date format, etc.). Details array included. |
+| **422** | `Invalid date range` | from_date is after to_date. |
+| **500** | `Internal server error` | Server error during processing. |
+
 ---
 
 ## Project Scope
