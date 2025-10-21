@@ -55,7 +55,7 @@ export const PATCH: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(updatedMember), {
         status: 200,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     } catch (serviceError) {
       const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";

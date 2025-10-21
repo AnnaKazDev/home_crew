@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro";
 import { CreateCatalogItemCmdSchema, createCatalogItem, getCatalogItems } from "@/lib/choresCatalog.service";
 import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
-import type { Database } from "@/db/database.types";
 
 export const prerender = false;
 
@@ -48,7 +47,6 @@ export const GET: APIRoute = async (context) => {
         .single();
 
       if (householdError || !householdMember) {
-        console.error("Household lookup error:", householdError);
         return new Response(JSON.stringify({ error: "Household not found" }), {
           status: 404,
           headers: { "Content-Type": "application/json" },
@@ -58,23 +56,49 @@ export const GET: APIRoute = async (context) => {
       householdId = householdMember.household_id;
     }
 
-    // Fetch catalog items
+    // Get catalog items
     try {
-      const catalogItems = await getCatalogItems(supabase, householdId ?? "", type);
+      const catalogItems = await getCatalogItems(supabase, householdId, type);
 
       return new Response(JSON.stringify(catalogItems), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     } catch (serviceError) {
-      console.error("Service error fetching catalog items:", serviceError);
-      return new Response(JSON.stringify({ error: "Internal server error" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      // Try to get the catalog items directly to see the actual error
+      try {
+        let query = supabase.from("chores_catalog").select("*").is("deleted_at", null);
+
+        if (type === "predefined") {
+          query = query.eq("predefined", true).is("household_id", null);
+        }
+
+        const { data: items, error: dbError } = await query.order("created_at", { ascending: false });
+
+        return new Response(JSON.stringify({
+          error: "Service error",
+          serviceError: serviceError instanceof Error ? serviceError.message : String(serviceError),
+          directQueryError: dbError,
+          type: type,
+          householdId: householdId
+        }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (directError) {
+        return new Response(JSON.stringify({
+          error: "Service error",
+          serviceError: serviceError instanceof Error ? serviceError.message : String(serviceError),
+          directError: directError instanceof Error ? directError.message : String(directError),
+          type: type,
+          householdId: householdId
+        }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
   } catch (error) {
-    console.error("Unexpected error in GET /v1/catalog:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -124,7 +148,6 @@ export const POST: APIRoute = async (context) => {
       .single();
 
     if (householdError || !householdMember) {
-      console.error("Household lookup error:", householdError);
       return new Response(JSON.stringify({ error: "Household not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
@@ -145,20 +168,18 @@ export const POST: APIRoute = async (context) => {
       const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
 
       if (errorMessage === "DUPLICATE_TITLE") {
-        return new Response(JSON.stringify({ error: "Duplicate title" }), {
+        return new Response(JSON.stringify({ error: "A chore with this title already exists in your household" }), {
           status: 409,
           headers: { "Content-Type": "application/json" },
         });
       }
 
-      console.error("Service error creating catalog item:", serviceError);
       return new Response(JSON.stringify({ error: "Internal server error" }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
   } catch (error) {
-    console.error("Unexpected error in POST /v1/catalog:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
