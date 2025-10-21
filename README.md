@@ -102,9 +102,11 @@ cp .env.example .env   # create .env file from template
 supabase status -o env
 
 # Copy the output SUPABASE_URL and SUPABASE_KEY to your .env file
+# You can also get the service role key from Supabase Dashboard > Settings > API
 # Example output:
 # SUPABASE_URL=http://127.0.0.1:54321
 # SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # 7. Start dev server
 npm run dev
