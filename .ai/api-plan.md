@@ -210,10 +210,28 @@ Validation: `date` valid ISO 8601 date; `time_of_day` enum; `status` enum; `assi
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/v1/points-events` | List user points events (paginated). |
+| GET | `/v1/points-events` | List user points events (paginated). Supports filtering by event type and date range. |
 | GET | `/v1/chore-status-log` | List status logs for a daily chore (admin). |
 
-Pagination params: `limit` (≤100), `cursor` (keyset).
+Points events query params: `cursor` (base64 encoded), `limit` (≤100, default 20), `event_type=add|subtract`, `from_date`, `to_date` (YYYY-MM-DD format).
+
+Points events response:
+```json
+{
+  "data": [
+    {
+      "id": 123,
+      "points": 25,
+      "event_type": "add",
+      "created_at": "2025-10-21T10:30:00Z",
+      "daily_chore_id": "uuid-here"
+    }
+  ],
+  "next_cursor": "eyJpZCI6MTIzfQ=="
+}
+```
+
+Pagination params for other endpoints: `limit` (≤100), `cursor` (keyset).
 
 ---
 
