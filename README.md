@@ -86,7 +86,8 @@ npm install      # or pnpm install
 supabase init
 
 # 4. Start Supabase locally
-supabase start
+supabase start    # Starts all Supabase services (API, database, Studio, etc.) in Docker containers
+supabase stop     # Stops all running Supabase services and cleans up Docker containers
 
 # 5. Run database migrations
 supabase db reset --local
@@ -641,6 +642,176 @@ Authorization: Bearer <jwt_token>
 | **404** | `Member not found` | Member does not exist or belongs to a different household. |
 | **409** | `Cannot remove last admin` | Attempting to remove the last remaining administrator. |
 | **409** | `Cannot remove self` | Attempting to remove oneself from the household. |
+| **500** | `Internal server error` | Server error during processing. |
+
+## Daily Chores API
+
+### GET /v1/daily-chores
+Retrieves daily chores for the user's household with optional filters.
+
+**Request**
+```bash
+GET /api/v1/daily-chores
+GET /api/v1/daily-chores?date=2025-10-21
+GET /api/v1/daily-chores?status=todo
+GET /api/v1/daily-chores?assignee_id=550e8400-e29b-41d4-a716-446655440000
+GET /api/v1/daily-chores?date=2025-10-21&status=done
+```
+
+**Query Parameters**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `date` | string | Today | Date in YYYY-MM-DD format |
+| `status` | enum | None | Filter by status: `todo` or `done` |
+| `assignee_id` | string | None | Filter by assignee UUID |
+
+**Response – 200 OK**
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "date": "2025-10-21",
+    "time_of_day": "morning",
+    "status": "todo",
+    "assignee_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+    "points": 10,
+    "chore_catalog_id": "660e8400-e29b-41d4-a716-446655440001"
+  }
+]
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid date parameter` | Invalid date format (must be YYYY-MM-DD). |
+| **400** | `Invalid status parameter` | Invalid status value (must be 'todo' or 'done'). |
+| **400** | `Invalid assignee_id parameter` | Invalid assignee_id format (must be valid UUID). |
+| **404** | `Household not found` | User is not a member of any household. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### POST /v1/daily-chores
+Creates a new daily chore from the catalog.
+
+**Request**
+```bash
+POST /api/v1/daily-chores
+Content-Type: application/json
+```
+
+**Body**
+```json
+{
+  "date": "2025-10-21",
+  "chore_catalog_id": "660e8400-e29b-41d4-a716-446655440001",
+  "assignee_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+  "time_of_day": "morning"
+}
+```
+
+| Field | Type | Required | Validation |
+|-------|------|----------|-----------|
+| `date` | string | ✓ | Valid ISO date in YYYY-MM-DD format |
+| `chore_catalog_id` | string | ✓ | Valid UUID of existing catalog item |
+| `assignee_id` | string | ✗ | Valid UUID of household member (nullable) |
+| `time_of_day` | enum | ✗ | `'morning'`, `'afternoon'`, `'evening'`, `'night'`, `'any'` (default: `'any'`) |
+
+**Response – 201 Created**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "date": "2025-10-21",
+  "time_of_day": "morning",
+  "status": "todo",
+  "assignee_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+  "points": 10,
+  "chore_catalog_id": "660e8400-e29b-41d4-a716-446655440001"
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid JSON in request body` | Malformed JSON request. |
+| **400** | `Validation error` | Invalid request body fields. Details array included. |
+| **400** | `Chore catalog item not found or not accessible` | Catalog item doesn't exist or belongs to different household. |
+| **400** | `Assignee does not belong to this household` | Assignee is not a member of the user's household. |
+| **404** | `Household not found` | User is not a member of any household. |
+| **409** | `Daily limit of 50 chores exceeded` | Household already has 50 chores for this date. |
+| **409** | `Duplicate chore already exists for this date, catalog item, assignee, and time` | Identical chore already exists. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### PATCH /v1/daily-chores/{id}
+Updates a daily chore's status or assignee (partial update – only provided fields are updated).
+
+**Request**
+```bash
+PATCH /api/v1/daily-chores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+```
+
+**Body** (at least one field required)
+```json
+{
+  "status": "done",
+  "assignee_id": "e3b50950-7881-4983-8888-63d3f5ea455d"
+}
+```
+
+| Field | Type | Validation |
+|-------|------|-----------|
+| `status` | enum | Must be either `todo` or `done` |
+| `assignee_id` | string | Valid UUID of household member (nullable) |
+
+**Response – 200 OK**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "date": "2025-10-21",
+  "time_of_day": "morning",
+  "status": "done",
+  "assignee_id": "e3b50950-7881-4983-8888-63d3f5ea455d",
+  "points": 10,
+  "chore_catalog_id": "660e8400-e29b-41d4-a716-446655440001"
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid chore ID` | Invalid UUID format in URL parameter. |
+| **400** | `Invalid JSON in request body` | Malformed JSON request. |
+| **400** | `Validation error` | Invalid request body fields. Details array included. |
+| **400** | `New assignee does not belong to this household` | Assignee is not a member of the user's household. |
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **403** | `Only the assignee or household admin can update this chore` | User lacks permission to modify this chore. |
+| **404** | `Daily chore not found` | Chore doesn't exist or belongs to different household. |
+| **404** | `Household not found` | User is not a member of any household. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### DELETE /v1/daily-chores/{id}
+Soft-deletes a daily chore (marks as deleted; data remains for audit purposes).
+
+**Request**
+```bash
+DELETE /api/v1/daily-chores/550e8400-e29b-41d4-a716-446655440000
+```
+
+**Response – 204 No Content**
+(Empty response body)
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid chore ID` | Invalid UUID format in URL parameter. |
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **403** | `Only the assignee or household admin can delete this chore` | User lacks permission to delete this chore. |
+| **404** | `Daily chore not found` | Chore doesn't exist or belongs to different household. |
+| **404** | `Household not found` | User is not a member of any household. |
 | **500** | `Internal server error` | Server error during processing. |
 
 ---
