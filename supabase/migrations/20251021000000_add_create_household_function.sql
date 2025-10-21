@@ -59,3 +59,4 @@ $$;
 -- Grant execute permission to authenticated users
 grant execute on function create_household_with_admin(text, char(6), uuid) to authenticated;
 
+
