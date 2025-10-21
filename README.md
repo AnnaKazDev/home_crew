@@ -185,6 +185,93 @@ npm run preview   # Local preview of production build
 
 ## API Reference
 
+## Profiles API
+
+### GET /v1/profiles/me
+Retrieves the current user's profile information.
+
+**Request**
+```bash
+GET /api/v1/profiles/me
+Authorization: Bearer <jwt_token>
+```
+
+**Response – 200 OK**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Smith",
+  "avatar_url": "https://example.com/avatar.jpg",
+  "total_points": 150
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **404** | `Profile not found` | User profile does not exist. |
+| **500** | `Internal server error` | Server error during processing. |
+
+### PATCH /v1/profiles/me
+Updates the current user's profile information (partial update – only provided fields are updated).
+
+**Request**
+```bash
+PATCH /api/v1/profiles/me
+Content-Type: application/json
+Authorization: Bearer <jwt_token>
+```
+
+**Body** (all fields optional)
+```json
+{
+  "name": "John Smith Jr.",
+  "avatar_url": "https://example.com/new-avatar.jpg"
+}
+```
+
+| Field | Type | Validation |
+|-------|------|-----------|
+| `name` | string | 1–100 characters, trimmed |
+| `avatar_url` | string | Valid URL format (optional) |
+
+**Response – 200 OK**
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Smith Jr.",
+  "avatar_url": "https://example.com/new-avatar.jpg",
+  "total_points": 150
+}
+```
+
+**Error Responses**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| **400** | `Invalid JSON in request body` | Malformed JSON request. |
+| **401** | `Unauthorized` | Missing or invalid JWT token. |
+| **404** | `Profile not found` | User profile does not exist. |
+| **422** | `Validation error` | Invalid request body fields. Details array included. |
+| **500** | `Internal server error` | Server error during processing. |
+
+**Example Error (422)**
+```json
+{
+  "error": "Validation error",
+  "details": [
+    {
+      "path": "name",
+      "message": "Name must be at most 100 characters long"
+    }
+  ]
+}
+```
+
+## Chore Catalog API
+
 ### POST /v1/catalog
 Creates a new custom chore in the household's catalog.
 
