@@ -45,7 +45,6 @@ export const UpdateHouseholdCmdSchema = z.object({
   timezone: z.string().optional(),
 });
 
-
 /**
  * Generates a unique 6-digit PIN for household invites with bcrypt hash
  * Ensures the PIN is not already used by any existing household
@@ -369,6 +368,3 @@ export async function updateHousehold(
     pin: updatedHousehold.current_pin,
   };
 }
-
-
-

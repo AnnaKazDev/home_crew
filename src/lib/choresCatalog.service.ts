@@ -140,7 +140,7 @@ export async function createCatalogItem(
  */
 export async function getCatalogItems(
   supabase: SupabaseClient<Database>,
-  householdId: string,
+  householdId: string | null,
   type: "all" | "predefined" | "custom" = "all"
 ): Promise<CatalogItemDTO[]> {
   let query = supabase.from("chores_catalog").select("*").is("deleted_at", null);
@@ -151,11 +151,11 @@ export async function getCatalogItems(
     query = query.eq("predefined", true).is("household_id", null);
   } else if (type === "custom") {
     // Only custom items for this household
-    query = query.eq("household_id", householdId).eq("predefined", false);
+    query = query.eq("household_id", householdId!).eq("predefined", false);
   } else {
     // All items: predefined (global) + custom (for this household)
     query = query.or(
-      `and(predefined.eq.true,household_id.is.null),and(household_id.eq.${householdId},predefined.eq.false)`
+      `and(predefined.eq.true,household_id.is.null),and(household_id.eq.${householdId!},predefined.eq.false)`
     );
   }
 
@@ -163,6 +163,7 @@ export async function getCatalogItems(
 
   if (error) {
     console.error("Error fetching catalog items:", error);
+    console.error("Query details - type:", type, "householdId:", householdId);
     throw new Error("Failed to fetch catalog items");
   }
 
