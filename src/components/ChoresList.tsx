@@ -101,7 +101,12 @@ export default function ChoresList() {
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
               <input
@@ -118,9 +123,7 @@ export default function ChoresList() {
               <p className="text-gray-600 text-lg mb-2 gradient-text-light font-medium">
                 ✨ Discover household tasks to organize your home
               </p>
-              <p className="text-gray-500 text-sm">
-                Search above or browse our curated collection below
-              </p>
+              <p className="text-gray-500 text-sm">Search above or browse our curated collection below</p>
             </div>
           )}
         </div>
@@ -150,7 +153,7 @@ export default function ChoresList() {
                     {chores.map((chore, index) => (
                       <div
                         key={chore.id}
-                        className={`group card-hover p-6 rounded-2xl border border-gray-100/60 bg-gradient-to-br from-white/90 to-white/60 shadow-lg hover:shadow-xl hover:from-blue-50/90 hover:to-indigo-50/60 hover:scale-[1.02] transition-all duration-300 cursor-pointer backdrop-blur-sm m-[30px] ${index % 2 === 0 ? 'animate-float' : ''} p-5`}
+                        className={`group card-hover p-6 rounded-2xl border border-gray-100/60 bg-gradient-to-br from-white/90 to-white/60 shadow-lg hover:shadow-xl hover:from-blue-50/90 hover:to-indigo-50/60 hover:scale-[1.02] transition-all duration-300 cursor-pointer backdrop-blur-sm m-[30px] ${index % 2 === 0 ? "animate-float" : ""} p-5`}
                         style={{ animationDelay: `${index * 0.1}s` }}
                       >
                         <div className="flex items-center space-x-4">
