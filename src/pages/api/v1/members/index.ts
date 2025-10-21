@@ -21,7 +21,7 @@ export const GET: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(members), {
         status: 200,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     } catch (serviceError) {
       const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
@@ -34,14 +34,14 @@ export const GET: APIRoute = async (context) => {
       }
 
       console.error("Service error getting household members:", serviceError);
-      return new Response(JSON.stringify({ error: "Internal server error" }), {
+      return new Response(JSON.stringify({ error: "Internal server error", details: errorMessage }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
   } catch (error) {
     console.error("Unexpected error in GET /v1/members:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
+    return new Response(JSON.stringify({ error: "Internal server error", details: error.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

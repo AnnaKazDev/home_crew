@@ -23,10 +23,7 @@ type UpdateMemberRoleCmdType = z.infer<typeof UpdateMemberRoleCmdSchema>;
  * @returns Promise<MemberDTO[]> - Array of household members
  * @throws Error if user not in household or database query fails
  */
-export async function getHouseholdMembers(
-  supabase: SupabaseClient<Database>,
-  userId: string
-): Promise<MemberDTO[]> {
+export async function getHouseholdMembers(supabase: SupabaseClient<Database>, userId: string): Promise<MemberDTO[]> {
   // Get user's household ID and role
   const { data: membership, error: membershipError } = await supabase
     .from("household_members")
@@ -44,7 +41,8 @@ export async function getHouseholdMembers(
   // Get all members of the household with their profile data
   const { data: members, error: membersError } = await supabase
     .from("household_members")
-    .select(`
+    .select(
+      `
       id,
       role,
       joined_at,
@@ -53,7 +51,8 @@ export async function getHouseholdMembers(
         name,
         avatar_url
       )
-    `)
+    `
+    )
     .eq("household_id", membership.household_id)
     .order("joined_at", { ascending: true });
 
@@ -110,7 +109,8 @@ export async function updateMemberRole(
   // Get target member's data and verify they belong to same household
   const { data: targetMember, error: targetMemberError } = await supabase
     .from("household_members")
-    .select(`
+    .select(
+      `
       id,
       role,
       joined_at,
@@ -120,7 +120,8 @@ export async function updateMemberRole(
         name,
         avatar_url
       )
-    `)
+    `
+    )
     .eq("id", memberId)
     .single();
 
@@ -158,7 +159,8 @@ export async function updateMemberRole(
     .from("household_members")
     .update({ role: newRole })
     .eq("id", memberId)
-    .select(`
+    .select(
+      `
       id,
       role,
       joined_at,
@@ -167,7 +169,8 @@ export async function updateMemberRole(
         name,
         avatar_url
       )
-    `)
+    `
+    )
     .single();
 
   if (updateError) {
@@ -258,10 +261,7 @@ export async function removeHouseholdMember(
   }
 
   // Hard delete the member
-  const { error: deleteError } = await supabase
-    .from("household_members")
-    .delete()
-    .eq("id", memberId);
+  const { error: deleteError } = await supabase.from("household_members").delete().eq("id", memberId);
 
   if (deleteError) {
     throw new Error("Failed to remove household member");
