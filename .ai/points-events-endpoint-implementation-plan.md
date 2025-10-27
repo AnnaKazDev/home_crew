@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: GET /v1/points-events
 
 ## 1. Endpoint Overview
+
 The GET /v1/points-events endpoint returns a paginated list of points events for the currently authenticated user. It allows filtering by event type and date range. Access is restricted by Row-Level Security - users can only see their own points events.
 
 ## 2. Request Details
+
 - **HTTP Method:** GET
 - **URL Structure:** `/v1/points-events`
 - **Parameters:**
@@ -17,6 +19,7 @@ The GET /v1/points-events endpoint returns a paginated list of points events for
 - **Request Body:** None (endpoint is read-only)
 
 ## 3. Types Used
+
 - **PointsEventDTO** - represents a single points event
 - **Paginated<PointsEventDTO>** - wrapper for paginated results
 - **GetPointsEventsOptions** - interface for filtering and pagination options (to be defined in types.ts)
@@ -32,6 +35,7 @@ export interface GetPointsEventsOptions {
 ```
 
 ## 4. Response Details
+
 - **200 OK:** Successful retrieval of points events
   ```json
   {
@@ -53,6 +57,7 @@ export interface GetPointsEventsOptions {
 - **500 Internal Server Error:** Server/database errors
 
 ## 5. Data Flow
+
 1. **Input Validation:** Zod schema validates query parameters
 2. **Authorization:** Supabase JWT token verified by middleware
 3. **Service Call:** Call `pointsEventsService.getUserPointsEvents(options)`
@@ -61,6 +66,7 @@ export interface GetPointsEventsOptions {
 6. **Response:** Serialize results to JSON with next_cursor if available
 
 ## 6. Security Considerations
+
 - **RLS Policies:** The `points_events` table has RLS enabled with policies allowing access only to own events
 - **JWT Authentication:** Valid JWT token required in Authorization header
 - **Input Sanitization:** All parameters validated by Zod schemas
@@ -69,6 +75,7 @@ export interface GetPointsEventsOptions {
 - **Data Exposure:** Only user's own data, no access to other users' events
 
 ## 7. Error Handling
+
 - **400 Bad Request:** Invalid pagination/filtering parameters
   ```json
   {
@@ -99,6 +106,7 @@ export interface GetPointsEventsOptions {
   ```
 
 ## 8. Performance Considerations
+
 - **Indexes:** Utilize existing index `idx_points_events_user` on `user_id`
 - **Pagination:** Cursor-based instead of offset-based for better performance with large datasets
 - **Filtering:** Indexes on `event_type` and `created_at` may be added if needed
@@ -108,28 +116,33 @@ export interface GetPointsEventsOptions {
 ## 9. Implementation Steps
 
 ### Step 1: Prepare Types and Schemas
+
 1. Add `GetPointsEventsOptions` interface to `src/types.ts`
 2. Create Zod schema for query parameter validation in `src/lib/validation.schemas.ts`
 
 ### Step 2: Implement Service
+
 1. Create `src/lib/pointsEvents.service.ts`
 2. Implement `getUserPointsEvents(options: GetPointsEventsOptions)` method
 3. Add cursor-based pagination with base64 encoding
 4. Implement filtering by `event_type`, `from_date`, `to_date`
 
 ### Step 3: Implement API Endpoint
+
 1. Create file `src/pages/api/v1/points-events/index.ts`
 2. Implement GET handler with input validation
 3. Call service and return paginated results
 4. Add `export const prerender = false`
 
 ### Step 4: Testing and Validation
+
 1. Add unit tests for service
 2. Add integration tests for endpoint
 3. Test pagination and filtering
 4. Verify RLS policies work correctly
 
 ### Step 5: Documentation and Deployment
+
 1. Update API documentation
 2. Add endpoint to API specification
 3. Deploy to staging and test with frontend
