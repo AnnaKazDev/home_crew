@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: Daily Chores
 
 ## 1. Endpoint Overview
+
 The `/v1/daily-chores` endpoint manages daily chores assigned to specific dates within a household. It allows family members to view, create, update, and delete tasks based on templates from the chore catalog. The system enforces business rules such as the 50 tasks per day limit and access control (only the assignee or administrator can modify tasks).
 
 ## 2. Request Details
+
 - **HTTP Methods**: GET, POST, PATCH, DELETE
 - **URL Structure**:
   - `GET /v1/daily-chores` - list tasks with optional query parameters
@@ -23,6 +25,7 @@ The `/v1/daily-chores` endpoint manages daily chores assigned to specific dates 
 - **Request Body**: JSON for POST and PATCH, according to Zod schemas
 
 ## 3. Types Used
+
 - **DTOs**:
   - `DailyChoreDTO` - complete task data with optional embedded catalog data
 - **Command Models**:
@@ -33,6 +36,7 @@ The `/v1/daily-chores` endpoint manages daily chores assigned to specific dates 
   - `UpdateDailyChoreCmdSchema` - input validation for PATCH
 
 ## 4. Response Details
+
 - **GET /v1/daily-chores**: `200 OK` with `DailyChoreDTO[]`
 - **POST /v1/daily-chores**: `201 Created` with single `DailyChoreDTO`
 - **PATCH /v1/daily-chores/:id**: `200 OK` with updated `DailyChoreDTO`
@@ -41,6 +45,7 @@ The `/v1/daily-chores` endpoint manages daily chores assigned to specific dates 
 All responses include the `Content-Type: application/json` header.
 
 ## 5. Data Flow
+
 1. **Authentication**: JWT token verified by Supabase
 2. **Authorization**: User's household_id retrieved via `current_user_household_members` view
 3. **Validation**: Zod schema validation for request body
@@ -49,6 +54,7 @@ All responses include the `Content-Type: application/json` header.
 6. **Response**: Mapping results to DTO and JSON serialization
 
 ## 6. Security Considerations
+
 - **RLS (Row Level Security)**: All queries filtered by household_id
 - **Authorization Checks**: Only task assignee or household administrator can modify tasks
 - **Input Validation**: Complete Zod validation preventing injection attacks
@@ -57,6 +63,7 @@ All responses include the `Content-Type: application/json` header.
 - **Audit Trail**: All status changes logged in `chore_status_log` table
 
 ## 7. Error Handling
+
 - **400 Bad Request**: Invalid JSON or Zod validation errors
 - **401 Unauthorized**: Missing or invalid JWT token
 - **403 Forbidden**: User doesn't belong to household or lacks modification permissions
@@ -68,6 +75,7 @@ All responses include the `Content-Type: application/json` header.
 All errors include descriptive messages and are logged with `request_id`.
 
 ## 8. Performance Considerations
+
 - **Indexes**: Utilizing existing indexes on `(household_id, date)` and `(assignee_id, status)`
 - **Pagination**: Not implemented in MVP, but prepared for future through `Paginated<T>` type
 - **N+1 Queries**: Avoided through single queries with JOIN to catalog if needed
@@ -75,6 +83,7 @@ All errors include descriptive messages and are logged with `request_id`.
 - **Limits**: Business constraints (50/day) prevent overload
 
 ## 9. Implementation Stages
+
 1. **Create Zod schemas** in `dailyChores.service.ts` for Create/Update commands validation
 2. **Implement service functions**:
    - `getDailyChores()` - filtering with optional parameters

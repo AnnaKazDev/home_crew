@@ -1,7 +1,9 @@
 # API Endpoint Implementation Plan: Profiles
 
 ## 1. Overview
+
 The profile endpoints allow users to view and update their own profile data in the Home Crew application. The implementation includes two basic operations:
+
 - Retrieve own profile (`GET /v1/profiles/me`)
 - Update profile (`PATCH /v1/profiles/me`)
 
@@ -10,6 +12,7 @@ These endpoints are crucial for user identity management and personalization exp
 ## 2. Request Details
 
 ### GET /v1/profiles/me
+
 - **HTTP Method**: GET
 - **URL Structure**: `/v1/profiles/me`
 - **Parameters**:
@@ -19,6 +22,7 @@ These endpoints are crucial for user identity management and personalization exp
 - **Authentication**: Required (Supabase JWT token in `Authorization: Bearer <token>` header)
 
 ### PATCH /v1/profiles/me
+
 - **HTTP Method**: PATCH
 - **URL Structure**: `/v1/profiles/me`
 - **Parameters**:
@@ -34,6 +38,7 @@ These endpoints are crucial for user identity management and personalization exp
 - **Authentication**: Required (Supabase JWT token in `Authorization: Bearer <token>` header)
 
 ## 3. Types Used
+
 - **ProfileDTO**: `Pick<ProfilesRow, "id" | "name" | "avatar_url" | "total_points">`
 - **UpdateProfileCmd**: `Pick<ProfilesRow, "name" | "avatar_url">`
 - **ProfileRow**: Database type from the `profiles` table
@@ -41,7 +46,9 @@ These endpoints are crucial for user identity management and personalization exp
 ## 4. Response Details
 
 ### GET /v1/profiles/me
+
 **Success (200 OK)**:
+
 ```json
 {
   "id": "uuid",
@@ -52,12 +59,15 @@ These endpoints are crucial for user identity management and personalization exp
 ```
 
 **Errors**:
+
 - `401 Unauthorized` - Missing or invalid JWT token
 - `404 Not Found` - User profile does not exist
 - `500 Internal Server Error` - Server error
 
 ### PATCH /v1/profiles/me
+
 **Success (200 OK)**:
+
 ```json
 {
   "id": "uuid",
@@ -68,6 +78,7 @@ These endpoints are crucial for user identity management and personalization exp
 ```
 
 **Errors**:
+
 - `400 Bad Request` - Invalid JSON format in request body
 - `401 Unauthorized` - Missing or invalid JWT token
 - `404 Not Found` - User profile does not exist
@@ -75,6 +86,7 @@ These endpoints are crucial for user identity management and personalization exp
 - `500 Internal Server Error` - Server error
 
 ## 5. Data Flow
+
 1. **Authentication**: Supabase verifies JWT token and extracts `user_id`
 2. **Authorization**: Access only to own profile (RLS in Supabase)
 3. **Validation**: Zod schema validates input data
@@ -83,6 +95,7 @@ These endpoints are crucial for user identity management and personalization exp
 6. **Response**: Return `ProfileDTO` or appropriate error
 
 ## 6. Security Considerations
+
 - **Authentication**: Valid Supabase JWT token required
 - **Authorization**: Row Level Security (RLS) ensures access only to own profile
 - **Input Validation**: Strict validation through Zod schemas
@@ -92,6 +105,7 @@ These endpoints are crucial for user identity management and personalization exp
 - **Data Sanitization**: Trim whitespace for `name` field
 
 ## 7. Error Handling
+
 - **400 Bad Request**: Invalid JSON in request body
 - **401 Unauthorized**: Missing JWT token or token invalid
 - **404 Not Found**: Profile does not exist in database
@@ -101,6 +115,7 @@ These endpoints are crucial for user identity management and personalization exp
 All errors are logged with `request_id` for tracking and debugging.
 
 ## 8. Performance Considerations
+
 - **Simple Queries**: Single SELECT/UPDATE query on `profiles` table
 - **Indexes**: `profiles` table has index on `id` (primary key)
 - **Cache**: No caching needed for sensitive profile data
@@ -110,6 +125,7 @@ All errors are logged with `request_id` for tracking and debugging.
 ## 9. Implementation Steps
 
 ### Step 1: Create profiles.service.ts
+
 1. Create file `src/lib/profiles.service.ts`
 2. Implement Zod schema `UpdateProfileCmdSchema`
 3. Add function `getProfile(supabase, userId)`
@@ -117,6 +133,7 @@ All errors are logged with `request_id` for tracking and debugging.
 5. Add error handling following other services pattern
 
 ### Step 2: Implement GET /v1/profiles/me
+
 1. Create directory `src/pages/api/v1/profiles/`
 2. Create file `src/pages/api/v1/profiles/me.ts`
 3. Implement GET endpoint with error handling
@@ -124,6 +141,7 @@ All errors are logged with `request_id` for tracking and debugging.
 5. Test endpoint with valid token
 
 ### Step 3: Implement PATCH /v1/profiles/me
+
 1. Add PATCH method handling in `me.ts` file
 2. Implement request body parsing and validation
 3. Add `updateProfile` service call
@@ -131,6 +149,7 @@ All errors are logged with `request_id` for tracking and debugging.
 5. Test endpoint with various scenarios
 
 ### Step 4: Testing and Validation
+
 1. Unit tests for `profiles.service.ts`
 2. Integration tests for endpoints
 3. Security tests (authorization, validation)
@@ -138,6 +157,7 @@ All errors are logged with `request_id` for tracking and debugging.
 5. Update API documentation if needed
 
 ### Step 5: Deployment and Monitoring
+
 1. Deploy to test environment
 2. End-to-end tests
 3. Error monitoring in Supabase logs

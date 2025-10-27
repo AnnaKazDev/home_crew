@@ -1,11 +1,13 @@
 # API Endpoint Implementation Plan: Household Members Management
 
 ## 1. Endpoint Overview
+
 These endpoints enable household member management. They include listing members, changing their roles, and removing members. All operations work within the context of the current user's household - household_id is automatically resolved based on the JWT token. Modification operations (PATCH, DELETE) are available only to household administrators.
 
 ## 2. Request Details
 
 ### GET /v1/members
+
 - **HTTP Method**: GET
 - **URL Path**: `/v1/members`
 - **Parameters**:
@@ -14,12 +16,14 @@ These endpoints enable household member management. They include listing members
 - **Request Body**: None
 
 ### PATCH /v1/members/:id
+
 - **HTTP Method**: PATCH
 - **URL Path**: `/v1/members/:id`
 - **Parameters**:
   - **Required**: `id` (member UUID in URL)
   - **Optional**: None
 - **Request Body**:
+
 ```json
 {
   "role": "admin | member"
@@ -27,6 +31,7 @@ These endpoints enable household member management. They include listing members
 ```
 
 ### DELETE /v1/members/:id
+
 - **HTTP Method**: DELETE
 - **URL Path**: `/v1/members/:id`
 - **Parameters**:
@@ -35,6 +40,7 @@ These endpoints enable household member management. They include listing members
 - **Request Body**: None
 
 ## 3. Types Used
+
 - **MemberDTO**: `{ id: string, user_id: string, name: string, avatar_url: string | null, role: "admin" | "member", joined_at: string }`
 - **UpdateMemberRoleCmd**: `{ role: "admin" | "member" }`
 - **UpdateMemberRoleCmdSchema**: Zod schema for validating PATCH request body
@@ -45,7 +51,9 @@ These endpoints enable household member management. They include listing members
 ## 4. Response Details
 
 ### GET /v1/members
+
 - **Status 200 OK**:
+
 ```json
 [
   {
@@ -60,7 +68,9 @@ These endpoints enable household member management. They include listing members
 ```
 
 ### PATCH /v1/members/:id
+
 - **Status 200 OK**:
+
 ```json
 {
   "id": "uuid",
@@ -73,9 +83,11 @@ These endpoints enable household member management. They include listing members
 ```
 
 ### DELETE /v1/members/:id
+
 - **Status 204 No Content**: No response body
 
 ### Errors for all endpoints:
+
 - **Status 400 Bad Request**: Invalid input data (JSON parse error, Zod validation)
 - **Status 401 Unauthorized**: Missing/invalid JWT token
 - **Status 403 Forbidden**: User is not an administrator (for PATCH/DELETE)
@@ -86,6 +98,7 @@ These endpoints enable household member management. They include listing members
 ## 5. Data Flow
 
 ### GET /v1/members
+
 1. **JWT validation** → Extract userId from token
 2. **Membership check** → Verify user belongs to a household
 3. **Fetch members** → Query household_members + JOIN profiles for user's household
@@ -93,6 +106,7 @@ These endpoints enable household member management. They include listing members
 5. **Return response** → List of members sorted by joined_at
 
 ### PATCH /v1/members/:id
+
 1. **Request body validation** → Zod schema validation
 2. **JWT validation** → Extract userId from token
 3. **Permissions check** → Verify user is household admin
@@ -102,6 +116,7 @@ These endpoints enable household member management. They include listing members
 7. **Return response** → Updated member data in MemberDTO format
 
 ### DELETE /v1/members/:id
+
 1. **JWT validation** → Extract userId from token
 2. **Permissions check** → Verify user is household admin
 3. **Member verification** → Check member exists and belongs to same household
@@ -110,6 +125,7 @@ These endpoints enable household member management. They include listing members
 6. **Return response** → Status 204 No Content
 
 ## 6. Security Considerations
+
 - **Authentication**: Valid Supabase JWT token required for all endpoints
 - **Business authorization**: Only administrators can perform PATCH and DELETE operations
 - **Data validation**: Zod schema validation for all request bodies
@@ -126,6 +142,7 @@ These endpoints enable household member management. They include listing members
 ## 7. Error Handling
 
 ### Household Members specific error codes:
+
 - **400 Bad Request**:
   - Invalid JSON: `"Invalid JSON in request body"`
   - Validation error: `"Validation error"` with details array
@@ -146,9 +163,11 @@ These endpoints enable household member management. They include listing members
   - Unexpected errors: `"Internal server error"`
 
 ### Error logging:
+
 All 5xx errors are logged with `request_id` according to the specification in api-plan.md section 6.
 
 ## 8. Performance Considerations
+
 - **Indexes**: Utilization of existing `idx_members_household` indexes for membership queries
 - **Query optimization**: JOIN only necessary fields from profiles table
 - **Sorting**: Results sorted by joined_at for consistency
@@ -160,18 +179,21 @@ All 5xx errors are logged with `request_id` according to the specification in ap
 ## 9. Implementation Stages
 
 ### Phase 1: Endpoint Preparation
+
 1. Create `src/pages/api/v1/members/index.ts` for GET
 2. Create `src/pages/api/v1/members/[id].ts` for PATCH and DELETE
 3. Configure Astro routing for both paths
 4. Add basic error handling structure
 
 ### Phase 2: GET /v1/members Implementation
+
 1. Implement GET handler with `getHouseholdMembers()` call
 2. Add JWT validation and authorization
 3. Implement response mapping to MemberDTO
 4. Add error handling according to specification
 
 ### Phase 3: PATCH /v1/members/:id Implementation
+
 1. Implement PATCH handler with Zod validation
 2. Add `updateMemberRole()` call with proper authorization
 3. Implement admin check for current user
@@ -179,12 +201,14 @@ All 5xx errors are logged with `request_id` according to the specification in ap
 5. Implement error handling
 
 ### Phase 4: DELETE /v1/members/:id Implementation
+
 1. Implement DELETE handler
 2. Add `removeHouseholdMember()` call with authorization
 3. Implement business validation (last admin, self-removal protection)
 4. Add error handling and 204 status
 
 ### Phase 5: Testing and Validation
+
 1. Unit tests for all service functions
 2. Integration tests for endpoints
 3. Error case tests (403, 404, 409, 422)
@@ -192,6 +216,7 @@ All 5xx errors are logged with `request_id` according to the specification in ap
 5. Concurrency tests for edge cases
 
 ### Phase 6: Documentation and Deployment
+
 1. Update API documentation
 2. Add JSDoc comments to all functions
 3. Conduct E2E tests in staging environment
