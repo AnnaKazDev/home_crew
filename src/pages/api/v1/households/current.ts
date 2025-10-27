@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getHouseholdForUser } from "@/lib/households.service";
-import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { supabaseClient, supabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -13,14 +13,15 @@ export const prerender = false;
  */
 export const GET: APIRoute = async (context) => {
   try {
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = supabaseServiceClient as SupabaseClient;
+
 
     // Get household for current user
     try {
       const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);
 
       if (!household) {
-        return new Response(JSON.stringify({ error: "User not in any household" }), {
+        return new Response(JSON.stringify({ error: "User not in any household", debug: { simpleData, simpleError } }), {
           status: 404,
           headers: { "Content-Type": "application/json" },
         });
