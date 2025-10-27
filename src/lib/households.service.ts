@@ -177,6 +177,17 @@ export async function getHouseholdForUser(
   supabase: SupabaseClient<Database>,
   userId: string
 ): Promise<HouseholdDTO | null> {
+  // First check if user exists in household_members
+  const { data: memberCheck, error: memberError } = await supabase
+    .from("household_members")
+    .select("household_id, role")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (memberError || !memberCheck) {
+    return null;
+  }
+
   // Get household membership with role
   const { data: membership, error: membershipError } = await supabase
     .from("household_members")
