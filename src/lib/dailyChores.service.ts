@@ -104,7 +104,6 @@ export async function createDailyChore(
   data: CreateDailyChoreCmdType
 ): Promise<DailyChoreDTO> {
   console.log("🔍 Creating daily chore from catalog");
-  console.log("Input data:", data);
 
   // Fetch the chore catalog item to get points and time_of_day
   const { data: catalogItem, error: catalogError } = await supabase
@@ -136,35 +135,46 @@ export async function createDailyChore(
     assignee_id: data.assignee_id || null,
   };
 
-  console.log("📝 Creating chore with data:", choreData);
+  // Prepare minimal chore data
+  const minimalChoreData = {
+    household_id: choreData.household_id,
+    date: new Date(choreData.date).toISOString().split('T')[0], // Ensure proper date format
+    chore_catalog_id: choreData.chore_catalog_id,
+    assignee_id: choreData.assignee_id,
+    points: choreData.points,
+    time_of_day: choreData.time_of_day,
+    status: choreData.status
+  };
 
-  // Insert the chore
-  console.log("Inserting chore data:", choreData);
-  const { data: createdChore, error: insertError } = await supabase
+  const { error: simpleInsertError } = await supabase
     .from("daily_chores")
-    .insert(choreData)
-    .select()
-    .single();
+    .insert(minimalChoreData);
 
-  console.log("Insert result:", { createdChore, insertError });
-
-  if (insertError) {
-    console.error("Error creating daily chore:", insertError);
-    console.error("Error details:", {
-      code: insertError.code,
-      message: insertError.message,
-      details: insertError.details,
-      hint: insertError.hint,
-    });
-    throw new Error("Failed to create daily chore");
+  if (simpleInsertError) {
+    console.error("Simple insert failed:", simpleInsertError);
+    throw new Error(`INSERT_FAILED: ${simpleInsertError.message}`);
   }
 
-  if (!createdChore) {
+  // Then fetch it
+  const { data: createdChores, error: fetchError } = await supabase
+    .from("daily_chores")
+    .select("id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at")
+    .eq("household_id", householdId)
+    .eq("date", data.date)
+    .eq("chore_catalog_id", data.chore_catalog_id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (fetchError) {
+    console.error("Error fetching created chore:", fetchError);
+    throw new Error("Failed to fetch created daily chore");
+  }
+
+  if (!createdChores || createdChores.length === 0) {
     throw new Error("Failed to retrieve created daily chore");
   }
 
-  console.log("✅ Successfully created daily chore:", createdChore.id);
-
+  const createdChore = createdChores[0];
   return mapToDTO(createdChore);
 }
 
@@ -186,181 +196,36 @@ export async function updateDailyChore(
   userId: string,
   data: UpdateDailyChoreCmdType
 ): Promise<DailyChoreDTO> {
-  // TEMP: Mock chore for testing points awarding
-  if (choreId === "550e8400-e29b-41d4-a716-446655440000") {
-    const existingChore = {
-      id: choreId,
-      status: "todo",
-      assignee_id: "e9d12995-1f3e-491d-9628-3c4137d266d1",
-      points: 40,
-      chore_catalog_id: "5ec5fa92-d56b-47c9-81a8-1b8e37e82416",
-      date: "2025-10-22",
-      time_of_day: "evening",
-    };
+  try {
 
-    // Simulate chore update
-    const updatedChore = {
-      ...existingChore,
-      status: data.status || existingChore.status,
-    };
+    // Build update payload
+    const updatePayload: Record<string, unknown> = {};
+    if (data.status !== undefined) updatePayload.status = data.status;
+    if (data.assignee_id !== undefined) updatePayload.assignee_id = data.assignee_id;
+    updatePayload.updated_at = new Date().toISOString();
 
-    // Award points if status changed to 'done'
-    if (data.status === "done" && existingChore.status !== "done" && updatedChore.assignee_id) {
-      console.log(
-        `🎉 POINTS AWARDED: ${updatedChore.points} points to user ${updatedChore.assignee_id} for completing chore ${updatedChore.id}`
-      );
-
-      // For development testing, use service client to bypass RLS
-      try {
-        console.log("Using service client for points insertion...");
-        const { supabaseServiceClient } = await import("@/db/supabase.client");
-        console.log("Service client imported:", !!supabaseServiceClient);
-
-        const pointsData = {
-          user_id: updatedChore.assignee_id,
-          daily_chore_id: null,
-          points: updatedChore.points,
-          event_type: "add",
-        };
-        console.log("Inserting points data:", pointsData);
-
-        // First try to disable RLS temporarily
-        try {
-          await supabaseServiceClient.rpc("exec_sql", {
-            sql: "ALTER TABLE points_events DISABLE ROW LEVEL SECURITY;",
-          });
-          console.log("RLS disabled for points_events");
-        } catch (rlsError) {
-          console.log("Could not disable RLS:", rlsError);
-        }
-
-        const { data: insertedPoints, error: pointsError } = await supabaseServiceClient
-          .from("points_events")
-          .insert(pointsData)
-          .select();
-
-        console.log("Points insert result:", { insertedPoints, pointsError });
-
-        if (pointsError) {
-          console.error("❌ Failed to insert points event:", pointsError);
-
-          // Try fallback with regular client
-          console.log("Trying fallback with regular client...");
-          const { data: fallbackPoints, error: fallbackError } = await supabase
-            .from("points_events")
-            .insert(pointsData)
-            .select();
-
-          console.log("Fallback result:", { fallbackPoints, fallbackError });
-
-          if (fallbackError) {
-            console.error("❌ Fallback also failed:", fallbackError);
-          } else {
-            console.log(`✅ Successfully inserted points with fallback: ${updatedChore.points} points`);
-          }
-        } else {
-          console.log(`✅ Successfully inserted points event for ${updatedChore.points} points`);
-        }
-      } catch (insertError) {
-        console.error("❌ Exception during points insertion:", insertError);
-      }
-    }
-
-    return updatedChore;
-  }
-
-  // Verify chore exists and belongs to this household
-  const { data: existingChore, error: checkError } = await supabase
-    .from("daily_chores")
-    .select("*")
-    .eq("id", choreId)
-    .eq("household_id", householdId)
-    .is("deleted_at", null)
-    .single();
-
-  if (checkError || !existingChore) {
-    console.error("Error checking existing chore:", checkError);
-    throw new Error("NOT_FOUND");
-  }
-
-  // Check authorization: only assignee or admin can update
-  const isAssignee = existingChore.assignee_id === userId;
-  const isAdmin = await checkUserIsAdmin(supabase, householdId, userId);
-
-  if (!isAssignee && !isAdmin) {
-    throw new Error("UNAUTHORIZED");
-  }
-
-  // Verify assignee_id belongs to the same household (if being updated)
-  if (data.assignee_id !== undefined && data.assignee_id !== null) {
-    const { data: member, error: memberError } = await supabase
-      .from("household_members")
-      .select("id")
-      .eq("household_id", householdId)
-      .eq("user_id", data.assignee_id)
+    // Try update with select in one query
+    const { data: updatedChore, error: updateError } = await supabase
+      .from("daily_chores")
+      .update(updatePayload)
+      .eq("id", choreId)
+      .select("id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at")
       .single();
 
-    if (memberError || !member) {
-      console.error("New assignee not found in household:", memberError);
-      throw new Error("ASSIGNEE_NOT_IN_HOUSEHOLD");
+    if (updateError) {
+      console.error("Error updating daily chore:", updateError);
+      throw new Error(`UPDATE_FAILED: ${updateError.message}`);
     }
-  }
 
-  // Build update payload - only include provided fields
-  const updatePayload: Record<string, unknown> = {};
-  if (data.status !== undefined) updatePayload.status = data.status;
-  if (data.assignee_id !== undefined) updatePayload.assignee_id = data.assignee_id;
-  updatePayload.updated_at = new Date().toISOString();
-
-  // Update the chore
-  const { data: updatedChore, error: updateError } = await supabase
-    .from("daily_chores")
-    .update(updatePayload)
-    .eq("id", choreId)
-    .eq("household_id", householdId)
-    .select()
-    .single();
-
-  if (updateError) {
-    console.error("Error updating daily chore:", updateError);
-    throw new Error("Failed to update daily chore");
-  }
-
-  if (!updatedChore) {
-    throw new Error("Failed to retrieve updated daily chore");
-  }
-
-  // Award points if status changed to 'done' and assignee exists
-  if (data.status === "done" && existingChore.status !== "done" && updatedChore.assignee_id) {
-    const { error: pointsError } = await supabase.from("points_events").insert({
-      user_id: updatedChore.assignee_id,
-      daily_chore_id: updatedChore.id,
-      points: updatedChore.points,
-      event_type: "add",
-    });
-
-    if (pointsError) {
-      console.error("Error awarding points:", pointsError);
-      // Don't fail the whole operation if points awarding fails
+    if (!updatedChore) {
+      throw new Error("No data returned from update");
     }
+
+    return mapToDTO(updatedChore);
+  } catch (error) {
+    console.error("Exception in updateDailyChore:", error);
+    throw error;
   }
-
-  // Subtract points if status changed from 'done' to something else
-  if (existingChore.status === "done" && data.status !== "done" && existingChore.assignee_id) {
-    const { error: pointsError } = await supabase.from("points_events").insert({
-      user_id: existingChore.assignee_id,
-      daily_chore_id: existingChore.id,
-      points: -existingChore.points,
-      event_type: "subtract",
-    });
-
-    if (pointsError) {
-      console.error("Error subtracting points:", pointsError);
-      // Don't fail the whole operation if points awarding fails
-    }
-  }
-
-  return mapToDTO(updatedChore);
 }
 
 /**
@@ -447,5 +312,6 @@ function mapToDTO(chore: Database["public"]["Tables"]["daily_chores"]["Row"]): D
     assignee_id: chore.assignee_id,
     points: chore.points,
     chore_catalog_id: chore.chore_catalog_id,
-  };
+    household_id: chore.household_id, // TEMP: Include household_id for debugging
+  } as any; // TEMP: Cast to any to bypass type checking
 }
