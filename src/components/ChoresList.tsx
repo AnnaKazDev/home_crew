@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-interface PredefinedChore {
+interface Chore {
   id: string;
   title: string;
   emoji: string;
   category: string;
+  predefined: boolean;
+  points: number;
+  time_of_day: string;
 }
 
 interface ChoresData {
-  chores: PredefinedChore[];
-  groupedChores: Record<string, PredefinedChore[]>;
+  chores: Chore[];
+  groupedChores: Record<string, Chore[]>;
   categories: string[];
   total: number;
 }
@@ -18,34 +21,61 @@ export default function ChoresList() {
   const [data, setData] = useState<ChoresData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch('/api/chores')
-      .then(response => response.json())
-      .then((data: ChoresData) => {
+    fetch("/api/v1/catalog?type=all")
+      .then((response) => response.json())
+      .then((chores: Chore[]) => {
+        // Group by category
+        const grouped = chores.reduce(
+          (acc, chore) => {
+            if (!acc[chore.category]) acc[chore.category] = [];
+            acc[chore.category].push(chore);
+            return acc;
+          },
+          {} as Record<string, Chore[]>
+        );
+
+        const data: ChoresData = {
+          chores,
+          groupedChores: grouped,
+          categories: Object.keys(grouped),
+          total: chores.length,
+        };
+
         setData(data);
         setLoading(false);
       })
-      .catch(err => {
-        setError('Failed to load chores');
+      .catch((err) => {
+        setError("Failed to load chores");
         setLoading(false);
-        console.error('Error loading chores:', err);
+        console.error("Error loading chores:", err);
       });
   }, []);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-lg">Loading chores...</div>
+      <div className="flex items-center justify-center p-8 min-h-screen">
+        <div className="glass rounded-2xl p-8 animate-float">
+          <div className="flex items-center space-x-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
+            <div className="text-lg gradient-text-light font-medium">Loading chores...</div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-red-500 text-lg">{error}</div>
+      <div className="flex items-center justify-center p-8 min-h-screen">
+        <div className="glass rounded-2xl p-8 border-red-200 bg-red-50/80">
+          <div className="text-center">
+            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+            <div className="text-red-700 text-lg font-medium">{error}</div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -53,57 +83,99 @@ export default function ChoresList() {
   if (!data) return null;
 
   // Filter chores based on search term
-  const filteredCategories = data.categories.map(category => ({
-    category,
-    chores: data.groupedChores[category].filter(chore =>
-      chore.title.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })).filter(cat => cat.chores.length > 0);
+  const filteredCategories = data.categories
+    .map((category) => ({
+      category,
+      chores: data.groupedChores[category].filter((chore) =>
+        chore.title.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    }))
+    .filter((cat) => cat.chores.length > 0);
 
   return (
-    <div className="min-h-screen bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[80vh] overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50/50 via-indigo-50/30 to-purple-50/40">
+      <div className="card-elevated max-w-4xl w-full max-h-[85vh] overflow-hidden animate-float">
         {/* Header with search */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Search chores..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            />
+        <div className="p-8 border-b border-gray-200/60 bg-gradient-to-r from-blue-50/50 to-indigo-50/50">
+          <div className="mb-6">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search for chores..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="input-modern w-full pl-12 pr-4 py-4 text-lg"
+              />
+            </div>
           </div>
-          {searchTerm === '' && (
-            <p className="text-gray-500 text-sm text-center">
-              No tasks yet. Pick from our suggestions to see them here!
-            </p>
+          {searchTerm === "" && (
+            <div className="text-center">
+              <p className="text-gray-600 text-lg mb-2 gradient-text-light font-medium">
+                ✨ Discover household tasks to organize your home
+              </p>
+              <p className="text-gray-500 text-sm">Search above or browse our curated collection below</p>
+            </div>
           )}
         </div>
 
         {/* Scrollable content */}
-        <div className="overflow-y-auto max-h-96 p-6">
+        <div className="overflow-y-auto max-h-[60vh] p-8">
           {filteredCategories.length === 0 ? (
-            <div className="text-center text-gray-500 py-8">
-              No chores found matching "{searchTerm}"
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">🔍</div>
+              <div className="text-2xl gradient-text mb-2 font-semibold">No chores found</div>
+              <div className="text-gray-500">Try adjusting your search term</div>
+              <div className="mt-4 text-sm text-gray-400">"{searchTerm}"</div>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-12">
               {filteredCategories.map(({ category, chores }) => (
-                <div key={category}>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                    {category}
-                  </h3>
-                  <div className="grid grid-cols-1 min-[500px]:grid-cols-2 gap-4">
-                    {chores.map((chore) => (
+                <div key={category} className="space-y-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="h-1 flex-1 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-full"></div>
+                    <h3 className="text-2xl font-bold gradient-text whitespace-nowrap px-4 py-2 bg-white/60 rounded-full shadow-sm">
+                      {category}
+                    </h3>
+                    <div className="h-1 flex-1 bg-gradient-to-r from-indigo-200 to-purple-200 rounded-full"></div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-8">
+                    {chores.map((chore, index) => (
                       <div
                         key={chore.id}
-                        className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors"
+                        className={`group card-hover p-6 rounded-2xl border border-gray-100/60 bg-gradient-to-br from-white/90 to-white/60 shadow-lg hover:shadow-xl hover:from-blue-50/90 hover:to-indigo-50/60 hover:scale-[1.02] transition-all duration-300 cursor-pointer backdrop-blur-sm m-[30px] ${index % 2 === 0 ? "animate-float" : ""} p-5`}
+                        style={{ animationDelay: `${index * 0.1}s` }}
                       >
-                        <span className="text-xl">{chore.emoji}</span>
-                        <span className="text-sm font-medium text-gray-900 truncate">
-                          {chore.title}
-                        </span>
+                        <div className="flex items-center space-x-4">
+                          <div className="text-3xl group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
+                            {chore.emoji}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-lg font-semibold text-gray-900 group-hover:gradient-text transition-all duration-200 leading-tight truncate">
+                              {chore.title}
+                            </h4>
+                          </div>
+                          <div className="flex items-center space-x-2 flex-shrink-0">
+                            <span className="px-3 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-sm">
+                              {chore.points} pts
+                            </span>
+                            {!chore.predefined && (
+                              <span className="px-2 py-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-medium rounded-full">
+                                Custom
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
