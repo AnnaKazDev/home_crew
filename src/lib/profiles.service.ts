@@ -13,11 +13,7 @@ export const UpdateProfileCmdSchema = z.object({
     .min(1, "Name cannot be empty")
     .max(100, "Name must be 100 characters or less")
     .transform((val) => val.trim()),
-  avatar_url: z
-    .string()
-    .url("Invalid URL format")
-    .optional()
-    .nullable(),
+  avatar_url: z.string().url("Invalid URL format").optional().nullable(),
 });
 
 type UpdateProfileCmdType = z.infer<typeof UpdateProfileCmdSchema>;
@@ -30,10 +26,7 @@ type UpdateProfileCmdType = z.infer<typeof UpdateProfileCmdSchema>;
  * @returns Promise<ProfileDTO> - The user's profile DTO
  * @throws Error if profile not found or database operation fails
  */
-export async function getProfile(
-  supabase: SupabaseClient<Database>,
-  userId: string
-): Promise<ProfileDTO> {
+export async function getProfile(supabase: SupabaseClient<Database>, userId: string): Promise<ProfileDTO> {
   const { data: profile, error } = await supabase
     .from("profiles")
     .select("id, name, avatar_url, total_points")
@@ -94,10 +87,7 @@ export async function updateProfile(
   }
 
   // Update the profile
-  const { error: updateError } = await supabase
-    .from("profiles")
-    .update(updatePayload)
-    .eq("id", userId);
+  const { error: updateError } = await supabase.from("profiles").update(updatePayload).eq("id", userId);
 
   if (updateError) {
     console.error("Update failed:", updateError);
@@ -105,7 +95,7 @@ export async function updateProfile(
   }
 
   // Fetch the updated profile with a small delay to ensure consistency
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
   const { data: updatedProfile, error: fetchError } = await supabase
     .from("profiles")

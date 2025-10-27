@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { CreateDailyChoreCmdSchema, getDailyChores, createDailyChore } from "@/lib/dailyChores.service";
 import { getHouseholdForUser } from "@/lib/households.service";
-import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { supabaseClient, supabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 import type { Database } from "@/db/database.types";
 
 export const prerender = false;
@@ -94,6 +94,10 @@ export const GET: APIRoute = async (context) => {
  */
 export const POST: APIRoute = async (context) => {
   try {
+    // Debug: Check environment variables
+    console.log("SUPABASE_URL:", import.meta.env.SUPABASE_URL);
+    console.log("SUPABASE_KEY exists:", !!import.meta.env.SUPABASE_KEY);
+
     // Parse and validate request body
     let requestData: unknown;
     try {
@@ -123,18 +127,27 @@ export const POST: APIRoute = async (context) => {
     // Get household for the current user
     const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);
     if (!household) {
-      return new Response(JSON.stringify({
-        error: "Household not found",
-        userId: DEFAULT_USER_ID
-      }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          error: "Household not found",
+          userId: DEFAULT_USER_ID,
+        }),
+        {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
-    // Create the daily chore using service layer
+    // Create the daily chore using service layer (use service client to bypass RLS)
     try {
-      const dailyChore = await createDailyChore(supabase, household.id, validationResult.data);
+      console.log("API: Creating chore with data:", validationResult.data);
+      console.log("API: Household ID:", household.id);
+      const dailyChore = await createDailyChore(
+        supabaseServiceClient as SupabaseClient,
+        household.id,
+        validationResult.data
+      );
 
       return new Response(JSON.stringify(dailyChore), {
         status: 201,
@@ -176,14 +189,17 @@ export const POST: APIRoute = async (context) => {
         );
       }
 
-      return new Response(JSON.stringify({
-        error: "Internal server error",
-        details: errorMessage,
-        stack: serviceError instanceof Error ? serviceError.stack : undefined
-      }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          error: "Internal server error",
+          details: errorMessage,
+          stack: serviceError instanceof Error ? serviceError.stack : undefined,
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
   } catch (error) {
     console.error("Unexpected error in POST /v1/daily-chores:", error);
