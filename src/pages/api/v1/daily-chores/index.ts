@@ -94,9 +94,6 @@ export const GET: APIRoute = async (context) => {
  */
 export const POST: APIRoute = async (context) => {
   try {
-    // Debug: Check environment variables
-    console.log("SUPABASE_URL:", import.meta.env.SUPABASE_URL);
-    console.log("SUPABASE_KEY exists:", !!import.meta.env.SUPABASE_KEY);
 
     // Parse and validate request body
     let requestData: unknown;
@@ -125,7 +122,7 @@ export const POST: APIRoute = async (context) => {
     const supabase = supabaseClient as SupabaseClient;
 
     // Get household for the current user
-    const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);
+    const household = await getHouseholdForUser(supabaseClient as SupabaseClient, DEFAULT_USER_ID);
     if (!household) {
       return new Response(
         JSON.stringify({
@@ -141,8 +138,6 @@ export const POST: APIRoute = async (context) => {
 
     // Create the daily chore using service layer (use service client to bypass RLS)
     try {
-      console.log("API: Creating chore with data:", validationResult.data);
-      console.log("API: Household ID:", household.id);
       const dailyChore = await createDailyChore(
         supabaseServiceClient as SupabaseClient,
         household.id,
