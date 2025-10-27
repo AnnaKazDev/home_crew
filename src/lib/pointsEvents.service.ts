@@ -8,7 +8,7 @@ import type { PointsEventDTO, Paginated, GetPointsEventsOptions } from "@/types"
  */
 function encodeCursor(id: number): string {
   const cursorData = { id };
-  return Buffer.from(JSON.stringify(cursorData)).toString('base64');
+  return Buffer.from(JSON.stringify(cursorData)).toString("base64");
 }
 
 /**
@@ -19,9 +19,9 @@ function decodeCursor(cursor?: string): number | undefined {
   if (!cursor) return undefined;
 
   try {
-    const decoded = Buffer.from(cursor, 'base64').toString('utf-8');
+    const decoded = Buffer.from(cursor, "base64").toString("utf-8");
     const cursorData = JSON.parse(decoded);
-    return typeof cursorData.id === 'number' ? cursorData.id : undefined;
+    return typeof cursorData.id === "number" ? cursorData.id : undefined;
   } catch {
     return undefined;
   }
@@ -39,13 +39,7 @@ export async function getUserPointsEvents(
   supabase: SupabaseClient<Database>,
   options: GetPointsEventsOptions = {}
 ): Promise<Paginated<PointsEventDTO>> {
-  const {
-    cursor,
-    limit = 20,
-    event_type,
-    from_date,
-    to_date,
-  } = options;
+  const { cursor, limit = 20, event_type, from_date, to_date } = options;
 
   // Decode cursor to get the starting point
   const cursorId = decodeCursor(cursor);
@@ -91,9 +85,7 @@ export async function getUserPointsEvents(
   const data = hasMore ? events.slice(0, limit) : events;
 
   // Generate next cursor if there are more results
-  const nextCursor = hasMore && data.length > 0
-    ? encodeCursor(data[data.length - 1].id)
-    : undefined;
+  const nextCursor = hasMore && data.length > 0 ? encodeCursor(data[data.length - 1].id) : undefined;
 
   return {
     data,

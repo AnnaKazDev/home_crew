@@ -103,14 +103,17 @@ export const PATCH: APIRoute = async (context) => {
       }
 
       console.error("Error in updateProfile service:", serviceError);
-      return new Response(JSON.stringify({
-        error: "Internal server error",
-        details: errorMessage,
-        stack: serviceError instanceof Error ? serviceError.stack : undefined
-      }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          error: "Internal server error",
+          details: errorMessage,
+          stack: serviceError instanceof Error ? serviceError.stack : undefined,
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
   } catch (error) {
     console.error("Unexpected error in PATCH /v1/profiles/me:", error);

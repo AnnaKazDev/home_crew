@@ -75,27 +75,33 @@ export const GET: APIRoute = async (context) => {
 
         const { data: items, error: dbError } = await query.order("created_at", { ascending: false });
 
-        return new Response(JSON.stringify({
-          error: "Service error",
-          serviceError: serviceError instanceof Error ? serviceError.message : String(serviceError),
-          directQueryError: dbError,
-          type: type,
-          householdId: householdId
-        }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({
+            error: "Service error",
+            serviceError: serviceError instanceof Error ? serviceError.message : String(serviceError),
+            directQueryError: dbError,
+            type: type,
+            householdId: householdId,
+          }),
+          {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
       } catch (directError) {
-        return new Response(JSON.stringify({
-          error: "Service error",
-          serviceError: serviceError instanceof Error ? serviceError.message : String(serviceError),
-          directError: directError instanceof Error ? directError.message : String(directError),
-          type: type,
-          householdId: householdId
-        }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({
+            error: "Service error",
+            serviceError: serviceError instanceof Error ? serviceError.message : String(serviceError),
+            directError: directError instanceof Error ? directError.message : String(directError),
+            type: type,
+            householdId: householdId,
+          }),
+          {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
       }
     }
   } catch (error) {
