@@ -1,24 +1,14 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ChoreCard } from './ChoreCard';
-
-interface Chore {
-  id: string;
-  title: string;
-  emoji: string;
-  points: number;
-  category: string;
-  assigneeName?: string;
-  assigneeInitial?: string;
-  assigneeColor?: string;
-}
+import type { ChoreViewModel } from '@/types/daily-view.types';
 
 interface ChoreColumnProps {
   title: string;
   status: 'todo' | 'done';
-  chores: Chore[];
+  chores: ChoreViewModel[];
   onDrop: (choreId: string) => void;
-  onChoreAssign?: (chore: Chore) => void;
+  onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
 }
 
@@ -42,7 +32,7 @@ export function ChoreColumn({
 
   return (
     <div
-      ref={drop}
+      ref={drop as unknown as React.Ref<HTMLDivElement>}
       className={`bg-white p-6 rounded-lg shadow min-h-[400px] transition-colors ${
         isOver ? 'bg-blue-50 border-2 border-dashed border-blue-300' : ''
       }`}

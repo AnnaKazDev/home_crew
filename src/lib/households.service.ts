@@ -1,5 +1,4 @@
 import { z } from "zod";
-import bcrypt from "bcrypt";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/db/database.types";
 import type { HouseholdDTO, CreateHouseholdDTO } from "@/types";
@@ -77,7 +76,8 @@ export async function generateUniquePinWithHash(
 
     // If no existing household found, PIN is unique
     if (!existingHousehold) {
-      // Generate bcrypt hash for the PIN
+      // Generate bcrypt hash for the PIN (server-only)
+      const { default: bcrypt } = await import("bcrypt");
       const saltRounds = 12;
       const hash = await bcrypt.hash(pin, saltRounds);
 
@@ -274,9 +274,12 @@ export async function joinHousehold(
   // Find household by comparing PIN hash
   let household = null;
   for (const h of households || []) {
-    if (h.pin_hash && (await bcrypt.compare(data.pin, h.pin_hash))) {
+    if (h.pin_hash) {
+      const { default: bcrypt } = await import("bcrypt");
+      if (await bcrypt.compare(data.pin, h.pin_hash)) {
       household = h;
-      break;
+        break;
+      }
     }
   }
 

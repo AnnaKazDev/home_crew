@@ -1,356 +1,306 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
+import { getDailyChores, createDailyChore, updateDailyChore, deleteDailyChore } from '@/lib/dailyChores.service';
+import { getCatalogItems } from '@/lib/choresCatalog.service';
+import { getHouseholdMembers } from '@/lib/household-members.service';
+import { getHouseholdForUser } from '@/lib/households.service';
+import { getProfile } from '@/lib/profiles.service';
 import type { ChoreViewModel, DailyViewState } from '@/types/daily-view.types';
-import type { MemberDTO, HouseholdDTO, DailyChoreDTO, CreateDailyChoreCmd, UpdateDailyChoreCmd } from '@/types';
+import type { MemberDTO, DailyChoreDTO, CreateDailyChoreCmd, UpdateDailyChoreCmd } from '@/types';
 
-// Mock data for development
-const MOCK_HOUSEHOLD: HouseholdDTO = {
-  id: '11111111-aaaa-bbbb-cccc-222222222222',
-  name: 'Smith Family',
-  timezone: 'America/New_York'
-};
-
-const MOCK_MEMBERS: MemberDTO[] = [
-  {
-    id: '1f5ca8b2-3d5a-4a28-b167-4dca37a3ee27',
-    user_id: 'user-1',
-    name: 'John Smith',
-    avatar_url: null,
-    role: 'admin',
-    joined_at: '2025-01-15T10:00:00Z'
-  },
-  {
-    id: '2f5ca8b2-3d5a-4a28-b167-4dca37a3ee28',
-    user_id: 'user-2',
-    name: 'Jane Smith',
-    avatar_url: null,
-    role: 'member',
-    joined_at: '2025-01-15T10:00:00Z'
-  },
-  {
-    id: '3f5ca8b2-3d5a-4a28-b167-4dca37a3ee29',
-    user_id: 'user-3',
-    name: 'Mike Smith',
-    avatar_url: null,
-    role: 'member',
-    joined_at: '2025-01-15T10:00:00Z'
-  }
-];
-
-const MOCK_CHORES: DailyChoreDTO[] = [
-  {
-    id: 'chore-1',
-    date: '2025-10-27',
-    time_of_day: 'morning',
-    status: 'todo',
-    assignee_id: 'user-1',
-    points: 25,
-    chore_catalog_id: 'catalog-1'
-  },
-  {
-    id: 'chore-2',
-    date: '2025-10-27',
-    time_of_day: 'afternoon',
-    status: 'todo',
-    assignee_id: 'user-2',
-    points: 40,
-    chore_catalog_id: 'catalog-2'
-  },
-  {
-    id: 'chore-3',
-    date: '2025-10-27',
-    time_of_day: 'evening',
-    status: 'todo',
-    assignee_id: null,
-    points: 20,
-    chore_catalog_id: 'catalog-3'
-  },
-  {
-    id: 'chore-4',
-    date: '2025-10-27',
-    time_of_day: 'morning',
-    status: 'done',
-    assignee_id: 'user-1',
-    points: 60,
-    chore_catalog_id: 'catalog-4'
-  },
-  {
-    id: 'chore-5',
-    date: '2025-10-27',
-    time_of_day: 'afternoon',
-    status: 'done',
-    assignee_id: 'user-3',
-    points: 35,
-    chore_catalog_id: 'catalog-5'
-  }
-];
-
-// Mock catalog data for enrichment
-const MOCK_CATALOG = {
-  'catalog-1': { title: 'Dust furniture', emoji: '🪑', category: 'Living Room' },
-  'catalog-2': { title: 'Wash dishes', emoji: '🍽️', category: 'Kitchen' },
-  'catalog-3': { title: 'Take out trash', emoji: '🗑️', category: 'Kitchen' },
-  'catalog-4': { title: 'Clean stovetop', emoji: '🔥', category: 'Kitchen' },
-  'catalog-5': { title: 'Change bed sheets', emoji: '🛌', category: 'Bedroom' }
+// Query keys for React Query
+export const dailyViewKeys = {
+  all: ['dailyView'] as const,
+  chores: (date: string) => [...dailyViewKeys.all, 'chores', date] as const,
+  members: () => [...dailyViewKeys.all, 'members'] as const,
+  household: () => [...dailyViewKeys.all, 'household'] as const,
+  profile: () => [...dailyViewKeys.all, 'profile'] as const,
 };
 
 /**
- * Custom hook for managing daily chores view state and API interactions
+ * Custom hook for managing daily chores view state and API interactions using React Query
  */
 export function useDailyView() {
+  const queryClient = useQueryClient();
+  const devHouseholdId = (import.meta.env.PUBLIC_DEV_HOUSEHOLD_ID as string | undefined)?.trim() || undefined;
+  const useApi = !isSupabaseConfigured;
+
   // Initialize with today's date
   const [currentDate, setCurrentDate] = useState(() => {
     return new Date().toISOString().split('T')[0];
   });
 
-  const [state, setState] = useState<DailyViewState>({
-    currentDate,
-    chores: [],
-    members: [],
-    household: {} as HouseholdDTO,
-    currentUserId: '',
-    isAddModalOpen: false,
-    isAssignModalOpen: false,
-    selectedChore: null,
-    isLoading: true,
-    error: null,
+  // Modal states
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [selectedChore, setSelectedChore] = useState<ChoreViewModel | null>(null);
+
+  // Hardcoded user ID for development (should come from auth context)
+  const currentUserId = 'e9d12995-1f3e-491d-9628-3c4137d266d1'; // DEFAULT_USER_ID from supabase.client.ts
+
+  // Query for household members
+  const membersQuery = useQuery({
+    queryKey: dailyViewKeys.members(),
+    queryFn: async () => {
+      if (useApi) {
+        const res = await fetch('/api/v1/members');
+        if (!res.ok) throw new Error('Failed to load members');
+        return (await res.json()) as MemberDTO[];
+      }
+      return getHouseholdMembers(getSupabaseClient(), currentUserId);
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: useApi || isSupabaseConfigured,
   });
 
-  // API base URL (kept for future real API integration)
-  const API_BASE = '/api/v1';
+  // Query for household info
+  const householdQuery = useQuery({
+    queryKey: dailyViewKeys.household(),
+    queryFn: async () => {
+      if (useApi) {
+        const res = await fetch('/api/v1/households/current');
+        if (res.status === 404) return null;
+        if (!res.ok) throw new Error('Failed to load household');
+        return (await res.json()) as any;
+      }
+      return getHouseholdForUser(getSupabaseClient(), currentUserId);
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: useApi || isSupabaseConfigured,
+  });
 
-  // Mock API functions for development
-  const mockApiCall = <T>(data: T, delay: number = 500): Promise<T> => {
-    return new Promise(resolve => setTimeout(() => resolve(data), delay));
-  };
+  // Effective household id (prefer fetched, else dev fallback)
+  const effectiveHouseholdId = householdQuery.data?.id || devHouseholdId;
 
-  // Fetch chores for current date (mock data)
-  const fetchChores = useCallback(async (date: string) => {
-    try {
-      // Filter mock chores for the requested date
-      const choresForDate = MOCK_CHORES.filter(chore => chore.date === date);
+  // Query for user profile
+  const profileQuery = useQuery({
+    queryKey: dailyViewKeys.profile(),
+    queryFn: async () => {
+      if (useApi) {
+        const res = await fetch('/api/v1/profiles/me');
+        if (!res.ok) throw new Error('Failed to load profile');
+        return await res.json();
+      }
+      return getProfile(getSupabaseClient(), currentUserId);
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: useApi || isSupabaseConfigured,
+  });
 
-      // Mock API delay
-      await mockApiCall(null, 300);
+  // Catalog items: predefined + custom for this household
+  const catalogQuery = useQuery({
+    queryKey: [...dailyViewKeys.all, 'catalog', householdQuery.data?.id] as const,
+    queryFn: async () => {
+      if (useApi) {
+        const res = await fetch('/api/v1/catalog?type=all');
+        if (!res.ok) throw new Error('Failed to load catalog');
+        return await res.json();
+      }
+      if (!effectiveHouseholdId) return [];
+      return getCatalogItems(getSupabaseClient(), effectiveHouseholdId, 'all');
+    },
+    enabled: useApi || (isSupabaseConfigured && !!effectiveHouseholdId),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Query for chores on current date
+  const choresQuery = useQuery({
+    queryKey: dailyViewKeys.chores(currentDate),
+    queryFn: async () => {
+      let chores: DailyChoreDTO[];
+      if (useApi) {
+        const res = await fetch(`/api/v1/daily-chores?date=${encodeURIComponent(currentDate)}`);
+        if (!res.ok) throw new Error('Failed to load chores');
+        chores = await res.json();
+      } else {
+        if (!effectiveHouseholdId) throw new Error('Household not configured');
+        chores = await getDailyChores(getSupabaseClient(), effectiveHouseholdId, { date: currentDate });
+      }
 
       // Transform to ChoreViewModel with catalog enrichment
-      const viewModels: ChoreViewModel[] = choresForDate.map(chore => {
-        const catalogData = MOCK_CATALOG[chore.chore_catalog_id as keyof typeof MOCK_CATALOG] || {
-          title: 'Unknown Chore',
-          emoji: '❓',
-          category: 'General'
-        };
+      const catalog = (catalogQuery.data || []) as Array<{ id: string; title: string; emoji: string | null; category: string }>;
+      const viewModels: ChoreViewModel[] = chores.map(chore => {
+        const catalogItem = catalog.find((ci) => ci.id === chore.chore_catalog_id);
+        const catalogTitle = catalogItem?.title ?? `Chore ${chore.chore_catalog_id}`;
+        const catalogEmoji = catalogItem?.emoji ?? '📋';
+        const catalogCategory = catalogItem?.category ?? 'General';
 
         // Find assignee from members
         const assignee = chore.assignee_id
-          ? MOCK_MEMBERS.find(member => member.user_id === chore.assignee_id)
+          ? membersQuery.data?.find(member => member.user_id === chore.assignee_id)
           : null;
 
         return {
           ...chore,
-          catalogTitle: catalogData.title,
-          catalogEmoji: catalogData.emoji,
-          catalogCategory: catalogData.category,
+          catalogTitle,
+          catalogEmoji,
+          catalogCategory,
           catalogTimeOfDay: chore.time_of_day as any,
           assigneeName: assignee?.name,
           assigneeAvatar: assignee?.avatar_url || undefined,
-          canEdit: true, // Mock: always can edit
-          canDelete: true, // Mock: always can delete
+          canEdit: chore.assignee_id === currentUserId || profileQuery.data?.name === 'Admin', // TODO: proper permission check
+          canDelete: chore.assignee_id === currentUserId || profileQuery.data?.name === 'Admin', // TODO: proper permission check
         };
       });
 
-      setState(prev => ({
-        ...prev,
-        chores: viewModels,
-        isLoading: false,
-        error: null,
-      }));
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        isLoading: false,
-      }));
-    }
-  }, []);
-
-  // Fetch household members (mock data)
-  const fetchMembers = useCallback(async () => {
-    try {
-      await mockApiCall(null, 200);
-      setState(prev => ({
-        ...prev,
-        members: MOCK_MEMBERS,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch members:', error);
-    }
-  }, []);
-
-  // Fetch current household (mock data)
-  const fetchHousehold = useCallback(async () => {
-    try {
-      await mockApiCall(null, 200);
-      setState(prev => ({
-        ...prev,
-        household: MOCK_HOUSEHOLD,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch household:', error);
-    }
-  }, []);
-
-  // Fetch current user profile (mock data)
-  const fetchCurrentUser = useCallback(async () => {
-    try {
-      await mockApiCall(null, 200);
-      setState(prev => ({
-        ...prev,
-        currentUserId: 'user-1', // Mock current user is John Smith (admin)
-      }));
-    } catch (error) {
-      console.error('Failed to fetch current user:', error);
-    }
-  }, []);
-
-  // Initialize data on mount
-  useEffect(() => {
-    console.log('useDailyView: useEffect running');
-
-    // Set mock data directly without async calls
-    setState(prev => ({
-      ...prev,
-      chores: MOCK_CHORES.map(chore => {
-        const catalogData = MOCK_CATALOG[chore.chore_catalog_id as keyof typeof MOCK_CATALOG] || {
-          title: 'Unknown Chore',
-          emoji: '❓',
-          category: 'General'
-        };
-
-        const assignee = chore.assignee_id
-          ? MOCK_MEMBERS.find(member => member.user_id === chore.assignee_id)
-          : null;
-
-        return {
-          ...chore,
-          catalogTitle: catalogData.title,
-          catalogEmoji: catalogData.emoji,
-          catalogCategory: catalogData.category,
-          catalogTimeOfDay: chore.time_of_day as any,
-          assigneeName: assignee?.name,
-          assigneeAvatar: assignee?.avatar_url || undefined,
-          canEdit: true,
-          canDelete: true,
-        };
-      }),
-      members: MOCK_MEMBERS,
-      household: MOCK_HOUSEHOLD,
-      currentUserId: 'user-1',
-      isLoading: false,
-      error: null,
-    }));
-
-    console.log('useDailyView: Mock data set');
-  }, []);
+      return viewModels;
+    },
+    enabled: useApi || (isSupabaseConfigured && !!effectiveHouseholdId),
+    staleTime: 1 * 60 * 1000, // 1 minute
+  });
 
   // Handle date change
   const handleDateChange = useCallback((date: string) => {
     setCurrentDate(date);
-    setState(prev => ({ ...prev, currentDate: date, isLoading: true }));
   }, []);
 
   // Modal handlers
-  const openAddModal = useCallback(() => {
-    setState(prev => ({ ...prev, isAddModalOpen: true }));
-  }, []);
+  const openAddModal = useCallback(async () => {
+    try {
+      if (!householdQuery.data) {
+        // Dev helper: ensure a household exists, then refetch
+        const res = await fetch('/api/v1/households/dev-ensure', { method: 'POST' });
+        if (!res.ok) {
+          throw new Error('Failed to ensure household');
+        }
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: dailyViewKeys.household() }),
+          queryClient.invalidateQueries({ queryKey: dailyViewKeys.members() }),
+        ]);
+      }
+    } catch (e) {
+      console.error('Unable to ensure household:', e);
+      return;
+    }
+    setIsAddModalOpen(true);
+  }, [householdQuery.data, queryClient]);
 
   const closeAddModal = useCallback(() => {
-    setState(prev => ({ ...prev, isAddModalOpen: false }));
+    setIsAddModalOpen(false);
   }, []);
 
   const openAssignModal = useCallback((chore: ChoreViewModel) => {
-    setState(prev => ({
-      ...prev,
-      isAssignModalOpen: true,
-      selectedChore: chore,
-    }));
+    setIsAssignModalOpen(true);
+    setSelectedChore(chore);
   }, []);
 
   const closeAssignModal = useCallback(() => {
-    setState(prev => ({
-      ...prev,
-      isAssignModalOpen: false,
-      selectedChore: null,
-    }));
+    setIsAssignModalOpen(false);
+    setSelectedChore(null);
   }, []);
 
-  // Create chore handler (mock implementation)
-  const handleChoreCreate = useCallback(async (cmd: CreateDailyChoreCmd) => {
-    try {
-      // Mock API delay
-      await mockApiCall(null, 800);
-
-      // Generate mock new chore
-      const newChore: DailyChoreDTO = {
-        id: `chore-${Date.now()}`,
-        date: cmd.date,
-        time_of_day: cmd.time_of_day || 'any',
-        status: 'todo',
-        assignee_id: cmd.assignee_id || null,
-        points: 25, // Mock points from catalog
-        chore_catalog_id: cmd.chore_catalog_id,
-      };
-
-      // Add to mock data (in real app this would be persisted)
-      // For demo purposes, just refresh the list
-      await fetchChores(currentDate);
+  // Create chore mutation
+  const createChoreMutation = useMutation({
+    mutationFn: async (cmd: CreateDailyChoreCmd) => {
+      if (useApi) {
+        const res = await fetch('/api/v1/daily-chores', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cmd),
+        });
+        if (!res.ok) throw new Error('Failed to create chore');
+        return await res.json();
+      }
+      if (!effectiveHouseholdId) throw new Error('Household not configured');
+      return createDailyChore(getSupabaseClient(), effectiveHouseholdId, cmd);
+    },
+    onSuccess: () => {
+      // Invalidate and refetch chores for current date
+      queryClient.invalidateQueries({ queryKey: dailyViewKeys.chores(currentDate) });
       closeAddModal();
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Failed to create chore:', error);
       // TODO: Show error toast
-    }
-  }, [currentDate, fetchChores, closeAddModal]);
+    },
+  });
 
-  // Update chore handler (mock implementation)
-  const handleChoreUpdate = useCallback(async (id: string, updates: UpdateDailyChoreCmd) => {
-    try {
-      // Mock API delay
-      await mockApiCall(null, 500);
-
-      // In a real app, this would update the database
-      // For mock purposes, we just refresh the data
-      await fetchChores(currentDate);
+  // Update chore mutation
+  const updateChoreMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: UpdateDailyChoreCmd }) => {
+      if (useApi) {
+        const res = await fetch(`/api/v1/daily-chores/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates),
+        });
+        if (!res.ok) throw new Error('Failed to update chore');
+        return await res.json();
+      }
+      if (!effectiveHouseholdId) throw new Error('Household not configured');
+      return updateDailyChore(getSupabaseClient(), effectiveHouseholdId, id, currentUserId, updates);
+    },
+    onSuccess: () => {
+      // Invalidate and refetch chores for current date
+      queryClient.invalidateQueries({ queryKey: dailyViewKeys.chores(currentDate) });
       closeAssignModal();
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Failed to update chore:', error);
       // TODO: Show error toast
-    }
-  }, [currentDate, fetchChores, closeAssignModal]);
+    },
+  });
 
-  // Delete chore handler (mock implementation)
-  const handleChoreDelete = useCallback(async (id: string) => {
-    try {
-      // Mock API delay
-      await mockApiCall(null, 500);
-
-      // In a real app, this would delete from database
-      // For mock purposes, we just refresh the data
-      await fetchChores(currentDate);
-    } catch (error) {
+  // Delete chore mutation
+  const deleteChoreMutation = useMutation({
+    mutationFn: async (id: string) => {
+      if (useApi) {
+        const res = await fetch(`/api/v1/daily-chores/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to delete chore');
+        return true;
+      }
+      if (!effectiveHouseholdId) throw new Error('Household not configured');
+      return deleteDailyChore(getSupabaseClient(), effectiveHouseholdId, id, currentUserId);
+    },
+    onSuccess: () => {
+      // Invalidate and refetch chores for current date
+      queryClient.invalidateQueries({ queryKey: dailyViewKeys.chores(currentDate) });
+    },
+    onError: (error) => {
       console.error('Failed to delete chore:', error);
       // TODO: Show error toast
-    }
-  }, [currentDate, fetchChores]);
+    },
+  });
+
+  // Loading and error states
+  const isLoading = householdQuery.isLoading || membersQuery.isLoading || choresQuery.isLoading;
+  const error = householdQuery.error || membersQuery.error || choresQuery.error;
 
   return {
-    ...state,
+    // Data
     currentDate,
+    chores: choresQuery.data || [],
+    members: membersQuery.data || [],
+    household: householdQuery.data,
+    profile: profileQuery.data,
+    currentUserId,
+
+    // Modal states
+    isAddModalOpen,
+    isAssignModalOpen,
+    selectedChore,
+
+    // Loading and error states
+    isLoading,
+    error: error?.message || null,
+
+    // Actions
     setCurrentDate: handleDateChange,
     openAddModal,
     closeAddModal,
     openAssignModal,
     closeAssignModal,
-    handleChoreCreate,
-    handleChoreUpdate,
-    handleChoreDelete,
+
+    // Mutations
+    handleChoreCreate: createChoreMutation.mutate,
+    handleChoreUpdate: (id: string, updates: UpdateDailyChoreCmd) =>
+      updateChoreMutation.mutate({ id, updates }),
+    handleChoreDelete: deleteChoreMutation.mutate,
+
+    // Mutation states
+    isCreatingChore: createChoreMutation.isPending,
+    isUpdatingChore: updateChoreMutation.isPending,
+    isDeletingChore: deleteChoreMutation.isPending,
   };
 }

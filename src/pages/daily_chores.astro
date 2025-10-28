@@ -1,9 +1,9 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import DailyView from '@/components/DailyView';
+import DailyViewWithProvider from '@/components/DailyViewWithProvider';
 ---
 
 <Layout title="Daily Chores - Home Crew">
-  <DailyView client:load />
+  <DailyViewWithProvider client:load />
 </Layout>
 

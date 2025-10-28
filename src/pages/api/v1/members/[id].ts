@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { UpdateMemberRoleCmdSchema, updateMemberRole, removeHouseholdMember } from "@/lib/household-members.service";
-import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -14,7 +14,7 @@ export const prerender = false;
 export const PATCH: APIRoute = async (context) => {
   try {
     // For development - use default user (same as other endpoints)
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     const { id } = context.params;
 
@@ -119,7 +119,7 @@ export const PATCH: APIRoute = async (context) => {
 export const DELETE: APIRoute = async (context) => {
   try {
     // For development - use default user (same as other endpoints)
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     const { id } = context.params;
 

@@ -62,15 +62,15 @@ export function AssignChoreModal({
           {/* Chore Preview */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <div className="flex items-start space-x-3">
-              <span className="text-2xl">{chore.catalogEmoji || '📋'}</span>
+              <span className="text-2xl">{chore?.catalogEmoji ?? '📋'}</span>
               <div>
-                <h3 className="font-medium text-gray-900">{chore.catalogTitle}</h3>
+                <h3 className="font-medium text-gray-900">{chore?.catalogTitle ?? 'Chore'}</h3>
                 <div className="flex items-center space-x-2 mt-1">
                   <Badge variant="outline" className="text-xs">
-                    {chore.points} pts
+                    {chore?.points ?? 0} pts
                   </Badge>
                   <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
-                    {chore.catalogCategory}
+                    {chore?.catalogCategory ?? 'General'}
                   </Badge>
                 </div>
               </div>
@@ -140,7 +140,7 @@ export function AssignChoreModal({
                     <div className="font-medium text-gray-900">{member.name}</div>
                     <div className="text-sm text-gray-500">
                       {member.role === 'admin' ? 'Admin' : 'Member'}
-                      {chore.assignee_id === member.user_id && (
+                      {chore?.assignee_id === member.user_id && (
                         <span className="ml-2 text-blue-600 font-medium">(Currently assigned)</span>
                       )}
                     </div>

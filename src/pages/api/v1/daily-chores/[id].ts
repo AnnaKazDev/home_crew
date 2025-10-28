@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { UpdateDailyChoreCmdSchema, updateDailyChore, deleteDailyChore } from "@/lib/dailyChores.service";
-import { supabaseClient, supabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 import type { Database } from "@/db/database.types";
 
 export const prerender = false;
@@ -52,7 +52,7 @@ export const PATCH: APIRoute = async (context) => {
     }
 
     // Get household for the current user (use service client to bypass RLS)
-    const supabase = supabaseServiceClient as SupabaseClient<Database>;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
     const { data: householdMember, error: householdError } = await supabase
       .from("household_members")
       .select("household_id")
@@ -70,7 +70,7 @@ export const PATCH: APIRoute = async (context) => {
 
     // Update the daily chore (use service client to bypass RLS)
     try {
-      const updatedChore = await updateDailyChore(supabaseServiceClient as SupabaseClient, householdId, id, DEFAULT_USER_ID, validationResult.data);
+      const updatedChore = await updateDailyChore(supabase as SupabaseClient, householdId, id, DEFAULT_USER_ID, validationResult.data);
 
       return new Response(JSON.stringify(updatedChore), {
         status: 200,
@@ -137,7 +137,7 @@ export const DELETE: APIRoute = async (context) => {
     }
 
     // Get household for the current user
-    const supabase = supabaseClient as SupabaseClient<Database>;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
     const { data: householdMember, error: householdError } = await supabase
       .from("household_members")
       .select("household_id")
@@ -156,7 +156,7 @@ export const DELETE: APIRoute = async (context) => {
 
     // Delete the daily chore (use service client to bypass RLS)
     try {
-      await deleteDailyChore(supabaseServiceClient as SupabaseClient, householdId, id, DEFAULT_USER_ID);
+      await deleteDailyChore(supabase as SupabaseClient, householdId, id, DEFAULT_USER_ID);
 
       return new Response(null, {
         status: 204,

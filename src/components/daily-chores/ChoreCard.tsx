@@ -3,20 +3,10 @@ import { useDrag } from 'react-dnd';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
-interface Chore {
-  id: string;
-  title: string;
-  emoji: string;
-  points: number;
-  category: string;
-  assigneeName?: string;
-  assigneeInitial?: string;
-  assigneeColor?: string;
-}
+import type { ChoreViewModel } from '@/types/daily-view.types';
 
 interface ChoreCardProps {
-  chore: Chore;
+  chore: ChoreViewModel;
   onAssign?: () => void;
   onDelete?: () => void;
 }
@@ -40,15 +30,15 @@ export function ChoreCard({ chore, onAssign, onDelete }: ChoreCardProps) {
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
-            <span className="text-2xl">{chore.emoji}</span>
+            <span className="text-2xl">{chore.catalogEmoji || '📋'}</span>
             <div>
-              <h3 className="font-medium text-gray-900">{chore.title}</h3>
+              <h3 className="font-medium text-gray-900">{chore.catalogTitle}</h3>
               <div className="flex items-center space-x-2 mt-1">
                 <Badge variant="outline" className="text-xs">
                   {chore.points} pts
                 </Badge>
                 <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
-                  {chore.category}
+                  {chore.catalogCategory}
                 </Badge>
               </div>
             </div>
