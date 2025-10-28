@@ -1,93 +1,82 @@
 import React from 'react';
+import { useDrop } from 'react-dnd';
 import { ChoreCard } from './ChoreCard';
-import type { ChoreColumnProps, ChoreViewModel } from '@/types/daily-view.types';
-import type { MemberDTO } from '@/types';
+
+interface Chore {
+  id: string;
+  title: string;
+  emoji: string;
+  points: number;
+  category: string;
+  assigneeName?: string;
+  assigneeInitial?: string;
+  assigneeColor?: string;
+}
+
+interface ChoreColumnProps {
+  title: string;
+  status: 'todo' | 'done';
+  chores: Chore[];
+  onDrop: (choreId: string) => void;
+  onChoreAssign?: (chore: Chore) => void;
+  onChoreDelete?: (choreId: string) => void;
+}
 
 export function ChoreColumn({
   title,
   status,
   chores,
-  members,
   onDrop,
-  onChoreClick,
+  onChoreAssign,
+  onChoreDelete
 }: ChoreColumnProps) {
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const choreId = e.dataTransfer.getData('text/plain');
-    if (choreId) {
-      onDrop(choreId);
-    }
-  };
-
-  const getColumnStyles = () => {
-    if (status === 'done') {
-      return 'bg-green-50 border-green-200';
-    }
-    return 'bg-blue-50 border-blue-200';
-  };
-
-  const getHeaderStyles = () => {
-    if (status === 'done') {
-      return 'text-green-800 bg-green-100';
-    }
-    return 'text-blue-800 bg-blue-100';
-  };
+  const [{ isOver }, drop] = useDrop({
+    accept: 'chore',
+    drop: (item: { id: string }) => {
+      onDrop(item.id);
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Column header */}
-      <div className={`p-4 rounded-t-lg border-2 border-dashed ${getColumnStyles()}`}>
-        <h2 className={`text-lg font-semibold ${getHeaderStyles()} px-3 py-2 rounded`}>
+    <div
+      ref={drop}
+      className={`bg-white p-6 rounded-lg shadow min-h-[400px] transition-colors ${
+        isOver ? 'bg-blue-50 border-2 border-dashed border-blue-300' : ''
+      }`}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <h2 className={`text-lg font-semibold px-3 py-2 rounded ${
+          status === 'todo'
+            ? 'text-blue-800 bg-blue-100'
+            : 'text-green-800 bg-green-100'
+        }`}>
           {title} ({chores.length})
         </h2>
       </div>
 
-      {/* Drop zone and cards */}
-      <div
-        className={`flex-1 min-h-[400px] border-2 border-dashed border-gray-300 rounded-b-lg p-4 transition-colors ${
-          status === 'done' ? 'hover:border-green-300' : 'hover:border-blue-300'
-        }`}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        {chores.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-400">
-            <svg className="w-12 h-12 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <p className="text-sm">
-              {status === 'done'
-                ? 'Drag completed chores here'
-                : 'No tasks to do yet'
-              }
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {chores.map((chore: ChoreViewModel) => {
-              // Find assignee from members list
-              const assignee = chore.assignee_id
-                ? members.find(member => member.user_id === chore.assignee_id) || null
-                : null;
+      <div className="space-y-4">
+        {chores.map(chore => (
+          <ChoreCard
+            key={chore.id}
+            chore={chore}
+            onAssign={onChoreAssign ? () => onChoreAssign(chore) : undefined}
+            onDelete={onChoreDelete ? () => onChoreDelete(chore.id) : undefined}
+          />
+        ))}
 
-              return (
-                <ChoreCard
-                  key={chore.id}
-                  chore={chore}
-                  assignee={assignee}
-                  onAssign={() => onChoreClick(chore)}
-                  onDelete={() => {
-                    // TODO: Implement delete confirmation
-                    console.log('Delete chore:', chore.id);
-                  }}
-                />
-              );
-            })}
+        {chores.length === 0 && (
+          <div className={`flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed rounded-lg ${
+            isOver ? 'border-blue-300 bg-blue-25' : 'border-gray-200'
+          }`}>
+            <p className="text-gray-500">
+              {status === 'todo' ? 'No tasks to do!' : 'No completed chores yet'}
+            </p>
+            {status === 'done' && (
+              <p className="text-sm text-gray-400 mt-1">Drag chores here when done!</p>
+            )}
           </div>
         )}
       </div>

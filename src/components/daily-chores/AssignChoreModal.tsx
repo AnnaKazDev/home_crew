@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import type { AssignChoreModalProps, ChoreViewModel } from '@/types/daily-view.types';
 import type { MemberDTO } from '@/types';
 
@@ -48,41 +51,27 @@ export function AssignChoreModal({
     }
   };
 
-  if (!isOpen || !chore) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-md w-full mx-4">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Assign Chore</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Assign Chore</DialogTitle>
+        </DialogHeader>
 
-        {/* Content */}
-        <div className="px-6 py-4">
+        <div className="space-y-4">
           {/* Chore Preview */}
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
+          <div className="bg-gray-50 p-4 rounded-lg">
             <div className="flex items-start space-x-3">
               <span className="text-2xl">{chore.catalogEmoji || '📋'}</span>
               <div>
                 <h3 className="font-medium text-gray-900">{chore.catalogTitle}</h3>
                 <div className="flex items-center space-x-2 mt-1">
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                  <Badge variant="outline" className="text-xs">
                     {chore.points} pts
-                  </span>
-                  <span className="text-xs text-gray-500 bg-blue-100 px-2 py-1 rounded">
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
                     {chore.catalogCategory}
-                  </span>
+                  </Badge>
                 </div>
               </div>
             </div>
@@ -90,7 +79,7 @@ export function AssignChoreModal({
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
               <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
@@ -160,29 +149,17 @@ export function AssignChoreModal({
               </label>
             ))}
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
-          >
-            {isLoading && (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            )}
-            <span>{isLoading ? 'Assigning...' : 'Assign Chore'}</span>
-          </button>
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} disabled={isLoading}>
+              {isLoading ? 'Assigning...' : 'Assign Chore'}
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

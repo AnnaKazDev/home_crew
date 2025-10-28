@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DailyViewHeader } from './daily-chores/DailyViewHeader';
+import { ChoreColumns } from './daily-chores/ChoreColumns';
 import { AddChoreModal } from './daily-chores/AddChoreModal';
+import { AssignChoreModal } from './daily-chores/AssignChoreModal';
 import type { MemberDTO, CreateDailyChoreCmd } from '@/types';
 
 interface Chore {
@@ -194,33 +199,30 @@ export default function DailyView() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, targetColumn: 'todo' | 'done') => {
-    e.preventDefault();
-    const choreId = e.dataTransfer.getData('text/plain');
-
+  const handleChoreDrop = (choreId: string, targetStatus: 'todo' | 'done') => {
     // Find the chore in both columns
     let choreToMove: Chore | undefined;
-    let sourceColumn: 'todo' | 'done';
+    let sourceStatus: 'todo' | 'done';
 
     choreToMove = todoChores.find(c => c.id === choreId);
     if (choreToMove) {
-      sourceColumn = 'todo';
+      sourceStatus = 'todo';
     } else {
       choreToMove = doneChores.find(c => c.id === choreId);
-      sourceColumn = 'done';
+      sourceStatus = 'done';
     }
 
-    if (!choreToMove || sourceColumn === targetColumn) {
+    if (!choreToMove || sourceStatus === targetStatus) {
       return; // No change needed
     }
 
     // Move the chore between columns
-    if (sourceColumn === 'todo' && targetColumn === 'done') {
+    if (sourceStatus === 'todo' && targetStatus === 'done') {
       // Move from todo to done
       setTodoChores(prev => prev.filter(c => c.id !== choreId));
       setDoneChores(prev => [...prev, choreToMove!]);
       // Points will be recalculated automatically
-    } else if (sourceColumn === 'done' && targetColumn === 'todo') {
+    } else if (sourceStatus === 'done' && targetStatus === 'todo') {
       // Move from done to todo
       setDoneChores(prev => prev.filter(c => c.id !== choreId));
       setTodoChores(prev => [...prev, choreToMove!]);
@@ -296,104 +298,35 @@ export default function DailyView() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-32">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Daily Chores - Working! 🎉</h1>
+    <DndProvider backend={HTML5Backend}>
+      <div className="min-h-screen bg-gray-50 p-32">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">Daily Chores - Working! 🎉</h1>
 
-        {/* Points Badge */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-full px-4 py-2 inline-flex items-center space-x-2 mb-6">
-          <span className="text-yellow-600">⭐</span>
-          <span className="font-semibold text-yellow-800">{points} points</span>
-          <span className="text-yellow-700">earned today</span>
-        </div>
+          {/* Header with Shadcn components */}
+          <DailyViewHeader
+            currentDate={currentDate}
+            totalPoints={points}
+            choresCount={todoChores.length + doneChores.length}
+            onDateChange={setCurrentDate}
+            onAddChoreClick={openAddModal}
+          />
 
-        {/* Date Navigator */}
-        <div className="flex items-center justify-between mb-8 p-4 bg-white rounded-lg shadow">
-          <button
-            onClick={handlePreviousDay}
-            className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded hover:bg-gray-100 transition-colors"
-          >
-            ⬅️ Previous
-          </button>
-          <div className="text-center">
-            <div className="text-lg font-semibold">{formatDisplayDate(currentDate)}</div>
-            <input
-              type="date"
-              value={currentDate}
-              onChange={handleDateChange}
-              className="mt-2 border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-          <button
-            onClick={handleNextDay}
-            className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded hover:bg-gray-100 transition-colors"
-          >
-            Next ➡️
-          </button>
-        </div>
+          {/* Chore Columns with Drag & Drop */}
+          <ChoreColumns
+            todoChores={todoChores}
+            doneChores={doneChores}
+            onChoreDrop={handleChoreDrop}
+            onChoreAssign={openAssignModal}
+            onChoreDelete={(choreId) => console.log('Delete chore:', choreId)}
+          />
 
-        {/* Chore Columns */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* To Do Column */}
-          <div
-            className="bg-white p-6 rounded-lg shadow min-h-[400px]"
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, 'todo')}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-blue-800 bg-blue-100 px-3 py-2 rounded">
-                To Do ({todoChores.length})
-              </h2>
-              <button
-                onClick={handleAddChoreClick}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-              >
-                Add Chore
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {todoChores.map(chore => (
-                <ChoreCard key={chore.id} chore={chore} />
-              ))}
-              {todoChores.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-                  <p className="text-gray-500">No tasks to do!</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Done Column */}
-          <div
-            className="bg-white p-6 rounded-lg shadow min-h-[400px]"
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, 'done')}
-          >
-            <h2 className="text-lg font-semibold text-green-800 bg-green-100 px-3 py-2 rounded mb-4">
-              Done ({doneChores.length})
-            </h2>
-
-            <div className="space-y-4">
-              {doneChores.map(chore => (
-                <ChoreCard key={chore.id} chore={chore} />
-              ))}
-              {doneChores.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-                  <p className="text-gray-500">No completed chores yet</p>
-                  <p className="text-sm text-gray-400 mt-1">Drag chores here when done!</p>
-                </div>
-              )}
-            </div>
+          {/* Footer */}
+          <div className="mt-12 text-center text-gray-500">
+            <p>🎉 Daily Chores View with working drag & drop! Move tasks between columns.</p>
+            <p className="text-sm mt-2">Points update automatically when tasks are completed!</p>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="mt-12 text-center text-gray-500">
-          <p>🎉 Daily Chores View with working drag & drop! Move tasks between columns.</p>
-          <p className="text-sm mt-2">Points update automatically when tasks are completed!</p>
-        </div>
-      </div>
 
       {/* Add Chore Modal */}
       <AddChoreModal
@@ -404,91 +337,31 @@ export default function DailyView() {
       />
 
       {/* Assign Chore Modal */}
-      {isAssignModalOpen && selectedChoreForAssign && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg max-w-md w-full mx-4 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Assign Chore</h2>
-              <button
-                onClick={closeAssignModal}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded">
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">{selectedChoreForAssign.emoji}</span>
-                  <div>
-                    <h3 className="font-medium">{selectedChoreForAssign.title}</h3>
-                    <p className="text-sm text-gray-600">{selectedChoreForAssign.points} points</p>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Assign to:</p>
-                <div className="space-y-2">
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="assignee"
-                      value=""
-                      defaultChecked={!selectedChoreForAssign?.assigneeName}
-                    />
-                    <span>Unassigned</span>
-                  </label>
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="assignee"
-                      value="user-1"
-                      defaultChecked={selectedChoreForAssign?.assigneeName === 'John Smith'}
-                    />
-                    <span>John Smith</span>
-                  </label>
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="assignee"
-                      value="user-2"
-                      defaultChecked={selectedChoreForAssign?.assigneeName === 'Jane Smith'}
-                    />
-                    <span>Jane Smith</span>
-                  </label>
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="assignee"
-                      value="user-3"
-                      defaultChecked={selectedChoreForAssign?.assigneeName === 'Mike Smith'}
-                    />
-                    <span>Mike Smith</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={closeAssignModal}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  const selectedRadio = document.querySelector('input[name="assignee"]:checked') as HTMLInputElement;
-                  const assigneeId = selectedRadio?.value || null;
-                  handleAssignChore(assigneeId === '' ? null : assigneeId);
-                }}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Assign
-              </button>
-            </div>
-          </div>
-        </div>
+      {selectedChoreForAssign && (
+        <AssignChoreModal
+          isOpen={isAssignModalOpen}
+          chore={{
+            ...selectedChoreForAssign,
+            catalogTitle: selectedChoreForAssign.title,
+            catalogEmoji: selectedChoreForAssign.emoji,
+            catalogCategory: selectedChoreForAssign.category,
+            catalogTimeOfDay: 'any' as const,
+            canEdit: true,
+            canDelete: true,
+            // Add other required fields from DailyChoreDTO
+            date: currentDate,
+            time_of_day: 'any',
+            status: 'todo',
+            assignee_id: selectedChoreForAssign.assigneeName ? 'user-id' : undefined,
+            points: selectedChoreForAssign.points,
+            chore_catalog_id: 'catalog-id'
+          }}
+          members={mockMembers}
+          onClose={closeAssignModal}
+          onSubmit={handleAssignChore}
+        />
       )}
-    </div>
+      </div>
+    </DndProvider>
   );
 }
