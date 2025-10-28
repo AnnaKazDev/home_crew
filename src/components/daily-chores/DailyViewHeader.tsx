@@ -24,14 +24,12 @@ export function DailyViewHeader({
         <PointsBadge totalPoints={totalPoints} />
       </div>
 
-      {/* Date navigator */}
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <DateNavigator
-            currentDate={currentDate}
-            onDateChange={onDateChange}
-          />
-        </div>
+      {/* Date navigator - full width like columns */}
+      <div className="w-full">
+        <DateNavigator
+          currentDate={currentDate}
+          onDateChange={onDateChange}
+        />
       </div>
     </div>
   );

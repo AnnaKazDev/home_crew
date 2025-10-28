@@ -33,6 +33,35 @@
 
     --radius: 0.5rem;
   }
+
+  .dark {
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 212 72% 59%;
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222 84% 4.9%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 222 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --card: 222 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+  }
 }
 
 @layer base {
@@ -63,11 +92,6 @@
   html {
     scroll-behavior: smooth;
   }
-
-  /* Custom scrollbar */
-  /* ::-webkit-scrollbar {
-    width: 8px;
-  } */
 
   ::-webkit-scrollbar-track {
     background: rgb(241 245 249);

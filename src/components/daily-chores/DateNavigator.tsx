@@ -35,33 +35,33 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow mb-4">
+    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow mb-4">
       {/* Desktop layout */}
       <div className="hidden md:flex items-center justify-between">
         <Button
           variant="outline"
           onClick={handlePrevDay}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white border-gray-300 dark:border-gray-600"
         >
           ⬅️ Previous
         </Button>
 
         <div className="text-center">
-          <div className="text-lg font-semibold mb-2">
+          <div className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             {formatDate(currentDate)}
           </div>
           <Input
             type="date"
             value={currentDate}
             onChange={handleDateChange}
-            className="w-auto"
+            className="w-auto text-gray-900 dark:text-white bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
           />
         </div>
 
         <Button
           variant="outline"
           onClick={handleNextDay}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white border-gray-300 dark:border-gray-600"
         >
           Next ➡️
         </Button>
@@ -72,7 +72,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
         <Button
           variant="outline"
           onClick={handlePrevDay}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white border-gray-300 dark:border-gray-600"
         >
           ⬅️
         </Button>
@@ -81,13 +81,13 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
           type="date"
           value={currentDate}
           onChange={handleDateChange}
-          className="w-auto px-4 py-2 cursor-pointer"
+          className="w-auto px-4 py-2 cursor-pointer text-gray-900 dark:text-white bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
         />
 
         <Button
           variant="outline"
           onClick={handleNextDay}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white border-gray-300 dark:border-gray-600"
         >
           ➡️
         </Button>
