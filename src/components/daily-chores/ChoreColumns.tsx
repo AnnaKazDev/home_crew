@@ -1,10 +1,12 @@
 import React from 'react';
 import { ChoreColumn } from './ChoreColumn';
 import type { ChoreViewModel } from '@/types/daily-view.types';
+import type { MemberDTO } from '@/types';
 
 interface ChoreColumnsProps {
   todoChores: ChoreViewModel[];
   doneChores: ChoreViewModel[];
+  members: MemberDTO[];
   onChoreDrop: (choreId: string, targetStatus: 'todo' | 'done') => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
@@ -14,6 +16,7 @@ interface ChoreColumnsProps {
 export function ChoreColumns({
   todoChores,
   doneChores,
+  members,
   onChoreDrop,
   onChoreAssign,
   onChoreDelete,
@@ -33,6 +36,7 @@ export function ChoreColumns({
         title="To Do"
         status="todo"
         chores={todoChores}
+        members={members}
         onDrop={handleTodoDrop}
         onChoreAssign={onChoreAssign}
         onChoreDelete={onChoreDelete}
@@ -43,6 +47,7 @@ export function ChoreColumns({
         title="Done"
         status="done"
         chores={doneChores}
+        members={members}
         onDrop={handleDoneDrop}
         onChoreAssign={onChoreAssign}
         onChoreDelete={onChoreDelete}

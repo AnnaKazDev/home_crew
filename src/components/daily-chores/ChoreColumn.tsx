@@ -3,11 +3,13 @@ import { useDrop } from 'react-dnd';
 import { ChoreCard } from './ChoreCard';
 import { AddChoreButton } from './AddChoreButton';
 import type { ChoreViewModel } from '@/types/daily-view.types';
+import type { MemberDTO } from '@/types';
 
 interface ChoreColumnProps {
   title: string;
   status: 'todo' | 'done';
   chores: ChoreViewModel[];
+  members: MemberDTO[];
   onDrop: (choreId: string) => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
@@ -18,6 +20,7 @@ export function ChoreColumn({
   title,
   status,
   chores,
+  members,
   onDrop,
   onChoreAssign,
   onChoreDelete,
@@ -41,10 +44,10 @@ export function ChoreColumn({
       }`}
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className={`text-lg font-semibold px-3 py-2 rounded ${
+        <h2 className={`text-lg font-semibold ${
           status === 'todo'
-            ? 'text-blue-800 bg-blue-100'
-            : 'text-green-800 bg-green-100'
+            ? 'text-blue-800'
+            : 'text-green-800'
         }`}>
           {title} ({chores.length})
         </h2>
@@ -58,6 +61,7 @@ export function ChoreColumn({
           <ChoreCard
             key={chore.id}
             chore={chore}
+            members={members}
             onAssign={onChoreAssign ? () => onChoreAssign(chore) : undefined}
             onDelete={onChoreDelete ? () => onChoreDelete(chore.id) : undefined}
           />
