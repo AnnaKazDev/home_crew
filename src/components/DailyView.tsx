@@ -98,7 +98,6 @@ export default function DailyView() {
           totalPoints={totalPoints}
           choresCount={chores.length}
           onDateChange={setCurrentDate}
-          onAddChoreClick={handleAddChoreClick}
         />
 
           {/* Chore Columns with Drag & Drop */}
@@ -108,6 +107,7 @@ export default function DailyView() {
             onChoreDrop={handleChoreDrop}
             onChoreAssign={openAssignModal}
             onChoreDelete={handleChoreDelete}
+            onAddChoreClick={handleAddChoreClick}
           />
 
           {/* Footer */}
