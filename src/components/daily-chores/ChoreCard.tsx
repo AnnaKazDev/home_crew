@@ -49,7 +49,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
   return (
     <Card
       ref={drag}
-      className={`hover:shadow-md transition-shadow cursor-move border border-gray-200 ${
+      className={`hover:shadow-md transition-shadow cursor-move border border-gray-200 dark:border-gray-700 dark:bg-gray-800 ${
         isDragging ? 'opacity-50' : ''
       }`}
     >
@@ -58,7 +58,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
           <div className="flex items-center space-x-3 min-w-0">
             <span className="text-2xl flex-shrink-0">{chore.catalogEmoji || '📋'}</span>
             <div className="min-w-0 flex-1">
-              <h3 className="font-medium text-gray-900 truncate">
+              <h3 className="font-medium text-gray-900 dark:text-white truncate">
                 {chore.catalogTitle}
                 {chore.catalogTimeOfDay !== 'any' && (
                   <span className="text-xs text-gray-500 ml-1">({getTimeOfDayText(chore.catalogTimeOfDay)})</span>
@@ -105,7 +105,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
             <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center text-xs font-medium text-blue-800">
               {chore.assigneeName.charAt(0).toUpperCase()}
             </div>
-            <span className="text-sm text-gray-600">{chore.assigneeName}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-300">{chore.assigneeName}</span>
           </div>
         )}
         {!chore.assigneeName && (
@@ -113,7 +113,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
             <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
               <span className="text-xs font-medium text-gray-600">?</span>
             </div>
-            <span className="text-sm text-gray-400">Unassigned</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">Unassigned</span>
           </div>
         )}
       </CardContent>

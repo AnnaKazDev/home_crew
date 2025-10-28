@@ -42,8 +42,8 @@ export function ChoreColumn({
   return (
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
-      className={`bg-white p-6 rounded-lg shadow min-h-[400px] transition-colors ${
-        isOver ? 'bg-blue-50 border-2 border-dashed border-blue-300' : ''
+      className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow min-h-[400px] transition-colors ${
+        isOver ? 'bg-blue-50 dark:bg-blue-900/50 border-2 border-dashed border-blue-300' : ''
       }`}
     >
       <div className="flex items-center justify-between mb-4 min-h-[40px]">

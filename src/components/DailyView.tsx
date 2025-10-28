@@ -4,6 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDailyView } from '@/hooks/useDailyView';
 import { DailyViewHeader } from './daily-chores/DailyViewHeader';
 import { ChoreColumns } from './daily-chores/ChoreColumns';
+import { FloatingThemeToggle } from './FloatingThemeToggle';
 import { AddChoreModal } from './daily-chores/AddChoreModal';
 import { AssignChoreModal } from './daily-chores/AssignChoreModal';
 import type { CreateDailyChoreCmd } from '@/types';
@@ -88,9 +89,10 @@ export default function DailyView() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="min-h-screen bg-gray-50 pt-8 px-4 md:px-8">
+      <FloatingThemeToggle />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-8 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Daily Chores - Working! 🎉</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Daily Chores - Working! 🎉</h1>
 
         {/* Header with Shadcn components */}
         <DailyViewHeader

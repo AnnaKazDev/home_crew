@@ -84,14 +84,14 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Create Custom Chore</h3>
-        <p className="text-gray-600">Define a new chore for your household catalog</p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Create Custom Chore</h3>
+        <p className="text-gray-600 dark:text-gray-300">Define a new chore for your household catalog</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Title *
           </label>
           <input
@@ -99,28 +99,28 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             id="title"
             value={formData.title}
             onChange={(e) => handleChange('title', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.title ? 'border-red-300' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 ${
+              errors.title ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
             }`}
             placeholder="e.g., Wash dishes"
             maxLength={50}
           />
           {errors.title && (
-            <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.title}</p>
           )}
         </div>
 
         {/* Category */}
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Category *
           </label>
           <select
             id="category"
             value={formData.category}
             onChange={(e) => handleChange('category', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.category ? 'border-red-300' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+              errors.category ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
             }`}
           >
             <option value="">Select a category</option>
@@ -129,13 +129,13 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             ))}
           </select>
           {errors.category && (
-            <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.category}</p>
           )}
         </div>
 
         {/* Points */}
         <div>
-          <label htmlFor="points" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="points" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Points (0-100, divisible by 5) *
           </label>
           <input
@@ -146,18 +146,18 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             min={0}
             max={100}
             step={5}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.points ? 'border-red-300' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+              errors.points ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
             }`}
           />
           {errors.points && (
-            <p className="mt-1 text-sm text-red-600">{errors.points}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.points}</p>
           )}
         </div>
 
         {/* Time of Day */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Time of Day
           </label>
           <div className="grid grid-cols-2 gap-2">
