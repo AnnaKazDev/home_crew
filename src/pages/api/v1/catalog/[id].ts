@@ -2,6 +2,43 @@ import type { APIRoute } from "astro";
 import { updateCatalogItem, deleteCatalogItem, UpdateCatalogItemCmdSchema } from "@/lib/choresCatalog.service";
 import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 
+export const GET: APIRoute = async (context) => {
+  try {
+    const { id } = context.params;
+    if (!id) {
+      return new Response(JSON.stringify({ error: "Item ID is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
+    const { data: item, error } = await supabase
+      .from("chores_catalog")
+      .select("*")
+      .eq("id", id)
+      .is("deleted_at", null)
+      .single();
+
+    if (error || !item) {
+      return new Response(JSON.stringify({ error: "Not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify(item), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+};
+
 export const prerender = false;
 
 /**
