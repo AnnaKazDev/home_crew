@@ -105,6 +105,7 @@ export default function DailyView() {
             todoChores={todoChores}
             doneChores={doneChores}
             members={members}
+            isLoading={isLoading}
             onChoreDrop={handleChoreDrop}
             onChoreAssign={openAssignModal}
             onChoreDelete={handleChoreDelete}
