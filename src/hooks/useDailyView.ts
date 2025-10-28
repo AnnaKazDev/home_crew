@@ -141,7 +141,7 @@ export function useDailyView() {
         }
       }
       const viewModels: ChoreViewModel[] = chores.map(chore => {
-        const catalogItem = catalog.find((ci) => ci.id === chore.chore_catalog_id);
+        const catalogItem = catalog.find((ci) => ci.id === chore.chore_catalog_id) as any;
         const catalogTitle = catalogItem?.title ?? `Chore ${chore.chore_catalog_id}`;
         const catalogEmoji = catalogItem?.emoji ?? '📋';
         const catalogCategory = catalogItem?.category ?? 'General';
@@ -157,6 +157,7 @@ export function useDailyView() {
           catalogEmoji,
           catalogCategory,
           catalogTimeOfDay: chore.time_of_day as any,
+          catalogPredefined: catalogItem?.predefined ?? true,
           assigneeName: assignee?.name,
           assigneeAvatar: assignee?.avatar_url || undefined,
           canEdit: chore.assignee_id === currentUserId || profileQuery.data?.name === 'Admin', // TODO: proper permission check

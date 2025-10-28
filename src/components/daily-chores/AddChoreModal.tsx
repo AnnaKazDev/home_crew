@@ -17,14 +17,16 @@ interface AddChoreModalProps {
 export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreModalProps) {
   const [currentStep, setCurrentStep] = useState<ModalStep>('catalog');
   const [selectedItem, setSelectedItem] = useState<CatalogItemDTO | null>(null);
-  const [customData, setCustomData] = useState<Partial<CatalogItemDTO> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [catalogKey, setCatalogKey] = useState(0); // Force re-render of catalog
+  const [error, setError] = useState<string | null>(null);
 
   const resetModal = () => {
     setCurrentStep('catalog');
     setSelectedItem(null);
-    setCustomData(null);
     setIsLoading(false);
+    setError(null);
+    setCatalogKey(prev => prev + 1);
   };
 
   const handleClose = () => {
@@ -34,16 +36,49 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
 
   const handleCatalogSelect = (item: CatalogItemDTO) => {
     setSelectedItem(item);
+    setError(null); // Clear any previous errors
     setCurrentStep('config');
   };
 
   const handleCreateCustom = () => {
     setCurrentStep('form');
+    setError(null); // Clear any previous errors
   };
 
-  const handleFormSubmit = (data: Partial<CatalogItemDTO>) => {
-    setCustomData(data);
-    setCurrentStep('config');
+  const handleFormSubmit = async (data: Partial<CatalogItemDTO>) => {
+    setIsLoading(true);
+    setError(null); // Clear any previous errors
+
+    try {
+      // Create the catalog item immediately
+      const createCatalogResponse = await fetch('/api/v1/catalog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: data.title,
+          category: data.category,
+          points: data.points,
+          time_of_day: data.time_of_day || 'any',
+          emoji: data.emoji,
+        }),
+      });
+
+      if (!createCatalogResponse.ok) {
+        const errorData = await createCatalogResponse.json();
+        throw new Error(errorData.error || 'Failed to create catalog item');
+      }
+
+      // Go back to catalog view so user can select the newly created chore
+      setCurrentStep('catalog');
+      setCatalogKey(prev => prev + 1); // Force catalog refresh
+    } catch (error) {
+      console.error('Failed to create catalog item:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create catalog item';
+      setError(errorMessage);
+      setCurrentStep('catalog'); // Go back to catalog to show error
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFormCancel = () => {
@@ -52,7 +87,6 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
 
   const handleConfigSubmit = async (config: {
     date: string;
-    time_of_day?: string;
     assignee_id?: string | null;
   }) => {
     setIsLoading(true);
@@ -60,11 +94,8 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
     try {
       const cmd: CreateDailyChoreCmd = {
         date: config.date,
-        chore_catalog_id: selectedItem?.id || '',
+        chore_catalog_id: selectedItem!.id,
         assignee_id: config.assignee_id || undefined,
-        time_of_day: config.time_of_day as any,
-        // For custom chores, we might need to create the catalog item first
-        // For now, assume catalog items exist
       };
 
       await onSubmit(cmd);
@@ -77,23 +108,19 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
   };
 
   const handleConfigCancel = () => {
-    if (customData) {
-      setCurrentStep('form');
-    } else {
-      setCurrentStep('catalog');
-    }
+    setCurrentStep('catalog');
   };
 
   const getDialogTitle = () => {
     switch (currentStep) {
       case 'catalog':
-        return 'Add New Chore';
+        return 'Choose a Chore';
       case 'form':
         return 'Create Custom Chore';
       case 'config':
         return 'Configure Chore';
       default:
-        return 'Add New Chore';
+        return 'Choose a Chore';
     }
   };
 
@@ -105,8 +132,15 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
         </DialogHeader>
 
         <div className="py-4">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+          )}
+
           {currentStep === 'catalog' && (
             <ChoreCatalogSelector
+              key={catalogKey}
               onItemSelect={handleCatalogSelect}
               onCreateCustom={handleCreateCustom}
             />
@@ -122,7 +156,7 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
           {currentStep === 'config' && (
             <ChoreConfigurator
               selectedItem={selectedItem}
-              customData={customData}
+              customData={null}
               members={members}
               onSubmit={handleConfigSubmit}
               onCancel={handleConfigCancel}

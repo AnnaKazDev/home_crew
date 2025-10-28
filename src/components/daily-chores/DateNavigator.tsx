@@ -81,7 +81,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
           type="date"
           value={currentDate}
           onChange={handleDateChange}
-          className="w-auto"
+          className="w-auto px-4 py-2 cursor-pointer"
         />
 
         <Button

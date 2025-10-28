@@ -16,6 +16,17 @@ export function ChoreCatalogSelector({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Helper function to get time of day text
+  const getTimeOfDayText = (timeOfDay: string) => {
+    switch (timeOfDay) {
+      case 'morning': return 'morning';
+      case 'afternoon': return 'afternoon';
+      case 'evening': return 'evening';
+      case 'night': return 'night';
+      default: return '';
+    }
+  };
+
   // Fetch catalog items on mount
   useEffect(() => {
     fetchCatalogItems();
@@ -92,8 +103,8 @@ export function ChoreCatalogSelector({
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Choose a Chore</h3>
-        <p className="text-gray-600">Select from existing chores or create a custom one</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Add Chore to Daily View</h3>
+        <p className="text-gray-600">Select from existing chores or define a new one for your household catalog</p>
       </div>
 
       {/* Search and Filter */}
@@ -141,7 +152,13 @@ export function ChoreCatalogSelector({
             <div className="flex items-start space-x-3">
               <span className="text-lg">{item.emoji || '📋'}</span>
               <div className="flex-1">
-                <h4 className="font-medium text-gray-900 text-sm">{item.title}</h4>
+                <h4 className="font-medium text-gray-900 text-sm">
+                  {item.title}
+                  {item.time_of_day !== 'any' && (
+                    <span className="text-xs text-gray-500 ml-1">({getTimeOfDayText(item.time_of_day)})</span>
+                  )}
+                  {!item.predefined && <span className="ml-1">✨</span>}
+                </h4>
                 <div className="flex items-center space-x-2 mt-1">
                   <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
                     {item.points} pts
@@ -168,7 +185,7 @@ export function ChoreCatalogSelector({
           onClick={onCreateCustom}
           className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors text-gray-700 font-medium"
         >
-          Add custom chore
+          Add Custom Chore
         </button>
       </div>
     </div>
