@@ -14,6 +14,8 @@ export interface ChoreViewModel extends DailyChoreDTO {
   catalogCategory: string;
   /** Time of day from catalog */
   catalogTimeOfDay: 'morning' | 'afternoon' | 'evening' | 'any';
+  /** Whether this is a predefined chore or custom */
+  catalogPredefined: boolean;
   /** Name of assigned member */
   assigneeName?: string;
   /** Avatar URL of assigned member */

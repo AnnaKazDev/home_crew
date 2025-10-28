@@ -7,7 +7,6 @@ interface ChoreConfiguratorProps {
   members: MemberDTO[];
   onSubmit: (config: {
     date: string;
-    time_of_day?: string;
     assignee_id?: string | null;
   }) => void;
   onCancel: () => void;
@@ -24,7 +23,6 @@ export function ChoreConfigurator({
 }: ChoreConfiguratorProps) {
   const [config, setConfig] = useState({
     date: new Date().toISOString().split('T')[0],
-    time_of_day: selectedItem?.time_of_day || customData?.time_of_day || 'any',
     assignee_id: null as string | null,
   });
 
@@ -32,17 +30,7 @@ export function ChoreConfigurator({
 
   // Update config when selectedItem changes
   useEffect(() => {
-    if (selectedItem) {
-      setConfig(prev => ({
-        ...prev,
-        time_of_day: selectedItem.time_of_day,
-      }));
-    } else if (customData) {
-      setConfig(prev => ({
-        ...prev,
-        time_of_day: customData.time_of_day || 'any',
-      }));
-    }
+    // No time_of_day to update anymore
   }, [selectedItem, customData]);
 
   const validateConfig = () => {
@@ -70,7 +58,6 @@ export function ChoreConfigurator({
     if (validateConfig()) {
       onSubmit({
         date: config.date,
-        time_of_day: config.time_of_day,
         assignee_id: config.assignee_id,
       });
     }
@@ -84,15 +71,19 @@ export function ChoreConfigurator({
     }
   };
 
-  const timeOptions = [
-    { value: 'morning', label: '🌅 Morning', desc: 'Before noon' },
-    { value: 'afternoon', label: '☀️ Afternoon', desc: 'Noon to evening' },
-    { value: 'evening', label: '🌙 Evening', desc: 'After 6 PM' },
-    { value: 'night', label: '🌃 Night', desc: 'After 9 PM' },
-    { value: 'any', label: '⏰ Anytime', desc: 'No specific time' },
-  ];
 
   const currentItem = selectedItem || customData;
+
+  // Helper function to get time of day text
+  const getTimeOfDayText = (timeOfDay: string) => {
+    switch (timeOfDay) {
+      case 'morning': return 'morning';
+      case 'afternoon': return 'afternoon';
+      case 'evening': return 'evening';
+      case 'night': return 'night';
+      default: return '';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -106,6 +97,10 @@ export function ChoreConfigurator({
           <div>
             <h4 className="font-medium text-gray-900">
               {currentItem?.title || 'Custom Chore'}
+              {currentItem?.time_of_day && currentItem.time_of_day !== 'any' && (
+                <span className="text-xs text-gray-500 ml-1">({getTimeOfDayText(currentItem.time_of_day)})</span>
+              )}
+              {currentItem && !currentItem.predefined && <span className="ml-1">✨</span>}
             </h4>
             <div className="flex items-center space-x-2 mt-1">
               <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
@@ -133,7 +128,7 @@ export function ChoreConfigurator({
             value={config.date}
             onChange={(e) => handleChange('date', e.target.value)}
             min={new Date().toISOString().split('T')[0]}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-3 text-base border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer ${
               errors.date ? 'border-red-300' : 'border-gray-300'
             }`}
           />
@@ -142,30 +137,6 @@ export function ChoreConfigurator({
           )}
         </div>
 
-        {/* Time of Day */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Time of Day
-          </label>
-          <div className="space-y-2">
-            {timeOptions.map(option => (
-              <label key={option.value} className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50">
-                <input
-                  type="radio"
-                  name="time_of_day"
-                  value={option.value}
-                  checked={config.time_of_day === option.value}
-                  onChange={(e) => handleChange('time_of_day', e.target.value)}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">{option.label}</div>
-                  <div className="text-sm text-gray-500">{option.desc}</div>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
 
         {/* Assignee */}
         <div>

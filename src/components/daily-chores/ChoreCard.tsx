@@ -35,6 +35,17 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
     }
   };
 
+  // Helper function to get time of day text
+  const getTimeOfDayText = (timeOfDay: string) => {
+    switch (timeOfDay) {
+      case 'morning': return 'morning';
+      case 'afternoon': return 'afternoon';
+      case 'evening': return 'evening';
+      case 'night': return 'night';
+      default: return '';
+    }
+  };
+
   return (
     <Card
       ref={drag}
@@ -47,7 +58,13 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
           <div className="flex items-center space-x-3 min-w-0">
             <span className="text-2xl flex-shrink-0">{chore.catalogEmoji || '📋'}</span>
             <div className="min-w-0 flex-1">
-              <h3 className="font-medium text-gray-900 truncate">{chore.catalogTitle}</h3>
+              <h3 className="font-medium text-gray-900 truncate">
+                {chore.catalogTitle}
+                {chore.catalogTimeOfDay !== 'any' && (
+                  <span className="text-xs text-gray-500 ml-1">({getTimeOfDayText(chore.catalogTimeOfDay)})</span>
+                )}
+                {!chore.catalogPredefined && <span className="ml-1">✨</span>}
+              </h3>
               <div className="flex items-center space-x-2 mt-1">
                 <Badge variant="outline" className="text-xs flex-shrink-0">
                   {chore.points} pts
