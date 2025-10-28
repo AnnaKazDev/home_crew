@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DeleteChoreModal } from './DeleteChoreModal';
 import type { ChoreViewModel } from '@/types/daily-view.types';
 import type { MemberDTO } from '@/types';
 
@@ -14,6 +15,8 @@ interface ChoreCardProps {
 }
 
 export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps) {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const [{ isDragging }, drag] = useDrag({
     type: 'chore',
     item: { id: chore.id },
@@ -21,6 +24,16 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
       isDragging: monitor.isDragging(),
     }),
   });
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (onDelete) {
+      onDelete();
+    }
+  };
 
   return (
     <Card
@@ -61,7 +74,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={onDelete}
+                onClick={handleDeleteClick}
                 className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50"
                 title="Delete chore"
               >
@@ -87,6 +100,13 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
           </div>
         )}
       </CardContent>
+
+      <DeleteChoreModal
+        isOpen={isDeleteModalOpen}
+        chore={chore}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+      />
     </Card>
   );
 }

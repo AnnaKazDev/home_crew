@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ChoreCard } from './ChoreCard';
+import { ChoreCardSkeleton } from './ChoreCardSkeleton';
 import { AddChoreButton } from './AddChoreButton';
 import type { ChoreViewModel } from '@/types/daily-view.types';
 import type { MemberDTO } from '@/types';
@@ -10,6 +11,7 @@ interface ChoreColumnProps {
   status: 'todo' | 'done';
   chores: ChoreViewModel[];
   members: MemberDTO[];
+  isLoading?: boolean;
   onDrop: (choreId: string) => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
@@ -21,6 +23,7 @@ export function ChoreColumn({
   status,
   chores,
   members,
+  isLoading = false,
   onDrop,
   onChoreAssign,
   onChoreDelete,
@@ -43,7 +46,7 @@ export function ChoreColumn({
         isOver ? 'bg-blue-50 border-2 border-dashed border-blue-300' : ''
       }`}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 min-h-[40px]">
         <h2 className={`text-lg font-semibold ${
           status === 'todo'
             ? 'text-blue-800'
@@ -57,27 +60,37 @@ export function ChoreColumn({
       </div>
 
       <div className="space-y-4">
-        {chores.map(chore => (
-          <ChoreCard
-            key={chore.id}
-            chore={chore}
-            members={members}
-            onAssign={onChoreAssign ? () => onChoreAssign(chore) : undefined}
-            onDelete={onChoreDelete ? () => onChoreDelete(chore.id) : undefined}
-          />
-        ))}
+        {isLoading ? (
+          // Show skeleton cards when loading
+          Array.from({ length: 3 }).map((_, index) => (
+            <ChoreCardSkeleton key={`skeleton-${index}`} />
+          ))
+        ) : (
+          // Show actual cards when loaded
+          <>
+            {chores.map(chore => (
+              <ChoreCard
+                key={chore.id}
+                chore={chore}
+                members={members}
+                onAssign={onChoreAssign ? () => onChoreAssign(chore) : undefined}
+                onDelete={onChoreDelete ? () => onChoreDelete(chore.id) : undefined}
+              />
+            ))}
 
-        {chores.length === 0 && (
-          <div className={`flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed rounded-lg ${
-            isOver ? 'border-blue-300 bg-blue-25' : 'border-gray-200'
-          }`}>
-            <p className="text-gray-500">
-              {status === 'todo' ? 'No tasks to do!' : 'No completed chores yet'}
-            </p>
-            {status === 'done' && (
-              <p className="text-sm text-gray-400 mt-1">Drag chores here when done!</p>
+            {chores.length === 0 && (
+              <div className={`flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed rounded-lg ${
+                isOver ? 'border-blue-300 bg-blue-25' : 'border-gray-200'
+              }`}>
+                <p className="text-gray-500">
+                  {status === 'todo' ? 'No tasks to do!' : 'No completed chores yet'}
+                </p>
+                {status === 'done' && (
+                  <p className="text-sm text-gray-400 mt-1">Drag chores here when done!</p>
+                )}
+              </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

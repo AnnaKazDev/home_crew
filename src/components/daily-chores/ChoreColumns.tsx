@@ -7,6 +7,7 @@ interface ChoreColumnsProps {
   todoChores: ChoreViewModel[];
   doneChores: ChoreViewModel[];
   members: MemberDTO[];
+  isLoading?: boolean;
   onChoreDrop: (choreId: string, targetStatus: 'todo' | 'done') => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
@@ -17,6 +18,7 @@ export function ChoreColumns({
   todoChores,
   doneChores,
   members,
+  isLoading = false,
   onChoreDrop,
   onChoreAssign,
   onChoreDelete,
@@ -37,6 +39,7 @@ export function ChoreColumns({
         status="todo"
         chores={todoChores}
         members={members}
+        isLoading={isLoading}
         onDrop={handleTodoDrop}
         onChoreAssign={onChoreAssign}
         onChoreDelete={onChoreDelete}
@@ -48,6 +51,7 @@ export function ChoreColumns({
         status="done"
         chores={doneChores}
         members={members}
+        isLoading={isLoading}
         onDrop={handleDoneDrop}
         onChoreAssign={onChoreAssign}
         onChoreDelete={onChoreDelete}
