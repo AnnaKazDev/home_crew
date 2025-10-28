@@ -1,63 +1,58 @@
 import React from 'react';
 import { ChoreColumn } from './ChoreColumn';
-import type { ChoreColumnsProps, ChoreViewModel } from '@/types/daily-view.types';
+
+interface Chore {
+  id: string;
+  title: string;
+  emoji: string;
+  points: number;
+  category: string;
+  assigneeName?: string;
+  assigneeInitial?: string;
+  assigneeColor?: string;
+}
+
+interface ChoreColumnsProps {
+  todoChores: Chore[];
+  doneChores: Chore[];
+  onChoreDrop: (choreId: string, targetStatus: 'todo' | 'done') => void;
+  onChoreAssign?: (chore: Chore) => void;
+  onChoreDelete?: (choreId: string) => void;
+}
 
 export function ChoreColumns({
-  chores,
-  members,
-  currentUserId,
-  onChoreUpdate,
-  onChoreClick,
+  todoChores,
+  doneChores,
+  onChoreDrop,
+  onChoreAssign,
+  onChoreDelete
 }: ChoreColumnsProps) {
-  // Filter chores by status - need to access status from DailyChoreDTO
-  const todoChores = chores.filter((chore: ChoreViewModel) => {
-    // Status is inherited from DailyChoreDTO
-    return (chore as any).status !== 'done';
-  });
-
-  const doneChores = chores.filter((chore: ChoreViewModel) => {
-    // Status is inherited from DailyChoreDTO
-    return (chore as any).status === 'done';
-  });
-
-  const handleChoreDrop = (choreId: string, targetStatus: 'todo' | 'done') => {
-    // Find the chore and update its status
-    const chore = chores.find(c => c.id === choreId);
-    if (chore) {
-      // Only update if status is actually changing
-      const currentStatus = (chore as any).status;
-      if (currentStatus !== targetStatus) {
-        onChoreUpdate(choreId, { status: targetStatus });
-      }
-    }
+  const handleTodoDrop = (choreId: string) => {
+    onChoreDrop(choreId, 'todo');
   };
 
-  const getAssigneeForChore = (chore: ChoreViewModel) => {
-    // Find assignee from members list
-    if (chore.assignee_id) {
-      return members.find(member => member.user_id === chore.assignee_id) || null;
-    }
-    return null;
+  const handleDoneDrop = (choreId: string) => {
+    onChoreDrop(choreId, 'done');
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <ChoreColumn
         title="To Do"
         status="todo"
         chores={todoChores}
-        members={members}
-        onDrop={(choreId) => handleChoreDrop(choreId, 'todo')}
-        onChoreClick={onChoreClick}
+        onDrop={handleTodoDrop}
+        onChoreAssign={onChoreAssign}
+        onChoreDelete={onChoreDelete}
       />
 
       <ChoreColumn
         title="Done"
         status="done"
         chores={doneChores}
-        members={members}
-        onDrop={(choreId) => handleChoreDrop(choreId, 'done')}
-        onChoreClick={onChoreClick}
+        onDrop={handleDoneDrop}
+        onChoreAssign={onChoreAssign}
+        onChoreDelete={onChoreDelete}
       />
     </div>
   );

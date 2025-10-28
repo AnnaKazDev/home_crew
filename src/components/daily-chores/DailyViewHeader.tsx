@@ -3,43 +3,50 @@ import { PointsBadge } from './PointsBadge';
 import { DateNavigator } from './DateNavigator';
 import { AddChoreButton } from './AddChoreButton';
 
+interface DailyViewHeaderProps {
+  currentDate: string;
+  totalPoints: number;
+  choresCount: number;
+  onDateChange: (date: string) => void;
+  onAddChoreClick: () => void;
+}
+
 export function DailyViewHeader({
   currentDate,
   totalPoints,
   choresCount,
   onDateChange,
   onAddChoreClick,
-}: {
-  currentDate: string;
-  totalPoints: number;
-  choresCount: number;
-  onDateChange: (date: string) => void;
-  onAddChoreClick: () => void;
-}) {
+}: DailyViewHeaderProps) {
   const isLimitReached = choresCount >= 50;
 
   return (
-    <div className="flex items-center justify-between">
-      {/* Left side: Points badge */}
-      <PointsBadge totalPoints={totalPoints} />
+    <div className="space-y-6">
+      {/* Points badge */}
+      <div className="flex justify-center">
+        <PointsBadge totalPoints={totalPoints} />
+      </div>
 
-      {/* Center: Date navigator */}
-      <DateNavigator
-        currentDate={currentDate}
-        onDateChange={onDateChange}
-      />
+      {/* Date navigator and add button */}
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <DateNavigator
+            currentDate={currentDate}
+            onDateChange={onDateChange}
+          />
+        </div>
 
-      {/* Right side: Add chore button */}
-      <div className="flex items-center space-x-2">
-        {isLimitReached && (
-          <span className="text-sm text-gray-500">
-            Daily limit reached ({choresCount}/50)
-          </span>
-        )}
-        <AddChoreButton
-          onClick={onAddChoreClick}
-          disabled={isLimitReached}
-        />
+        <div className="flex items-center space-x-4 ml-6">
+          {isLimitReached && (
+            <span className="text-sm text-gray-500">
+              Daily limit reached ({choresCount}/50)
+            </span>
+          )}
+          <AddChoreButton
+            onClick={onAddChoreClick}
+            disabled={isLimitReached}
+          />
+        </div>
       </div>
     </div>
   );
