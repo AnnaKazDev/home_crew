@@ -90,7 +90,7 @@ export function useDailyView() {
 
   // Catalog items: predefined + custom for this household
   const catalogQuery = useQuery({
-    queryKey: [...dailyViewKeys.all, 'catalog', householdQuery.data?.id] as const,
+    queryKey: [...dailyViewKeys.all, 'catalog', effectiveHouseholdId] as const,
     queryFn: async () => {
       if (useApi) {
         const res = await fetch('/api/v1/catalog?type=all');
@@ -119,7 +119,27 @@ export function useDailyView() {
       }
 
       // Transform to ChoreViewModel with catalog enrichment
-      const catalog = (catalogQuery.data || []) as Array<{ id: string; title: string; emoji: string | null; category: string }>;
+      let catalog = (catalogQuery.data || []) as Array<{ id: string; title: string; emoji: string | null; category: string }>;
+      // If some catalog items are missing, try to fetch them individually (API mode only)
+      if (useApi) {
+        const missingIds = chores
+          .map((c) => c.chore_catalog_id)
+          .filter((id) => !catalog.some((ci) => ci.id === id));
+        if (missingIds.length > 0) {
+          const fetched = await Promise.all(
+            missingIds.map(async (id) => {
+              try {
+                const res = await fetch(`/api/v1/catalog/${id}`);
+                if (!res.ok) return null;
+                return await res.json();
+              } catch {
+                return null;
+              }
+            })
+          );
+          catalog = catalog.concat(fetched.filter(Boolean) as any[]);
+        }
+      }
       const viewModels: ChoreViewModel[] = chores.map(chore => {
         const catalogItem = catalog.find((ci) => ci.id === chore.chore_catalog_id);
         const catalogTitle = catalogItem?.title ?? `Chore ${chore.chore_catalog_id}`;
