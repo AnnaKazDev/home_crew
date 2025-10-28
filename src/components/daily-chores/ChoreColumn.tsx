@@ -79,7 +79,7 @@ export function ChoreColumn({
             ))}
 
             {chores.length === 0 && (
-              <div className={`flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed rounded-lg ${
+              <div className={`flex flex-col items-center justify-center h-[133px] text-gray-400 border-2 border-dashed rounded-lg ${
                 isOver ? 'border-blue-300 bg-blue-25' : 'border-gray-200'
               }`}>
                 <p className="text-gray-500">
