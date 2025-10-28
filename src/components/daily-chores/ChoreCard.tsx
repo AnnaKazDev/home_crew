@@ -4,14 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { ChoreViewModel } from '@/types/daily-view.types';
+import type { MemberDTO } from '@/types';
 
 interface ChoreCardProps {
   chore: ChoreViewModel;
+  members: MemberDTO[];
   onAssign?: () => void;
   onDelete?: () => void;
 }
 
-export function ChoreCard({ chore, onAssign, onDelete }: ChoreCardProps) {
+export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps) {
   const [{ isDragging }, drag] = useDrag({
     type: 'chore',
     item: { id: chore.id },
@@ -28,22 +30,22 @@ export function ChoreCard({ chore, onAssign, onDelete }: ChoreCardProps) {
       }`}
     >
       <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3">
-            <span className="text-2xl">{chore.catalogEmoji || '📋'}</span>
-            <div>
-              <h3 className="font-medium text-gray-900">{chore.catalogTitle}</h3>
+        <div className="grid grid-cols-[1fr_auto] gap-2">
+          <div className="flex items-center space-x-3 min-w-0">
+            <span className="text-2xl flex-shrink-0">{chore.catalogEmoji || '📋'}</span>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-medium text-gray-900 truncate">{chore.catalogTitle}</h3>
               <div className="flex items-center space-x-2 mt-1">
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs flex-shrink-0">
                   {chore.points} pts
                 </Badge>
-                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 truncate">
                   {chore.catalogCategory}
                 </Badge>
               </div>
             </div>
           </div>
-          <div className="flex space-x-1">
+          <div className="flex space-x-1 flex-shrink-0">
             {onAssign && (
               <Button
                 variant="ghost"
@@ -70,12 +72,8 @@ export function ChoreCard({ chore, onAssign, onDelete }: ChoreCardProps) {
         </div>
         {chore.assigneeName && (
           <div className="flex items-center space-x-2 pt-3 border-t border-gray-100 mt-3">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-              chore.assigneeColor === 'blue' ? 'bg-blue-200 text-blue-800' :
-              chore.assigneeColor === 'green' ? 'bg-green-200 text-green-800' :
-              'bg-gray-200 text-gray-600'
-            }`}>
-              {chore.assigneeInitial || '?'}
+            <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center text-xs font-medium text-blue-800">
+              {chore.assigneeName.charAt(0).toUpperCase()}
             </div>
             <span className="text-sm text-gray-600">{chore.assigneeName}</span>
           </div>

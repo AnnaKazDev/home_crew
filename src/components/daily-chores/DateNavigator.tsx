@@ -35,34 +35,63 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-      <Button
-        variant="outline"
-        onClick={handlePrevDay}
-        className="text-gray-600 hover:text-gray-800"
-      >
-        ⬅️ Previous
-      </Button>
+    <div className="p-4 bg-white rounded-lg shadow mb-4">
+      {/* Desktop layout */}
+      <div className="hidden md:flex items-center justify-between">
+        <Button
+          variant="outline"
+          onClick={handlePrevDay}
+          className="text-gray-600 hover:text-gray-800"
+        >
+          ⬅️ Previous
+        </Button>
 
-      <div className="text-center">
-        <div className="text-lg font-semibold mb-2">
-          {formatDate(currentDate)}
+        <div className="text-center">
+          <div className="text-lg font-semibold mb-2">
+            {formatDate(currentDate)}
+          </div>
+          <Input
+            type="date"
+            value={currentDate}
+            onChange={handleDateChange}
+            className="w-auto"
+          />
         </div>
+
+        <Button
+          variant="outline"
+          onClick={handleNextDay}
+          className="text-gray-600 hover:text-gray-800"
+        >
+          Next ➡️
+        </Button>
+      </div>
+
+      {/* Mobile layout */}
+      <div className="md:hidden flex items-center justify-between">
+        <Button
+          variant="outline"
+          onClick={handlePrevDay}
+          className="text-gray-600 hover:text-gray-800"
+        >
+          ⬅️
+        </Button>
+
         <Input
           type="date"
           value={currentDate}
           onChange={handleDateChange}
           className="w-auto"
         />
-      </div>
 
-      <Button
-        variant="outline"
-        onClick={handleNextDay}
-        className="text-gray-600 hover:text-gray-800"
-      >
-        Next ➡️
-      </Button>
+        <Button
+          variant="outline"
+          onClick={handleNextDay}
+          className="text-gray-600 hover:text-gray-800"
+        >
+          ➡️
+        </Button>
+      </div>
     </div>
   );
 }

@@ -88,7 +88,7 @@ export default function DailyView() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="min-h-screen bg-gray-50 p-32">
+      <div className="min-h-screen bg-gray-50 pt-8 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Daily Chores - Working! 🎉</h1>
 
@@ -104,6 +104,7 @@ export default function DailyView() {
           <ChoreColumns
             todoChores={todoChores}
             doneChores={doneChores}
+            members={members}
             onChoreDrop={handleChoreDrop}
             onChoreAssign={openAssignModal}
             onChoreDelete={handleChoreDelete}
