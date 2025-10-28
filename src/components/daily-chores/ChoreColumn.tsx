@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ChoreCard } from './ChoreCard';
+import { AddChoreButton } from './AddChoreButton';
 import type { ChoreViewModel } from '@/types/daily-view.types';
 
 interface ChoreColumnProps {
@@ -10,6 +11,7 @@ interface ChoreColumnProps {
   onDrop: (choreId: string) => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
+  onAddChoreClick?: () => void;
 }
 
 export function ChoreColumn({
@@ -18,7 +20,8 @@ export function ChoreColumn({
   chores,
   onDrop,
   onChoreAssign,
-  onChoreDelete
+  onChoreDelete,
+  onAddChoreClick,
 }: ChoreColumnProps) {
   const [{ isOver }, drop] = useDrop({
     accept: 'chore',
@@ -45,6 +48,9 @@ export function ChoreColumn({
         }`}>
           {title} ({chores.length})
         </h2>
+        {status === 'todo' && onAddChoreClick && (
+          <AddChoreButton onClick={onAddChoreClick} />
+        )}
       </div>
 
       <div className="space-y-4">

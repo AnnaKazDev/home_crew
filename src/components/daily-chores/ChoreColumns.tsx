@@ -8,6 +8,7 @@ interface ChoreColumnsProps {
   onChoreDrop: (choreId: string, targetStatus: 'todo' | 'done') => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
+  onAddChoreClick?: () => void;
 }
 
 export function ChoreColumns({
@@ -15,7 +16,8 @@ export function ChoreColumns({
   doneChores,
   onChoreDrop,
   onChoreAssign,
-  onChoreDelete
+  onChoreDelete,
+  onAddChoreClick,
 }: ChoreColumnsProps) {
   const handleTodoDrop = (choreId: string) => {
     onChoreDrop(choreId, 'todo');
@@ -34,6 +36,7 @@ export function ChoreColumns({
         onDrop={handleTodoDrop}
         onChoreAssign={onChoreAssign}
         onChoreDelete={onChoreDelete}
+        onAddChoreClick={onAddChoreClick}
       />
 
       <ChoreColumn
