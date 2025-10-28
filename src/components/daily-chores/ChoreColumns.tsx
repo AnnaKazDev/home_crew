@@ -1,22 +1,12 @@
 import React from 'react';
 import { ChoreColumn } from './ChoreColumn';
-
-interface Chore {
-  id: string;
-  title: string;
-  emoji: string;
-  points: number;
-  category: string;
-  assigneeName?: string;
-  assigneeInitial?: string;
-  assigneeColor?: string;
-}
+import type { ChoreViewModel } from '@/types/daily-view.types';
 
 interface ChoreColumnsProps {
-  todoChores: Chore[];
-  doneChores: Chore[];
+  todoChores: ChoreViewModel[];
+  doneChores: ChoreViewModel[];
   onChoreDrop: (choreId: string, targetStatus: 'todo' | 'done') => void;
-  onChoreAssign?: (chore: Chore) => void;
+  onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
 }
 

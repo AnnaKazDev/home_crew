@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getHouseholdMembers } from "@/lib/household-members.service";
-import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -13,7 +13,7 @@ export const prerender = false;
 export const GET: APIRoute = async (context) => {
   try {
     // For development - use default user (same as other endpoints)
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     // Get household members for current user
     try {

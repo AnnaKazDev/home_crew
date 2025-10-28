@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { updateCatalogItem, deleteCatalogItem, UpdateCatalogItemCmdSchema } from "@/lib/choresCatalog.service";
-import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -45,7 +45,7 @@ export const PATCH: APIRoute = async (context) => {
     }
 
     // Get household for the current user
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
     const { data: householdMember, error: householdError } = await supabase
       .from("household_members")
       .select("household_id")
@@ -119,7 +119,7 @@ export const DELETE: APIRoute = async (context) => {
     }
 
     // Get household for the current user
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
     const { data: householdMember, error: householdError } = await supabase
       .from("household_members")
       .select("household_id")

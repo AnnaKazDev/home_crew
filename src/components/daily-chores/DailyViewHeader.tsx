@@ -9,6 +9,7 @@ interface DailyViewHeaderProps {
   choresCount: number;
   onDateChange: (date: string) => void;
   onAddChoreClick: () => void;
+  canAddChores?: boolean;
 }
 
 export function DailyViewHeader({
@@ -17,6 +18,7 @@ export function DailyViewHeader({
   choresCount,
   onDateChange,
   onAddChoreClick,
+  canAddChores = true,
 }: DailyViewHeaderProps) {
   const isLimitReached = choresCount >= 50;
 
@@ -44,7 +46,7 @@ export function DailyViewHeader({
           )}
           <AddChoreButton
             onClick={onAddChoreClick}
-            disabled={isLimitReached}
+            disabled={isLimitReached || !canAddChores}
           />
         </div>
       </div>

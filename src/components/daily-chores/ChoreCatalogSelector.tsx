@@ -1,106 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import type { CatalogItemDTO } from '@/types';
 
-// Mock catalog data for development
-const MOCK_CATALOG_ITEMS: CatalogItemDTO[] = [
-  {
-    id: 'cat-1',
-    title: 'Dust furniture',
-    emoji: '🪑',
-    time_of_day: 'any',
-    category: 'Living Room',
-    points: 25,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  },
-  {
-    id: 'cat-2',
-    title: 'Wash dishes',
-    emoji: '🍽️',
-    time_of_day: 'any',
-    category: 'Kitchen',
-    points: 40,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  },
-  {
-    id: 'cat-3',
-    title: 'Take out trash',
-    emoji: '🗑️',
-    time_of_day: 'any',
-    category: 'Kitchen',
-    points: 20,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  },
-  {
-    id: 'cat-4',
-    title: 'Clean stovetop',
-    emoji: '🔥',
-    time_of_day: 'any',
-    category: 'Kitchen',
-    points: 60,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  },
-  {
-    id: 'cat-5',
-    title: 'Change bed sheets',
-    emoji: '🛌',
-    time_of_day: 'any',
-    category: 'Bedroom',
-    points: 35,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  },
-  {
-    id: 'cat-6',
-    title: 'Clean toilet',
-    emoji: '🚽',
-    time_of_day: 'any',
-    category: 'Bathroom',
-    points: 60,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  },
-  {
-    id: 'cat-7',
-    title: 'Make bed',
-    emoji: '🛏️',
-    time_of_day: 'morning',
-    category: 'Bedroom',
-    points: 5,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  },
-  {
-    id: 'cat-8',
-    title: 'Feed dog',
-    emoji: '🐕',
-    time_of_day: 'morning',
-    category: 'Pets',
-    points: 5,
-    predefined: true,
-    created_by_user_id: null,
-    created_at: '2025-01-01T00:00:00Z',
-    deleted_at: null
-  }
-];
-
 interface ChoreCatalogSelectorProps {
   onItemSelect: (item: CatalogItemDTO) => void;
   onCreateCustom: () => void;
@@ -125,12 +25,14 @@ export function ChoreCatalogSelector({
     try {
       setIsLoading(true);
       setError(null);
-
-      // Mock API delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      // Use mock data
-      setCatalogItems(MOCK_CATALOG_ITEMS);
+      const controller = new AbortController();
+      const res = await fetch('/api/v1/catalog?type=all', { signal: controller.signal });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Failed to load catalog');
+      }
+      const items = (await res.json()) as CatalogItemDTO[];
+      setCatalogItems(items);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load catalog');
     } finally {

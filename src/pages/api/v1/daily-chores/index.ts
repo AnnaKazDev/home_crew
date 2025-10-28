@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { CreateDailyChoreCmdSchema, getDailyChores, createDailyChore } from "@/lib/dailyChores.service";
 import { getHouseholdForUser } from "@/lib/households.service";
-import { supabaseClient, supabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 import type { Database } from "@/db/database.types";
 
 export const prerender = false;
@@ -46,7 +46,7 @@ export const GET: APIRoute = async (context) => {
       );
     }
 
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     // Get household for the current user
     const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);
@@ -119,10 +119,10 @@ export const POST: APIRoute = async (context) => {
       });
     }
 
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     // Get household for the current user
-    const household = await getHouseholdForUser(supabaseClient as SupabaseClient, DEFAULT_USER_ID);
+    const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);
     if (!household) {
       return new Response(
         JSON.stringify({
@@ -138,11 +138,7 @@ export const POST: APIRoute = async (context) => {
 
     // Create the daily chore using service layer (use service client to bypass RLS)
     try {
-      const dailyChore = await createDailyChore(
-        supabaseServiceClient as SupabaseClient,
-        household.id,
-        validationResult.data
-      );
+      const dailyChore = await createDailyChore(supabase, household.id, validationResult.data);
 
       return new Response(JSON.stringify(dailyChore), {
         status: 201,

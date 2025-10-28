@@ -1,4 +1,4 @@
-import type { DailyChoreDTO, MemberDTO, HouseholdDTO } from './types';
+import type { DailyChoreDTO, MemberDTO, HouseholdDTO } from '@/types';
 
 /**
  * ViewModel types for Daily Chores View
