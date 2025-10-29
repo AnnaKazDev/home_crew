@@ -90,9 +90,9 @@ export default function DailyView() {
   return (
     <DndProvider backend={HTML5Backend}>
       <FloatingThemeToggle />
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-8 px-4 md:px-8">
+      <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Daily Chores - Working! 🎉</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8">Daily Chores - Working! 🎉</h1>
 
         {/* Header with Shadcn components */}
         <DailyViewHeader
@@ -115,7 +115,7 @@ export default function DailyView() {
           />
 
           {/* Footer */}
-          <div className="mt-12 text-center text-gray-500">
+          <div className="mt-12 text-center text-muted-foreground">
             <p>🎉 Daily Chores View with working drag & drop! Move tasks between columns.</p>
             <p className="text-sm mt-2">Points update automatically when tasks are completed!</p>
           </div>

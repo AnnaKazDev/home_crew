@@ -49,7 +49,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
   return (
     <Card
       ref={drag}
-      className={`hover:shadow-md transition-shadow cursor-move border border-gray-200 dark:border-gray-700 dark:bg-gray-800 ${
+      className={`hover:shadow-md transition-shadow cursor-move border border-border bg-card ${
         isDragging ? 'opacity-50' : ''
       }`}
     >
@@ -58,19 +58,19 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
           <div className="flex items-center space-x-3 min-w-0">
             <span className="text-2xl flex-shrink-0">{chore.catalogEmoji || '📋'}</span>
             <div className="min-w-0 flex-1">
-              <h3 className="font-medium text-gray-900 dark:text-white truncate">
+              <h3 className="font-medium text-foreground truncate">
                 {chore.catalogTitle}
                 {chore.catalogTimeOfDay !== 'any' && (
-                  <span className="text-xs text-gray-500 ml-1">({getTimeOfDayText(chore.catalogTimeOfDay)})</span>
+                  <span className="text-xs text-muted-foreground ml-1">({getTimeOfDayText(chore.catalogTimeOfDay)})</span>
                 )}
                 {!chore.catalogPredefined && <span className="ml-1">✨</span>}
               </h3>
               <div className="flex items-center space-x-2 mt-1">
+                <Badge variant="secondary" className="text-xs truncate text-black">
+                  {chore.catalogCategory}
+                </Badge>
                 <Badge variant="outline" className="text-xs flex-shrink-0">
                   {chore.points} pts
-                </Badge>
-                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 truncate">
-                  {chore.catalogCategory}
                 </Badge>
               </div>
             </div>
@@ -81,7 +81,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
                 variant="ghost"
                 size="sm"
                 onClick={onAssign}
-                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50"
+                className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10"
                 title="Assign chore"
               >
                 👤
@@ -92,7 +92,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
                 variant="ghost"
                 size="sm"
                 onClick={handleDeleteClick}
-                className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 title="Delete chore"
               >
                 🗑️
@@ -101,19 +101,19 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
           </div>
         </div>
         {chore.assigneeName && (
-          <div className="flex items-center space-x-2 pt-3 border-t border-gray-100 mt-3">
-            <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center text-xs font-medium text-blue-800">
+          <div className="flex items-center space-x-2 pt-3 border-t border-border mt-3">
+            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-xs font-medium text-primary-foreground">
               {chore.assigneeName.charAt(0).toUpperCase()}
             </div>
-            <span className="text-sm text-gray-600 dark:text-gray-300">{chore.assigneeName}</span>
+            <span className="text-sm text-muted-foreground">{chore.assigneeName}</span>
           </div>
         )}
         {!chore.assigneeName && (
-          <div className="flex items-center space-x-2 pt-3 border-t border-gray-100 mt-3">
-            <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium text-gray-600">?</span>
+          <div className="flex items-center space-x-2 pt-3 border-t border-border mt-3">
+            <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center">
+              <span className="text-xs font-medium text-muted-foreground">?</span>
             </div>
-            <span className="text-sm text-gray-400 dark:text-gray-500">Unassigned</span>
+            <span className="text-sm text-muted-foreground">Unassigned</span>
           </div>
         )}
       </CardContent>

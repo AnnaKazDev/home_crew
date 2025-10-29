@@ -42,15 +42,15 @@ export function ChoreColumn({
   return (
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
-      className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow min-h-[400px] transition-colors ${
-        isOver ? 'bg-blue-50 dark:bg-blue-900/50 border-2 border-dashed border-blue-300' : ''
+      className={`bg-card p-6 rounded-lg shadow min-h-[400px] transition-colors ${
+        isOver ? 'bg-accent border-2 border-dashed border-accent' : ''
       }`}
     >
       <div className="flex items-center justify-between mb-4 min-h-[40px]">
         <h2 className={`text-lg font-semibold ${
           status === 'todo'
-            ? 'text-blue-800'
-            : 'text-green-800'
+            ? 'text-primary'
+            : 'text-primary'
         }`}>
           {title} ({chores.length})
         </h2>
@@ -79,14 +79,14 @@ export function ChoreColumn({
             ))}
 
             {chores.length === 0 && (
-              <div className={`flex flex-col items-center justify-center h-[133px] text-gray-400 border-2 border-dashed rounded-lg ${
-                isOver ? 'border-blue-300 bg-blue-25' : 'border-gray-200'
+              <div className={`flex flex-col items-center justify-center h-[133px] text-muted-foreground border-2 border-dashed rounded-lg ${
+                isOver ? 'border-accent bg-accent/50' : 'border-border'
               }`}>
-                <p className="text-gray-500">
+                <p className="text-muted-foreground">
                   {status === 'todo' ? 'No tasks to do!' : 'No completed chores yet'}
                 </p>
                 {status === 'done' && (
-                  <p className="text-sm text-gray-400 mt-1">Drag chores here when done!</p>
+                  <p className="text-sm text-muted-foreground mt-1">Drag chores here when done!</p>
                 )}
               </div>
             )}
