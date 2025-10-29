@@ -133,8 +133,8 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
 
         <div className="py-4">
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-red-800 text-sm">{error}</p>
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive rounded-md">
+              <p className="text-destructive text-sm">{error}</p>
             </div>
           )}
 

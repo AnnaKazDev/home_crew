@@ -84,14 +84,14 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Create Custom Chore</h3>
-        <p className="text-gray-600 dark:text-gray-300">Define a new chore for your household catalog</p>
+        <h3 className="text-lg font-semibold text-foreground mb-2">Create Custom Chore</h3>
+        <p className="text-muted-foreground">Define a new chore for your household catalog</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="title" className="block text-sm font-medium text-foreground mb-1">
             Title *
           </label>
           <input
@@ -99,28 +99,28 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             id="title"
             value={formData.title}
             onChange={(e) => handleChange('title', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 ${
-              errors.title ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
+              errors.title ? 'border-destructive' : 'border-border'
             }`}
             placeholder="e.g., Wash dishes"
             maxLength={50}
           />
           {errors.title && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.title}</p>
+            <p className="mt-1 text-sm text-destructive">{errors.title}</p>
           )}
         </div>
 
         {/* Category */}
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="category" className="block text-sm font-medium text-foreground mb-1">
             Category *
           </label>
           <select
             id="category"
             value={formData.category}
             onChange={(e) => handleChange('category', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-              errors.category ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground ${
+              errors.category ? 'border-destructive' : 'border-border'
             }`}
           >
             <option value="">Select a category</option>
@@ -129,13 +129,13 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             ))}
           </select>
           {errors.category && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.category}</p>
+            <p className="mt-1 text-sm text-destructive">{errors.category}</p>
           )}
         </div>
 
         {/* Points */}
         <div>
-          <label htmlFor="points" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="points" className="block text-sm font-medium text-foreground mb-1">
             Points (0-100, divisible by 5) *
           </label>
           <input
@@ -146,18 +146,18 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             min={0}
             max={100}
             step={5}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-              errors.points ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
+              errors.points ? 'border-destructive' : 'border-border'
             }`}
           />
           {errors.points && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.points}</p>
+            <p className="mt-1 text-sm text-destructive">{errors.points}</p>
           )}
         </div>
 
         {/* Time of Day */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             Time of Day
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -169,9 +169,9 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
                   value={option.value}
                   checked={formData.time_of_day === option.value}
                   onChange={(e) => handleChange('time_of_day', e.target.value)}
-                  className="text-blue-600 focus:ring-blue-500"
+                  className="text-primary focus:ring-ring"
                 />
-                <span className="text-sm text-gray-700">{option.label}</span>
+                <span className="text-sm text-foreground">{option.label}</span>
               </label>
             ))}
           </div>
@@ -179,7 +179,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
         {/* Emoji */}
         <div>
-          <label htmlFor="emoji" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="emoji" className="block text-sm font-medium text-foreground mb-1">
             Emoji (optional)
           </label>
           <input
@@ -187,14 +187,14 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             id="emoji"
             value={formData.emoji}
             onChange={(e) => handleChange('emoji', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.emoji ? 'border-red-300' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
+              errors.emoji ? 'border-destructive' : 'border-border'
             }`}
             placeholder="e.g., 🧽"
             maxLength={1}
           />
           {errors.emoji && (
-            <p className="mt-1 text-sm text-red-600">{errors.emoji}</p>
+            <p className="mt-1 text-sm text-destructive">{errors.emoji}</p>
           )}
         </div>
 
@@ -203,13 +203,13 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            className="px-4 py-2 text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
           >
             Add Custom Chore to Catalog
           </button>
