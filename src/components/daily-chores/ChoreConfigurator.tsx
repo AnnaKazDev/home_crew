@@ -11,6 +11,7 @@ interface ChoreConfiguratorProps {
   selectedItem: CatalogItemDTO | null;
   customData: Partial<CatalogItemDTO> | null;
   members: MemberDTO[];
+  currentDate: string;
   onSubmit: (config: {
     date: string;
     assignee_id?: string | null;
@@ -23,12 +24,13 @@ export function ChoreConfigurator({
   selectedItem,
   customData,
   members,
+  currentDate,
   onSubmit,
   onCancel,
   isLoading,
 }: ChoreConfiguratorProps) {
   const [config, setConfig] = useState({
-    date: new Date().toISOString().split('T')[0],
+    date: currentDate,
     assignee_id: null as string | null,
   });
 

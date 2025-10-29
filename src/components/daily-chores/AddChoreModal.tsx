@@ -12,9 +12,10 @@ interface AddChoreModalProps {
   onClose: () => void;
   onSubmit: (cmd: CreateDailyChoreCmd) => void;
   members: MemberDTO[];
+  currentDate: string;
 }
 
-export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreModalProps) {
+export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate }: AddChoreModalProps) {
   const [currentStep, setCurrentStep] = useState<ModalStep>('catalog');
   const [selectedItem, setSelectedItem] = useState<CatalogItemDTO | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -158,6 +159,7 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members }: AddChoreMo
               selectedItem={selectedItem}
               customData={null}
               members={members}
+              currentDate={currentDate}
               onSubmit={handleConfigSubmit}
               onCancel={handleConfigCancel}
               isLoading={isLoading}

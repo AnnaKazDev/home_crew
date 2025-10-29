@@ -127,6 +127,7 @@ export default function DailyView() {
         onClose={closeAddModal}
         onSubmit={handleChoreCreate}
         members={members}
+        currentDate={currentDate}
       />
 
       {/* Assign Chore Modal */}
