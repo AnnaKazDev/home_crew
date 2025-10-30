@@ -88,9 +88,9 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
   const timeOptions = [
     { value: 'morning', label: '🌅 Morning' },
     { value: 'afternoon', label: '☀️ Afternoon' },
-    { value: 'evening', label: '🌙 Evening' },
-    { value: 'night', label: '🌃 Night' },
-    { value: 'any', label: '⏰ Anytime' },
+    { value: 'evening', label: '🌆 Evening' },
+    { value: 'night', label: '🌙 Night' },
+    { value: 'any', label: '🕐 Anytime' },
   ];
 
   return (
