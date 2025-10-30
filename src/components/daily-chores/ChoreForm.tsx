@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import EmojiPicker, { Theme } from 'emoji-picker-react';
 import type { CatalogItemDTO } from '@/types';
 
 interface ChoreFormProps {
@@ -16,6 +17,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -38,8 +40,13 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
       newErrors.points = 'Points must be divisible by 5';
     }
 
-    if (formData.emoji && formData.emoji.length > 1) {
-      newErrors.emoji = 'Emoji must be a single character';
+    if (formData.emoji) {
+      // Count visible characters (graphemes) instead of string length
+      // Some emojis are composed of multiple Unicode codepoints but are one visual character
+      const graphemeCount = Array.from(formData.emoji).length;
+      if (graphemeCount > 2) {
+        newErrors.emoji = 'Emoji must be a single character';
+      }
     }
 
     setErrors(newErrors);
@@ -66,6 +73,11 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const handleEmojiClick = (emojiData: any) => {
+    handleChange('emoji', emojiData.emoji);
+    setShowEmojiPicker(false);
   };
 
   const commonCategories = [
@@ -179,20 +191,45 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
         {/* Emoji */}
         <div>
-          <label htmlFor="emoji" className="block text-sm font-medium text-foreground mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Emoji (optional)
           </label>
-          <input
-            type="text"
-            id="emoji"
-            value={formData.emoji}
-            onChange={(e) => handleChange('emoji', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              errors.emoji ? 'border-destructive' : 'border-border'
-            }`}
-            placeholder="e.g., 🧽"
-            maxLength={1}
-          />
+          <div className="flex gap-2">
+            <input
+              type="text"
+              id="emoji"
+              value={formData.emoji}
+              onChange={(e) => handleChange('emoji', e.target.value)}
+              className={`flex-1 px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
+                errors.emoji ? 'border-destructive' : 'border-border'
+              }`}
+              placeholder="e.g., 🧽"
+              maxLength={2}
+            />
+            <button
+              type="button"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              className="px-3 py-2 border border-border rounded-md bg-background hover:bg-accent hover:text-accent-foreground text-foreground"
+            >
+              😀
+            </button>
+          </div>
+          {showEmojiPicker && (
+            <div className="mt-2">
+              <div className="rounded-md p-1 border border-border">
+                <EmojiPicker
+                  onEmojiClick={handleEmojiClick}
+                  width="100%"
+                  height={300}
+                  theme={Theme.DARK}
+                  previewConfig={{
+                    showPreview: false
+                  }}
+                  skinTonesDisabled
+                />
+              </div>
+            </div>
+          )}
           {errors.emoji && (
             <p className="mt-1 text-sm text-destructive">{errors.emoji}</p>
           )}
