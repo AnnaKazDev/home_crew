@@ -16,6 +16,8 @@ export const dailyViewKeys = {
   members: () => [...dailyViewKeys.all, 'members'] as const,
   household: () => [...dailyViewKeys.all, 'household'] as const,
   profile: () => [...dailyViewKeys.all, 'profile'] as const,
+  points: () => ['points'] as const,
+  userPoints: (userId: string) => [...dailyViewKeys.points(), 'user', userId] as const,
 };
 
 /**
@@ -247,6 +249,10 @@ export function useDailyView() {
     onSuccess: () => {
       // Invalidate and refetch chores for current date
       queryClient.invalidateQueries({ queryKey: dailyViewKeys.chores(currentDate) });
+      // Invalidate points data to refresh profile view
+      queryClient.invalidateQueries({ queryKey: dailyViewKeys.userPoints(currentUserId) });
+      // Notify other components to refresh points data
+      window.dispatchEvent(new CustomEvent('pointsDataChanged'));
       closeAddModal();
     },
     onError: (error) => {
@@ -273,6 +279,10 @@ export function useDailyView() {
     onSuccess: () => {
       // Invalidate and refetch chores for current date
       queryClient.invalidateQueries({ queryKey: dailyViewKeys.chores(currentDate) });
+      // Invalidate points data to refresh profile view
+      queryClient.invalidateQueries({ queryKey: dailyViewKeys.userPoints(currentUserId) });
+      // Notify other components to refresh points data
+      window.dispatchEvent(new CustomEvent('pointsDataChanged'));
       closeAssignModal();
     },
     onError: (error) => {
@@ -295,6 +305,10 @@ export function useDailyView() {
     onSuccess: () => {
       // Invalidate and refetch chores for current date
       queryClient.invalidateQueries({ queryKey: dailyViewKeys.chores(currentDate) });
+      // Invalidate points data to refresh profile view
+      queryClient.invalidateQueries({ queryKey: dailyViewKeys.userPoints(currentUserId) });
+      // Notify other components to refresh points data
+      window.dispatchEvent(new CustomEvent('pointsDataChanged'));
     },
     onError: (error) => {
       console.error('Failed to delete chore:', error);

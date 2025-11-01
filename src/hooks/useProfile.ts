@@ -3,6 +3,37 @@ import { getSupabaseClient, isSupabaseConfigured } from "@/db/supabase.client";
 import { getUserPointsDateRange } from "@/lib/pointsEvents.service";
 import type { ProfileDTO, UpdateProfileCmd } from "@/types";
 
+/**
+ * Calculate fresh total points from current done tasks assigned to the user
+ * This excludes points from deleted tasks
+ */
+async function calculateFreshTotalPoints(supabase: any, userId: string): Promise<number> {
+  try {
+    // Sum points from daily_chores where:
+    // - assignee_id = userId
+    // - status = 'done'
+    // - deleted_at is null
+    const { data: result, error } = await supabase
+      .from("daily_chores")
+      .select("points")
+      .eq("assignee_id", userId)
+      .eq("status", "done")
+      .is("deleted_at", null);
+
+    if (error) {
+      console.error("Error calculating fresh total points:", error);
+      return 0;
+    }
+
+    if (!result) return 0;
+
+    return result.reduce((sum: number, chore: { points: number }) => sum + (chore.points || 0), 0);
+  } catch (error) {
+    console.error("Exception calculating fresh total points:", error);
+    return 0;
+  }
+}
+
 export const useProfile = () => {
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
   const [pointsDateRange, setPointsDateRange] = useState<{firstDate: string | null, lastDate: string | null} | null>(null);
@@ -22,8 +53,19 @@ export const useProfile = () => {
         if (!res.ok) {
           throw new Error('Failed to load profile');
         }
-        const data = await res.json();
-        setProfile(data);
+        const profileData = await res.json();
+
+        // Calculate fresh total points from current done tasks
+        // For API mode, we need to use the service client to calculate fresh points
+        const supabase = getSupabaseClient();
+        const currentUserId = 'e9d12995-1f3e-491d-9628-3c4137d266d1'; // Default user for development
+        const freshTotalPoints = await calculateFreshTotalPoints(supabase, currentUserId);
+
+        // Override the total_points with fresh calculation
+        setProfile({
+          ...profileData,
+          total_points: freshTotalPoints,
+        });
       } else {
         // Use Supabase directly
         const supabase = getSupabaseClient();
@@ -34,7 +76,7 @@ export const useProfile = () => {
           // Try to get profile first
           const { data: profile, error: profileError } = await supabase
             .from("profiles")
-            .select("id, name, avatar_url, total_points")
+            .select("id, name, avatar_url")
             .eq("id", currentUserId)
             .single();
 
@@ -50,11 +92,14 @@ export const useProfile = () => {
             setProfile(mockProfile);
             setPointsDateRange({ firstDate: null, lastDate: null });
           } else {
+            // Calculate fresh total points from current done tasks
+            const freshTotalPoints = await calculateFreshTotalPoints(supabase, currentUserId);
+
             setProfile({
               id: profile.id,
               name: profile.name,
               avatar_url: profile.avatar_url,
-              total_points: profile.total_points,
+              total_points: freshTotalPoints,
               email: 'dev@example.com',
             });
 
@@ -71,7 +116,7 @@ export const useProfile = () => {
           // Production logic - get profile and email separately
           const { data: profile, error: profileError } = await supabase
             .from("profiles")
-            .select("id, name, avatar_url, total_points")
+            .select("id, name, avatar_url")
             .eq("id", currentUserId)
             .single();
 
@@ -80,6 +125,9 @@ export const useProfile = () => {
             console.error("Profile error:", profileError);
             return;
           }
+
+          // Calculate fresh total points from current done tasks
+          const freshTotalPoints = await calculateFreshTotalPoints(supabase, currentUserId);
 
           // Get email from auth.users
           const { data: userData, error: userError } = await supabase.auth.admin.getUserById(currentUserId);
@@ -94,7 +142,7 @@ export const useProfile = () => {
             id: profile.id,
             name: profile.name,
             avatar_url: profile.avatar_url,
-            total_points: profile.total_points,
+            total_points: freshTotalPoints,
             email: userData.user.email,
           });
 
@@ -191,5 +239,5 @@ export const useProfile = () => {
     fetchProfile();
   }, []);
 
-  return { profile, pointsDateRange, loading, error, updateProfile };
+  return { profile, pointsDateRange, loading, error, updateProfile, refetch: fetchProfile };
 };
