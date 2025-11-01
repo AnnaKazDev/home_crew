@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,13 +13,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { ProfileDTO } from "@/types";
 
-const profileSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name can have a maximum of 100 characters").trim(),
-  avatar_url: z.string().url("Invalid URL format").refine((url) => url.startsWith('https://'), "URL must start with https://").max(500, "URL can have a maximum of 500 characters").optional().nullable(),
-  email: z.string().email().optional(), // Not used in form, just for type compatibility
-});
-
-type ProfileFormData = z.infer<typeof profileSchema>;
+type ProfileFormData = {
+  name: string;
+  avatar_url?: string;
+  email?: string; // Not used in form, just for type compatibility
+};
 
 interface ProfileFormProps {
   profile: ProfileDTO;
@@ -32,7 +28,6 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
     defaultValues: {
       name: profile.name,
       avatar_url: profile.avatar_url || "",
@@ -54,7 +49,42 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
   };
 
   const onSubmit = async (data: ProfileFormData) => {
-    await onUpdate(data);
+    // Manual validation for name
+    if (!data.name || data.name.trim() === "") {
+      form.setError('name', { message: 'Name is required' });
+      return;
+    }
+    if (data.name.length > 100) {
+      form.setError('name', { message: 'Name can have a maximum of 100 characters' });
+      return;
+    }
+
+    // Manual validation for avatar_url
+    if (data.avatar_url && data.avatar_url.trim() !== "") {
+      if (data.avatar_url.length > 500) {
+        form.setError('avatar_url', { message: 'URL can have a maximum of 500 characters' });
+        return;
+      }
+      try {
+        const url = new URL(data.avatar_url);
+        if (url.protocol !== 'https:') {
+          form.setError('avatar_url', { message: 'URL must start with https://' });
+          return;
+        }
+      } catch {
+        form.setError('avatar_url', { message: 'Invalid URL format' });
+        return;
+      }
+    }
+
+    // Transform empty string to undefined
+    const processedData = {
+      ...data,
+      name: data.name.trim(),
+      avatar_url: data.avatar_url && data.avatar_url.trim() !== "" ? data.avatar_url : undefined
+    };
+
+    await onUpdate(processedData);
   };
 
   return (
@@ -64,12 +94,8 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
-              Email
+              Email: {profile.email}
             </label>
-            <p className="text-foreground font-medium">{profile.email}</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Email cannot be changed
-            </p>
           </div>
 
           {/* Name */}

@@ -36,7 +36,7 @@ function decodeCursor(cursor?: string): number | undefined {
  * @throws Error if database operation fails or validation fails
  */
 export async function getUserPointsEvents(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient,
   options: GetPointsEventsOptions = {}
 ): Promise<Paginated<PointsEventDTO>> {
   const { cursor, limit = 20, event_type, from_date, to_date } = options;
@@ -91,4 +91,103 @@ export async function getUserPointsEvents(
     data,
     next_cursor: nextCursor,
   };
+}
+
+/**
+ * Service function to get points date range for a user
+ *
+ * @param supabase - SupabaseClient instance
+ * @param userId - User ID to get date range for
+ * @returns Promise<{firstDate: string | null, lastDate: string | null}> - First and last date with points
+ * @throws Error if database operation fails
+ */
+export async function getUserPointsDateRange(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<{firstDate: string | null, lastDate: string | null}> {
+  // Get the earliest and latest task_date for user's points events
+  const { data: dateRange, error } = await supabase
+    .from("points_events")
+    .select("task_date")
+    .eq("user_id", userId)
+    .order("task_date", { ascending: true })
+    .limit(1);
+
+  const { data: dateRangeDesc, error: errorDesc } = await supabase
+    .from("points_events")
+    .select("task_date")
+    .eq("user_id", userId)
+    .order("task_date", { ascending: false })
+    .limit(1);
+
+  if (error || errorDesc) {
+    console.error("Error fetching points date range:", error || errorDesc);
+    throw new Error("Failed to fetch points date range");
+  }
+
+  const firstDate = dateRange && dateRange.length > 0 ? dateRange[0].task_date : null;
+  const lastDate = dateRangeDesc && dateRangeDesc.length > 0 ? dateRangeDesc[0].task_date : null;
+
+  return { firstDate, lastDate };
+}
+
+/**
+ * Service function to get daily points summary for a user over a date range
+ *
+ * @param supabase - SupabaseClient instance
+ * @param userId - User ID to get points for
+ * @param days - Number of days to look back (default: 7)
+ * @returns Promise<{date: string, points: number}[]> - Array of daily points summaries
+ * @throws Error if database operation fails
+ */
+export async function getUserDailyPointsSummary(
+  supabase: SupabaseClient,
+  userId: string,
+  days: number = 7
+): Promise<{date: string, points: number}[]> {
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(endDate.getDate() - days + 1); // Include today
+
+  const startDateStr = startDate.toISOString().split('T')[0];
+  const endDateStr = endDate.toISOString().split('T')[0];
+
+  // Generate all dates in the range
+  const allDates: {date: string, points: number}[] = [];
+  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+    allDates.push({
+      date: d.toISOString().split('T')[0],
+      points: 0
+    });
+  }
+
+  // Get points events for the date range using task_date instead of created_at
+  const { data: events, error } = await supabase
+    .from("points_events")
+    .select("points, task_date")
+    .eq("user_id", userId)
+    .gte("task_date", startDateStr)
+    .lte("task_date", endDateStr)
+    .order("task_date", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching daily points summary:", error);
+    throw new Error("Failed to fetch daily points summary");
+  }
+
+  // Aggregate points by task_date
+  const pointsByDate = new Map<string, number>();
+
+  if (events) {
+    events.forEach(event => {
+      const date = event.task_date;
+      pointsByDate.set(date, (pointsByDate.get(date) || 0) + event.points);
+    });
+  }
+
+  // Merge with all dates (ensuring we have entries for days with 0 points)
+  return allDates.map(dateEntry => ({
+    date: dateEntry.date,
+    points: pointsByDate.get(dateEntry.date) || 0
+  }));
 }

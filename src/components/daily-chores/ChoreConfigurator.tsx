@@ -47,14 +47,6 @@ export function ChoreConfigurator({
 
     if (!config.date) {
       newErrors.date = 'Date is required';
-    } else {
-      const selectedDate = new Date(config.date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (selectedDate < today) {
-        newErrors.date = 'Cannot schedule chores in the past';
-      }
     }
 
     setErrors(newErrors);
