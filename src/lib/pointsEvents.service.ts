@@ -105,19 +105,23 @@ export async function getUserPointsDateRange(
   supabase: SupabaseClient,
   userId: string
 ): Promise<{firstDate: string | null, lastDate: string | null}> {
-  // Get the earliest and latest task_date for user's points events
+  // Get the earliest and latest date for user's completed chores (exclude deleted)
   const { data: dateRange, error } = await supabase
-    .from("points_events")
-    .select("task_date")
-    .eq("user_id", userId)
-    .order("task_date", { ascending: true })
+    .from("daily_chores")
+    .select("date")
+    .eq("assignee_id", userId)
+    .eq("status", "done")
+    .is("deleted_at", null)
+    .order("date", { ascending: true })
     .limit(1);
 
   const { data: dateRangeDesc, error: errorDesc } = await supabase
-    .from("points_events")
-    .select("task_date")
-    .eq("user_id", userId)
-    .order("task_date", { ascending: false })
+    .from("daily_chores")
+    .select("date")
+    .eq("assignee_id", userId)
+    .eq("status", "done")
+    .is("deleted_at", null)
+    .order("date", { ascending: false })
     .limit(1);
 
   if (error || errorDesc) {
@@ -125,8 +129,8 @@ export async function getUserPointsDateRange(
     throw new Error("Failed to fetch points date range");
   }
 
-  const firstDate = dateRange && dateRange.length > 0 ? dateRange[0].task_date : null;
-  const lastDate = dateRangeDesc && dateRangeDesc.length > 0 ? dateRangeDesc[0].task_date : null;
+  const firstDate = dateRange && dateRange.length > 0 ? dateRange[0].date : null;
+  const lastDate = dateRangeDesc && dateRangeDesc.length > 0 ? dateRangeDesc[0].date : null;
 
   return { firstDate, lastDate };
 }
@@ -161,27 +165,29 @@ export async function getUserDailyPointsSummary(
     });
   }
 
-  // Get points events for the date range using task_date instead of created_at
-  const { data: events, error } = await supabase
-    .from("points_events")
-    .select("points, task_date")
-    .eq("user_id", userId)
-    .gte("task_date", startDateStr)
-    .lte("task_date", endDateStr)
-    .order("task_date", { ascending: true });
+  // Calculate fresh points directly from daily_chores (exclude deleted tasks)
+  const { data: chores, error } = await supabase
+    .from("daily_chores")
+    .select("points, date")
+    .eq("assignee_id", userId)
+    .eq("status", "done")
+    .is("deleted_at", null)
+    .gte("date", startDateStr)
+    .lte("date", endDateStr)
+    .order("date", { ascending: true });
 
   if (error) {
     console.error("Error fetching daily points summary:", error);
     throw new Error("Failed to fetch daily points summary");
   }
 
-  // Aggregate points by task_date
+  // Aggregate points by date
   const pointsByDate = new Map<string, number>();
 
-  if (events) {
-    events.forEach(event => {
-      const date = event.task_date;
-      pointsByDate.set(date, (pointsByDate.get(date) || 0) + event.points);
+  if (chores) {
+    chores.forEach(chore => {
+      const date = chore.date;
+      pointsByDate.set(date, (pointsByDate.get(date) || 0) + (chore.points || 0));
     });
   }
 
