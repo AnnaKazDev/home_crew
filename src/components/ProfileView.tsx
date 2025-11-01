@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useDailyPoints } from "@/hooks/useDailyPoints";
 import { toast } from "sonner";
@@ -8,8 +8,8 @@ import PointsDisplay from "./PointsDisplay";
 import PointsBreakdown from "./PointsBreakdown";
 
 const ProfileView: React.FC = () => {
-  const { profile, pointsDateRange, loading, error, updateProfile } = useProfile();
-  const { dailyPoints, loading: pointsLoading, error: pointsError } = useDailyPoints(7);
+  const { profile, pointsDateRange, loading, error, updateProfile, refetch: refetchProfile } = useProfile();
+  const { dailyPoints, loading: pointsLoading, error: pointsError, refetch: refetchDailyPoints } = useDailyPoints(7);
 
   const handleUpdate = useCallback(async (data: { name: string; avatar_url?: string | null }) => {
     try {
@@ -19,6 +19,21 @@ const ProfileView: React.FC = () => {
       toast.error("Failed to update profile");
     }
   }, [updateProfile]);
+
+  // Listen for points data changes from DailyView
+  useEffect(() => {
+    const handlePointsDataChanged = () => {
+      // Refresh profile and daily points data
+      refetchProfile();
+      refetchDailyPoints();
+    };
+
+    window.addEventListener('pointsDataChanged', handlePointsDataChanged);
+
+    return () => {
+      window.removeEventListener('pointsDataChanged', handlePointsDataChanged);
+    };
+  }, [refetchProfile, refetchDailyPoints]);
 
   if (loading) return (
     <div className="max-w-md mx-auto p-4 sm:p-6" aria-live="polite">

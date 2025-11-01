@@ -52,8 +52,10 @@ export default function DailyView() {
   const todoChores = chores.filter((chore: ChoreViewModel) => chore.status === 'todo');
   const doneChores = chores.filter((chore: ChoreViewModel) => chore.status === 'done');
 
-  // Calculate total points from completed chores
-  const totalPoints = doneChores.reduce((sum, chore) => sum + (chore.points || 0), 0);
+  // Calculate total points from completed chores assigned to current user
+  const totalPoints = doneChores
+    .filter((chore) => chore.assignee_id === currentUserId)
+    .reduce((sum, chore) => sum + (chore.points || 0), 0);
 
   // Handle chore assignment
   const handleAssignChore = (assigneeId: string | null) => {
