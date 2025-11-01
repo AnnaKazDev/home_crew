@@ -59,10 +59,6 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-foreground mb-2">Edit Profile</h3>
-        <p className="text-muted-foreground">Update your profile information</p>
-      </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Email */}
