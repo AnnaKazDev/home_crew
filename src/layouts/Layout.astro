@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import AppWithTheme from "../components/AppWithTheme";
 
 interface Props {
   title?: string;
@@ -9,7 +10,7 @@ const { title = "10x Astro Starter" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -18,7 +19,9 @@ const { title = "10x Astro Starter" } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <slot />
+    <AppWithTheme client:load>
+      <slot />
+    </AppWithTheme>
   </body>
 </html>
 
@@ -28,5 +31,6 @@ const { title = "10x Astro Starter" } = Astro.props;
     margin: 0;
     width: 100%;
     height: 100%;
+    padding-top: 3.5rem; /* Space for fixed header */
   }
 </style>
