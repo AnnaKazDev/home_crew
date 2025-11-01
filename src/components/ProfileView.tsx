@@ -36,16 +36,37 @@ const ProfileView: React.FC = () => {
   }, [refetchProfile, refetchDailyPoints]);
 
   if (loading) return (
-    <div className="max-w-md mx-auto p-4 sm:p-6" aria-live="polite">
-      <Skeleton className="h-8 w-48 mb-4" />
-      <div className="space-y-4">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-9 w-20" />
-      </div>
-      <div className="mt-4">
-        <Skeleton className="h-6 w-16 mb-2" />
-        <Skeleton className="h-8 w-24" />
+    <div className="min-h-screen bg-background pt-8 px-4 md:px-8" aria-live="polite">
+      <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto animate-fade-in">
+        {/* Title skeleton */}
+        <Skeleton className="h-9 w-48 mb-8" />
+
+        {/* Profile form skeleton */}
+        <div className="space-y-6 mb-8">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+
+        {/* Points display skeleton */}
+        <div className="mb-8">
+          <Skeleton className="h-6 w-24 mb-2" />
+          <Skeleton className="h-12 w-20 mb-4" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+
+        {/* Points breakdown skeleton */}
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-32 mb-4" />
+          <div className="space-y-3">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <div key={i} className="flex justify-between items-center">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-12" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
