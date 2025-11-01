@@ -3,15 +3,30 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useTheme } from './ThemeProvider';
+import HamburgerMenu from './HamburgerMenu';
 
 export default function AppHeader() {
   const { theme, toggleTheme } = useTheme();
 
+  const menuItems = [
+    {
+      label: 'Daily Chores',
+      href: '/daily_chores',
+      icon: '📅'
+    },
+    {
+      label: 'Profile',
+      href: '/profile',
+      icon: '👤'
+    }
+  ];
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container flex h-14 items-center justify-between px-4">
-        {/* Logo/Brand - placeholder for future */}
+        {/* Logo/Brand and Hamburger Menu */}
         <div className="flex items-center space-x-2">
+          <HamburgerMenu menuItems={menuItems} />
           <h1 className="text-lg font-semibold">Home Crew</h1>
         </div>
 
