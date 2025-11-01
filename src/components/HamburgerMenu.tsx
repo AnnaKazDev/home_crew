@@ -84,7 +84,7 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
             className={`fixed top-0 left-0 z-[2147483647] h-full w-80 bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-xl transform transition-transform duration-300 ease-in-out ${
               isOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
-            style={{ top: '3.5rem' }} // Account for fixed header
+            style={{ top: '0' }} // Start from top to include header area
           >
             <div className="p-6">
        
