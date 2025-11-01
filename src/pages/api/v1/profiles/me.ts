@@ -72,7 +72,7 @@ export const PATCH: APIRoute = async (context) => {
     // Validate using Zod schema
     const validationResult = UpdateProfileCmdSchema.safeParse(requestData);
     if (!validationResult.success) {
-      const details = validationResult.error.errors.map((err) => ({
+      const details = validationResult.error.issues.map((err: any) => ({
         path: err.path.join("."),
         message: err.message,
       }));

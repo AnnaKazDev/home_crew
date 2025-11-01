@@ -1,0 +1,10 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProfileView from "@/components/ProfileView";
+import { Toaster } from "@/components/ui/sonner";
+---
+
+<Layout title="Profile">
+  <ProfileView client:load />
+  <Toaster client:load />
+</Layout>

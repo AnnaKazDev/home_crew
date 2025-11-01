@@ -23,7 +23,7 @@ export const dailyViewKeys = {
  */
 export function useDailyView() {
   const queryClient = useQueryClient();
-  const devHouseholdId = (import.meta.env.PUBLIC_DEV_HOUSEHOLD_ID as string | undefined)?.trim() || undefined;
+  const devHouseholdId = '11111111-aaaa-bbbb-cccc-222222222222';
   const useApi = !isSupabaseConfigured;
 
   // Initialize with today's date

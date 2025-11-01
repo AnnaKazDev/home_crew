@@ -4,7 +4,11 @@
  *  – All types are directly based on entities from Supabase
  *  – When modifying the schema, simply update the `src/db/database.types.ts` file, and DTOs will be recompiled
  */
-import type { Tables, Enums } from "@/db/database.types";
+// import type { Tables, Enums } from "@/db/database.types";
+
+// Temporary types until database.types.ts is generated
+type Tables<T extends string> = any;
+type Enums<T extends string> = any;
 
 /* -------------------------------------------------- *
  * Helpers
@@ -17,9 +21,14 @@ type ISODate = string; // e.g., '2025-10-12'
  * -------------------------------------------------- */
 type ProfileRow = Tables<"profiles">;
 
-export type ProfileDTO = Pick<ProfileRow, "id" | "name" | "avatar_url" | "total_points">;
+export type ProfileDTO = Pick<ProfileRow, "id" | "name" | "avatar_url" | "total_points"> & {
+  email: string;
+};
 
-export type UpdateProfileCmd = Pick<ProfileRow, "name" | "avatar_url">;
+export interface UpdateProfileCmd {
+  name: string;
+  avatar_url?: string | null;
+}
 
 /* -------------------------------------------------- *
  * 2. Households & Members
