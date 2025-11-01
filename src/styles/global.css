@@ -137,6 +137,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  .dark body {
+    background: rgb(0 0 0);
+  }
+
   html {
     scroll-behavior: smooth;
   }
