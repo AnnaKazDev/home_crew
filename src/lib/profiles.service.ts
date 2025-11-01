@@ -4,6 +4,37 @@ import type { Database } from "@/db/database.types";
 import type { ProfileDTO } from "@/types";
 
 /**
+ * Calculate fresh total points from current done tasks assigned to the user
+ * This excludes points from deleted tasks
+ */
+async function calculateFreshTotalPoints(supabase: SupabaseClient<Database>, userId: string): Promise<number> {
+  try {
+    // Sum points from daily_chores where:
+    // - assignee_id = userId
+    // - status = 'done'
+    // - deleted_at is null
+    const { data: result, error } = await supabase
+      .from("daily_chores")
+      .select("points")
+      .eq("assignee_id", userId)
+      .eq("status", "done")
+      .is("deleted_at", null);
+
+    if (error) {
+      console.error("Error calculating fresh total points:", error);
+      return 0;
+    }
+
+    if (!result) return 0;
+
+    return result.reduce((sum: number, chore: { points: number }) => sum + (chore.points || 0), 0);
+  } catch (error) {
+    console.error("Exception calculating fresh total points:", error);
+    return 0;
+  }
+}
+
+/**
  * Zod schema for validating UpdateProfileCmd
  * Validates request body when updating a user's profile
  */
@@ -36,7 +67,7 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
     // Try to get profile first
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, name, avatar_url, total_points")
+      .select("id, name, avatar_url")
       .eq("id", userId)
       .single();
 
@@ -67,11 +98,14 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
       return mockProfile;
     }
 
+    // Calculate fresh total points from current done tasks
+    const freshTotalPoints = await calculateFreshTotalPoints(supabase, userId);
+
     return {
       id: profile.id,
       name: profile.name,
       avatar_url: profile.avatar_url,
-      total_points: profile.total_points,
+      total_points: freshTotalPoints,
       email: 'dev@example.com', // Mock email for development
     };
   }
@@ -80,7 +114,7 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
   // First get the profile data
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, name, avatar_url, total_points")
+    .select("id, name, avatar_url")
     .eq("id", userId)
     .single();
 
@@ -92,6 +126,9 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
   if (!profile) {
     throw new Error("PROFILE_NOT_FOUND");
   }
+
+  // Calculate fresh total points from current done tasks
+  const freshTotalPoints = await calculateFreshTotalPoints(supabase, userId);
 
   // Then get the email from auth.users
   const { data: userData, error: userError } = await supabase.auth.admin.getUserById(userId);
@@ -108,12 +145,13 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
 
   console.log("Profile data:", profile);
   console.log("User email:", userData.user.email);
+  console.log("Fresh total points:", freshTotalPoints);
 
   return {
     id: profile.id,
     name: profile.name,
     avatar_url: profile.avatar_url,
-    total_points: profile.total_points,
+    total_points: freshTotalPoints,
     email: userData.user.email,
   };
 }
