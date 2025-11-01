@@ -175,7 +175,7 @@ All calls use service client with RLS bypass for authorization.
 ## 8. User Interactions
 
 - **Task Addition**: Click "Add" → AddChoreModal opening → catalog selection or custom creation → date/time/assignee configuration → save → modal close and list refresh
-- **Status Change**: Task card drag-and-drop between To Do/Done columns → immediate UI update → background API call → points awarding on Done
+- **Status Change**: Task card drag-and-drop between To Do/Done columns → immediate UI update → background API call → points recorded in points_events and profile updated with fresh calculation
 - **Member Assignment**: Task card click → AssignChoreModal opening → member selection from list → save → modal close
 - **Day Navigation**: Date picker or arrow buttons usage → date change → new data prefetch → smooth transition animation
 - **Task Deletion**: Delete button click on card → dialog confirmation → deletion → list update

@@ -33,7 +33,7 @@ Widok powinien być dostępny pod ścieżką `/profile`. W aplikacji Astro nale�
 - **Główne elementy**: `<Badge>` lub `<span>` z tekstem punktów.
 - **Obsługiwane zdarzenia**: Brak (tylko wyświetlanie).
 - **Warunki walidacji**: Brak.
-- **Typy**: ProfileDTO.total_points (number).
+- **Typy**: ProfileDTO.total_points (number) - punkty obliczane na świeżo z aktualnych zadań.
 - **Propsy**: { points: number }
 
 ## 5. Typy
