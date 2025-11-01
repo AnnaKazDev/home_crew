@@ -3,10 +3,12 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useTheme } from './ThemeProvider';
+import { useProfile } from '@/hooks/useProfile';
 import HamburgerMenu from './HamburgerMenu';
 
 export default function AppHeader() {
   const { theme, toggleTheme } = useTheme();
+  const { profile } = useProfile();
 
   const menuItems = [
     {
@@ -21,15 +23,20 @@ export default function AppHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background dark:bg-black border-b border-border">
-      <div className="container flex h-14 items-center justify-between px-4">
+      <div className="container flex h-14 items-center px-4">
         {/* Logo/Brand and Hamburger Menu */}
         <div className="flex items-center space-x-2">
           <HamburgerMenu menuItems={menuItems} />
           <h1 className="text-lg font-semibold text-foreground dark:text-white">Home Crew</h1>
         </div>
 
-        {/* Right side - theme toggle and future menu */}
-        <div className="flex items-center space-x-2">
+        {/* User greeting and theme toggle - permanently on the right */}
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-3">
+          {profile && (
+            <span className="text-sm font-medium text-foreground dark:text-white">
+              Hi, {profile.name}!
+            </span>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -71,7 +78,6 @@ export default function AppHeader() {
               </svg>
             )}
           </Button>
-          {/* Future: User menu, notifications, etc. */}
         </div>
       </div>
     </header>
