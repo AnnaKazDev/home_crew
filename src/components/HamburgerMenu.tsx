@@ -29,7 +29,6 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="lg:hidden" // Show on mobile/tablet (up to lg breakpoint)
         title="Menu"
       >
         <svg
