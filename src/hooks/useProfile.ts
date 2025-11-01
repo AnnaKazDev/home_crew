@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { getSupabaseClient, isSupabaseConfigured } from "@/db/supabase.client";
+import { getUserPointsDateRange } from "@/lib/pointsEvents.service";
 import type { ProfileDTO, UpdateProfileCmd } from "@/types";
 
 export const useProfile = () => {
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
+  const [pointsDateRange, setPointsDateRange] = useState<{firstDate: string | null, lastDate: string | null} | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +48,7 @@ export const useProfile = () => {
               email: 'dev@example.com',
             };
             setProfile(mockProfile);
+            setPointsDateRange({ firstDate: null, lastDate: null });
           } else {
             setProfile({
               id: profile.id,
@@ -54,6 +57,15 @@ export const useProfile = () => {
               total_points: profile.total_points,
               email: 'dev@example.com',
             });
+
+            // Get points date range for dev user
+            try {
+              const dateRange = await getUserPointsDateRange(supabase, currentUserId);
+              setPointsDateRange(dateRange);
+            } catch (rangeError) {
+              console.warn("Could not load points date range:", rangeError);
+              setPointsDateRange({ firstDate: null, lastDate: null });
+            }
           }
         } else {
           // Production logic - get profile and email separately
@@ -85,6 +97,15 @@ export const useProfile = () => {
             total_points: profile.total_points,
             email: userData.user.email,
           });
+
+          // Get points date range
+          try {
+            const dateRange = await getUserPointsDateRange(supabase, currentUserId);
+            setPointsDateRange(dateRange);
+          } catch (rangeError) {
+            console.warn("Could not load points date range:", rangeError);
+            setPointsDateRange({ firstDate: null, lastDate: null });
+          }
         }
       }
     } catch (err) {
@@ -170,5 +191,5 @@ export const useProfile = () => {
     fetchProfile();
   }, []);
 
-  return { profile, loading, error, updateProfile };
+  return { profile, pointsDateRange, loading, error, updateProfile };
 };

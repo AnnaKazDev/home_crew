@@ -90,21 +90,33 @@ export function useDailyView() {
 
   // Catalog items: predefined + custom for this household
   const catalogQuery = useQuery({
-    queryKey: [...dailyViewKeys.all, 'catalog', effectiveHouseholdId] as const,
+    queryKey: [...dailyViewKeys.all, 'catalog', 'all'] as const,
     queryFn: async () => {
-      if (useApi) {
-        const res = await fetch('/api/v1/catalog?type=all');
-        if (!res.ok) throw new Error('Failed to load catalog');
-        return await res.json();
+      console.log('Fetching catalog data... useApi:', useApi, 'isSupabaseConfigured:', isSupabaseConfigured, 'effectiveHouseholdId:', effectiveHouseholdId);
+      try {
+        if (useApi) {
+          const res = await fetch('/api/v1/catalog?type=all');
+          if (!res.ok) {
+            console.error('Catalog API failed with status:', res.status);
+            throw new Error('Failed to load catalog');
+          }
+          const data = await res.json();
+          console.log('Catalog data fetched:', data.length, 'items');
+          return data;
+        }
+        const result = await getCatalogItems(getSupabaseClient(), effectiveHouseholdId || null, 'all');
+        return result;
+      } catch (error) {
+        console.error('Catalog query error:', error);
+        throw error;
       }
-      if (!effectiveHouseholdId) return [];
-      return getCatalogItems(getSupabaseClient(), effectiveHouseholdId, 'all');
     },
-    enabled: useApi || (isSupabaseConfigured && !!effectiveHouseholdId),
-    staleTime: 5 * 60 * 1000,
+    enabled: useApi || isSupabaseConfigured, // Enable when API mode or Supabase is configured
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes
   });
 
-  // Query for chores on current date
+  // Query for chores on current date - depends on catalog being loaded
   const choresQuery = useQuery({
     queryKey: dailyViewKeys.chores(currentDate),
     queryFn: async () => {
@@ -119,30 +131,36 @@ export function useDailyView() {
       }
 
       // Transform to ChoreViewModel with catalog enrichment
-      let catalog = (catalogQuery.data || []) as Array<{ id: string; title: string; emoji: string | null; category: string }>;
-      // If some catalog items are missing, try to fetch them individually (API mode only)
-      if (useApi) {
-        const missingIds = chores
-          .map((c) => c.chore_catalog_id)
-          .filter((id) => !catalog.some((ci) => ci.id === id));
-        if (missingIds.length > 0) {
-          const fetched = await Promise.all(
-            missingIds.map(async (id) => {
-              try {
-                const res = await fetch(`/api/v1/catalog/${id}`);
-                if (!res.ok) return null;
-                return await res.json();
-              } catch {
-                return null;
-              }
-            })
-          );
-          catalog = catalog.concat(fetched.filter(Boolean) as any[]);
+      // Always fetch catalog data fresh for reliable enrichment
+      let catalog: Array<{ id: string; title: string; emoji: string | null; category: string; time_of_day: string; points: number; predefined: boolean }> = [];
+
+      console.log('Fetching catalog data for chores enrichment...');
+      try {
+        if (useApi) {
+          const res = await fetch('/api/v1/catalog?type=all');
+          if (res.ok) {
+            catalog = await res.json();
+            console.log('Fetched catalog for enrichment (API):', catalog.length, 'items');
+          } else {
+            console.error('Failed to fetch catalog for enrichment, status:', res.status);
+          }
+        } else {
+          // Fetch catalog fresh for Supabase mode too for reliability
+          catalog = await getCatalogItems(getSupabaseClient(), effectiveHouseholdId || null, 'all');
+          console.log('Fetched catalog for enrichment (Supabase):', catalog.length, 'items');
         }
+      } catch (error) {
+        console.error('Error fetching catalog for enrichment:', error);
       }
+
       const viewModels: ChoreViewModel[] = chores.map(chore => {
-        const catalogItem = catalog.find((ci) => ci.id === chore.chore_catalog_id) as any;
+        const catalogItem = catalog.find((ci) => ci.id === chore.chore_catalog_id);
         const catalogTitle = catalogItem?.title ?? `Chore ${chore.chore_catalog_id}`;
+
+        if (!catalogItem) {
+          console.warn('No catalog item found for chore:', chore.chore_catalog_id, 'Available IDs:', catalog.map(c => c.id).slice(0, 5));
+        }
+
         const catalogEmoji = catalogItem?.emoji ?? '📋';
         const catalogCategory = catalogItem?.category ?? 'General';
 

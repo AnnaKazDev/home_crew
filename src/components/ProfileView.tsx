@@ -1,12 +1,15 @@
 import { useCallback } from "react";
 import { useProfile } from "@/hooks/useProfile";
+import { useDailyPoints } from "@/hooks/useDailyPoints";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProfileForm from "./ProfileForm";
 import PointsDisplay from "./PointsDisplay";
+import PointsBreakdown from "./PointsBreakdown";
 
 const ProfileView: React.FC = () => {
-  const { profile, loading, error, updateProfile } = useProfile();
+  const { profile, pointsDateRange, loading, error, updateProfile } = useProfile();
+  const { dailyPoints, loading: pointsLoading, error: pointsError } = useDailyPoints(7);
 
   const handleUpdate = useCallback(async (data: { name: string; avatar_url?: string | null }) => {
     try {
@@ -39,7 +42,14 @@ const ProfileView: React.FC = () => {
       <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto animate-fade-in">
         <h1 className="text-3xl font-bold text-foreground mb-8" id="profile-title">User Profile</h1>
         <ProfileForm profile={profile} onUpdate={handleUpdate} />
-        <PointsDisplay points={profile.total_points} />
+        <PointsDisplay points={profile.total_points} pointsDateRange={pointsDateRange} />
+        <div className="mt-8">
+          <PointsBreakdown
+            dailyPoints={dailyPoints}
+            loading={pointsLoading}
+            error={pointsError}
+          />
+        </div>
       </div>
     </div>
   );
