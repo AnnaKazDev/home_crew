@@ -10,9 +10,10 @@ interface LoginFormProps {
   onError: (error: string) => void;
   onLoading: (loading: boolean) => void;
   loading: boolean;
+  onModeChange?: (mode: "login" | "register" | "reset-password") => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onModeChange }) => {
   const {
     register,
     handleSubmit,
@@ -43,9 +44,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading }) =>
   };
 
   const handleForgotPassword = () => {
-    // This would trigger the reset password mode in AuthForm
-    // For now, we'll just show an alert
-    alert("Reset password functionality will be implemented");
+    if (onModeChange) {
+      onModeChange("reset-password");
+    }
   };
 
   return (
