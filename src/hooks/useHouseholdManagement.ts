@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { getSupabaseClient, isSupabaseConfigured } from "@/db/supabase.client";
 import { getHouseholdForUser } from "@/lib/households.service";
-import { getHouseholdMembers, updateMemberRole, removeHouseholdMember } from "@/lib/household-members.service";
+import { getHouseholdMembers, removeHouseholdMember } from "@/lib/household-members.service";
 import type { HouseholdDTO, MemberDTO, UpdateHouseholdCmd } from "@/types";
 
 interface HouseholdManagementViewModel {
@@ -18,7 +18,6 @@ interface HouseholdManagementViewModel {
 interface HouseholdManagementActions {
   loadData: () => Promise<void>;
   updateHousehold: (updates: UpdateHouseholdCmd) => Promise<void>;
-  updateMemberRole: (memberId: string, role: 'admin' | 'member') => Promise<void>;
   removeMember: (memberId: string) => Promise<void>;
 }
 
@@ -141,67 +140,6 @@ export const useHouseholdManagement = (): HouseholdManagementViewModel & Househo
     }
   }, [household]);
 
-  const updateMemberRole = useCallback(async (memberId: string, role: 'admin' | 'member') => {
-    try {
-      setIsUpdatingMember(true);
-      setError(null);
-
-      if (useApi) {
-        const res = await fetch(`/api/v1/members/${memberId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ role }),
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to update member role');
-        }
-
-        const updatedMember = await res.json();
-        setMembers(prev => prev.map(member =>
-          member.id === memberId ? updatedMember : member
-        ));
-      } else {
-        // Use Supabase directly
-        const supabase = getSupabaseClient();
-        const updatedMember = await updateMemberRole(supabase, memberId, role, currentUserId);
-        setMembers(prev => prev.map(member =>
-          member.id === memberId ? updatedMember : member
-        ));
-      }
-    } catch (err) {
-      let errorMessage = 'Failed to update member role';
-
-      if (err instanceof Error) {
-        // Map specific error messages from backend
-        switch (err.message) {
-          case 'NOT_HOUSEHOLD_ADMIN':
-            errorMessage = 'Only administrators can change member roles';
-            break;
-          case 'MEMBER_NOT_FOUND':
-            errorMessage = 'Member not found';
-            break;
-          case 'CANNOT_REMOVE_LAST_ADMIN':
-            errorMessage = 'Cannot remove the last administrator';
-            break;
-          case 'NOT_HOUSEHOLD_MEMBER':
-            errorMessage = 'You are not a member of this household';
-            break;
-          default:
-            errorMessage = err.message;
-        }
-      }
-
-      setError(errorMessage);
-      console.error('Error updating member role:', err);
-      throw err;
-    } finally {
-      setIsUpdatingMember(false);
-    }
-  }, [currentUserId]);
-
   const removeMember = useCallback(async (memberId: string) => {
     try {
       setIsUpdatingMember(true);
@@ -272,7 +210,6 @@ export const useHouseholdManagement = (): HouseholdManagementViewModel & Househo
     isUpdatingMember,
     loadData,
     updateHousehold,
-    updateMemberRole,
     removeMember,
   };
 };
