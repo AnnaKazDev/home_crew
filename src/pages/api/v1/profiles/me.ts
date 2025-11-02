@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getProfile, updateProfile, UpdateProfileCmdSchema } from "@/lib/profiles.service";
-import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -13,7 +13,7 @@ export const prerender = false;
  */
 export const GET: APIRoute = async (context) => {
   try {
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     // Get the user's profile
     try {
@@ -72,7 +72,7 @@ export const PATCH: APIRoute = async (context) => {
     // Validate using Zod schema
     const validationResult = UpdateProfileCmdSchema.safeParse(requestData);
     if (!validationResult.success) {
-      const details = validationResult.error.errors.map((err) => ({
+      const details = validationResult.error.issues.map((err: any) => ({
         path: err.path.join("."),
         message: err.message,
       }));
@@ -82,7 +82,7 @@ export const PATCH: APIRoute = async (context) => {
       });
     }
 
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     // Update the user's profile
     try {

@@ -2,26 +2,42 @@ import { createClient } from "@supabase/supabase-js";
 
 import type { Database } from "../db/database.types.ts";
 
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
-const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+const isServer = import.meta.env.SSR;
 
-if (!supabaseUrl) {
-  throw new Error("SUPABASE_URL environment variable is required");
-}
-
-if (!supabaseAnonKey && !supabaseServiceKey) {
-  throw new Error("Either SUPABASE_ANON_KEY or SUPABASE_SERVICE_ROLE_KEY environment variable is required");
-}
+// Use PUBLIC_ vars in the browser, fall back to server-only vars on the server
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ||  import.meta.env.SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;
+const supabaseServiceKey = isServer ? import.meta.env.SUPABASE_SERVICE_ROLE_KEY : undefined;
 
 export const DEFAULT_USER_ID = "e9d12995-1f3e-491d-9628-3c4137d266d1";
 
-export const supabaseClient = supabaseServiceKey ? createClient<Database>(supabaseUrl, supabaseServiceKey) : createClient<Database>(supabaseUrl, supabaseAnonKey);
+export const isSupabaseConfigured = Boolean(supabaseUrl && (supabaseAnonKey || supabaseServiceKey));
 
-// Service role client for bypassing RLS in development
-export const supabaseServiceClient = supabaseServiceKey
-  ? createClient<Database>(supabaseUrl, supabaseServiceKey)
-  : supabaseClient;
+let cachedBrowserClient: ReturnType<typeof createClient<Database>> | null = null;
+let cachedServiceClient: ReturnType<typeof createClient<Database>> | null = null;
 
+export function getSupabaseClient(): ReturnType<typeof createClient<Database>> {
+  if (!isSupabaseConfigured) {
+    throw new Error("Supabase is not configured. Set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY.");
+  }
+  if (!cachedBrowserClient) {
+    const keyToUse = (isServer && supabaseServiceKey) ? supabaseServiceKey : (supabaseAnonKey as string);
+    cachedBrowserClient = createClient<Database>(supabaseUrl as string, keyToUse);
+  }
+  return cachedBrowserClient;
+}
 
-export type SupabaseClient = typeof supabaseClient;
+export function getSupabaseServiceClient(): ReturnType<typeof createClient<Database>> {
+  if (!isServer) {
+    return getSupabaseClient();
+  }
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return getSupabaseClient();
+  }
+  if (!cachedServiceClient) {
+    cachedServiceClient = createClient<Database>(supabaseUrl, supabaseServiceKey);
+  }
+  return cachedServiceClient;
+}
+
+export type SupabaseClient = ReturnType<typeof createClient<Database>>;

@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getUserPointsEvents } from "@/lib/pointsEvents.service";
 import { GetPointsEventsQuerySchema } from "@/lib/validation.schemas";
-import { supabaseClient, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, type SupabaseClient } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -66,7 +66,7 @@ export const GET: APIRoute = async (context) => {
       );
     }
 
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     // Get points events with filtering and pagination
     try {

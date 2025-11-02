@@ -30,7 +30,7 @@ FR-13 Dane o obowiązkach przechowywane są w sposób zapewniający skalowalnoś
 FR-14 Dane osobowe userów i ich obowiązków domowych przechowywane zgodnie z RODO
 FR-15 Prawo do wglądu i usunięcia danych (konto wraz z obowiązkami) na wniosek usera.
 FR-16 Tylko zalogowany user moze widzieć widok dzienny, listę zadań/obowiązków itd.
-FR-17 System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); po oznaczeniu "Done" punkty są dodawane do konta użytkownika. Punkty kumulują się i mogą być wykorzystane do nagród (np. 1h gry na komputerze). W MVP tylko gromadzenie punktów, bez ekranu nagród/statystyk.
+FR-17 System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); po oznaczeniu "Done" punkty są dodawane do konta użytkownika. Punkty są zawsze obliczane na świeżo z aktualnych ukończonych zadań (wykluczając usunięte zadania) i mogą być wykorzystane do nagród (np. 1h gry na komputerze). W MVP tylko gromadzenie punktów, bez ekranu nagród/statystyk.
 
 ## 4. Granice produktu
 
