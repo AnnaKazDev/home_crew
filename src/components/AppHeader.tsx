@@ -16,6 +16,10 @@ export default function AppHeader() {
       href: '/daily_chores'
     },
     {
+      label: 'Household',
+      href: '/household'
+    },
+    {
       label: 'Profile',
       href: '/profile'
     }
