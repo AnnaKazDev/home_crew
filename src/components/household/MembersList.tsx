@@ -6,7 +6,6 @@ interface MembersListProps {
   members: MemberDTO[];
   currentUserRole: "admin" | "member";
   currentUserId: string;
-  onUpdateRole: (memberId: string, role: "admin" | "member") => Promise<void>;
   onRemoveMember: (memberId: string) => Promise<void>;
   isUpdating: boolean;
   className?: string;
@@ -16,7 +15,6 @@ const MembersList: React.FC<MembersListProps> = ({
   members,
   currentUserRole,
   currentUserId,
-  onUpdateRole,
   onRemoveMember,
   isUpdating,
   className = "",
@@ -27,11 +25,10 @@ const MembersList: React.FC<MembersListProps> = ({
     <div className={className}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-foreground">Household Members</h2>
-        <Badge variant="outline">{members.length} members</Badge>
+        <span className="px-3 py-1 bg-amber-400 text-black text-xs rounded-full shadow-sm">
+          Members count: {members.length}
+        </span>
       </div>
-      <p className="text-sm text-muted-foreground dark:text-gray-300 mb-6">
-        {currentUserRole === "admin" ? "Manage household members and their roles" : "View household members"}
-      </p>
       {sortedMembers.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground dark:text-gray-400">No members found</div>
       ) : (
@@ -42,7 +39,6 @@ const MembersList: React.FC<MembersListProps> = ({
               member={member}
               currentUserRole={currentUserRole}
               currentUserId={currentUserId}
-              onUpdateRole={(role) => onUpdateRole(member.id, role)}
               onRemove={() => onRemoveMember(member.id)}
               isUpdating={isUpdating}
             />

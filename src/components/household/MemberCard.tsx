@@ -3,7 +3,6 @@ import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +22,6 @@ interface MemberCardProps {
   member: MemberDTO;
   currentUserRole: "admin" | "member";
   currentUserId: string;
-  onUpdateRole: (role: "admin" | "member") => Promise<void>;
   onRemove: () => Promise<void>;
   isUpdating: boolean;
 }
@@ -32,34 +30,11 @@ const MemberCard: React.FC<MemberCardProps> = memo(({
   member,
   currentUserRole,
   currentUserId,
-  onUpdateRole,
   onRemove,
   isUpdating,
 }) => {
   const isCurrentUser = member.user_id === currentUserId;
   const canModify = currentUserRole === "admin" && !isCurrentUser;
-
-  const handleRoleChange = async (newRole: "admin" | "member") => {
-    if (newRole === member.role) return;
-
-    // Client-side validation: only admins can change roles
-    if (currentUserRole !== "admin") {
-      toast.error("Only administrators can change member roles");
-      return;
-    }
-
-    // Client-side validation: cannot modify self
-    if (isCurrentUser) {
-      toast.error("You cannot change your own role");
-      return;
-    }
-
-    try {
-      await onUpdateRole(newRole);
-    } catch (err) {
-      // Error handling is done in the parent component
-    }
-  };
 
   const handleRemove = async () => {
     // Client-side validation: only admins can remove members
@@ -141,17 +116,6 @@ const MemberCard: React.FC<MemberCardProps> = memo(({
           {/* Admin Controls */}
           {canModify && (
             <div className="flex items-center gap-2 animate-in fade-in-0 slide-in-from-right-4 duration-300 delay-200">
-              {/* Role Selector */}
-              <Select value={member.role} onValueChange={handleRoleChange} disabled={isUpdating}>
-                <SelectTrigger className="w-24 h-8">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="member">Member</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
-
               {/* Remove Button */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -166,8 +130,8 @@ const MemberCard: React.FC<MemberCardProps> = memo(({
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Remove Member</AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogTitle className="dark:text-white">Remove Member</AlertDialogTitle>
+                    <AlertDialogDescription className="dark:text-gray-300">
                       Are you sure you want to remove {member.name} from the household? This action cannot be undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>

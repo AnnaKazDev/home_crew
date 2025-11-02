@@ -168,7 +168,6 @@ const HouseholdManagementView: React.FC = memo(() => {
             members={members}
             currentUserRole={currentUserRole}
             currentUserId={currentUserId}
-            onUpdateRole={handleUpdateMemberRole}
             onRemoveMember={handleRemoveMember}
             isUpdating={isUpdatingMember}
             className=""
