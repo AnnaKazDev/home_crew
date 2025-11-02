@@ -132,8 +132,39 @@ const HouseholdManagementView: React.FC = memo(() => {
     return (
       <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
         <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
-          <div role="alert" className="p-4 border border-blue-500/50 text-blue-700 bg-blue-50 rounded-md">
-            You are not a member of any household. Please join or create one first.
+          <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
+            {/* Header */}
+            <div className="mb-8 animate-in fade-in-0 slide-in-from-top-4 duration-500 delay-100">
+              <h1 className="text-3xl font-bold text-foreground mb-8">Household Setup</h1>
+              <p className="text-muted-foreground dark:text-gray-300 mt-2 text-sm sm:text-base">
+                Join an existing household or create your own
+              </p>
+            </div>
+
+            {/* Options */}
+            <div className="mt-8 space-y-6">
+              <div className="bg-card rounded-lg border p-6 shadow-sm animate-in fade-in-0 slide-in-from-left-4 duration-500 delay-200">
+                <h2 className="text-lg font-semibold text-foreground mb-4">Create Household</h2>
+                <p className="text-sm text-muted-foreground dark:text-gray-300 mb-6">
+                  Create a new household and become its administrator
+                </p>
+                {/* TODO: Add create household form */}
+                <p className="text-sm text-amber-600 dark:text-amber-400">
+                  This feature will be available after implementing authentication
+                </p>
+              </div>
+
+              <div className="bg-card rounded-lg border p-6 shadow-sm animate-in fade-in-0 slide-in-from-right-4 duration-500 delay-300">
+                <h2 className="text-lg font-semibold text-foreground mb-4">Join Household</h2>
+                <p className="text-sm text-muted-foreground dark:text-gray-300 mb-6">
+                  Join an existing household using a PIN code
+                </p>
+                {/* TODO: Add join household form */}
+                <p className="text-sm text-amber-600 dark:text-amber-400">
+                  This feature will be available after implementing authentication
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
