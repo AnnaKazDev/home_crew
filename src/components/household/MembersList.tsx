@@ -1,4 +1,3 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import MemberCard from "./MemberCard";
 import type { MemberDTO } from "@/types";
@@ -25,36 +24,32 @@ const MembersList: React.FC<MembersListProps> = ({
   const sortedMembers = [...members].sort((a, b) => new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime());
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          Household Members
-          <Badge variant="outline">{members.length} members</Badge>
-        </CardTitle>
-        <CardDescription>
-          {currentUserRole === "admin" ? "Manage household members and their roles" : "View household members"}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {sortedMembers.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">No members found</div>
-        ) : (
-          <div className="space-y-4">
-            {sortedMembers.map((member) => (
-              <MemberCard
-                key={member.id}
-                member={member}
-                currentUserRole={currentUserRole}
-                currentUserId={currentUserId}
-                onUpdateRole={(role) => onUpdateRole(member.id, role)}
-                onRemove={() => onRemoveMember(member.id)}
-                isUpdating={isUpdating}
-              />
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <div className={className}>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-foreground">Household Members</h2>
+        <Badge variant="outline">{members.length} members</Badge>
+      </div>
+      <p className="text-sm text-muted-foreground dark:text-gray-300 mb-6">
+        {currentUserRole === "admin" ? "Manage household members and their roles" : "View household members"}
+      </p>
+      {sortedMembers.length === 0 ? (
+        <div className="text-center py-8 text-muted-foreground dark:text-gray-400">No members found</div>
+      ) : (
+        <div className="space-y-6">
+          {sortedMembers.map((member) => (
+            <MemberCard
+              key={member.id}
+              member={member}
+              currentUserRole={currentUserRole}
+              currentUserId={currentUserId}
+              onUpdateRole={(role) => onUpdateRole(member.id, role)}
+              onRemove={() => onRemoveMember(member.id)}
+              isUpdating={isUpdating}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
