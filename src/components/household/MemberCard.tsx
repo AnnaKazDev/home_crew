@@ -99,7 +99,7 @@ const MemberCard: React.FC<MemberCardProps> = memo(({
   };
 
   return (
-    <Card className="transition-all hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 duration-200 animate-in fade-in-0 slide-in-from-left-2">
+    <Card className="hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 duration-200">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 animate-in fade-in-0 slide-in-from-left-4 duration-300 delay-100">
@@ -133,7 +133,7 @@ const MemberCard: React.FC<MemberCardProps> = memo(({
                     </>
                   )}
                 </Badge>
-                <span className="text-xs text-muted-foreground">Joined {formatJoinedDate(member.joined_at)}</span>
+                <span className="text-xs text-muted-foreground dark:text-gray-400">Joined {formatJoinedDate(member.joined_at)}</span>
               </div>
             </div>
           </div>

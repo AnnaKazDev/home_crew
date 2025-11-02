@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import HouseholdInfo from "./HouseholdInfo";
 import MembersList from "./MembersList";
-import HouseholdSettings from "./HouseholdSettings";
 import type { UpdateHouseholdCmd } from "@/types";
 
 const HouseholdManagementView: React.FC = memo(() => {
@@ -62,7 +61,7 @@ const HouseholdManagementView: React.FC = memo(() => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background pt-8 px-4 md:px-8" aria-live="polite">
-        <div className="max-w-4xl mx-auto animate-in fade-in-0 duration-500">
+        <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           {/* Title skeleton */}
           <div className="mb-8">
             <Skeleton className="h-9 w-64" />
@@ -70,47 +69,44 @@ const HouseholdManagementView: React.FC = memo(() => {
           </div>
 
           {/* Household info skeleton */}
-          <Card className="mb-8 animate-pulse">
-            <CardHeader>
-              <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-56 mt-2" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-4 w-20" />
+          <div className="mt-8 bg-card rounded-lg border p-6 shadow-sm animate-pulse">
+            <div className="flex items-center gap-2 mb-4">
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-5 w-16" />
+            </div>
+            <Skeleton className="h-4 w-64 mb-6" />
+            <div className="space-y-6">
+              <div>
+                <Skeleton className="h-4 w-24 mb-1" />
+                <Skeleton className="h-6 w-48" />
               </div>
-              <div className="flex items-center justify-between">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-8 w-8" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Members list skeleton */}
-          <Card className="animate-pulse">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <Skeleton className="h-6 w-40" />
+              <div>
+                <Skeleton className="h-4 w-16 mb-1" />
                 <Skeleton className="h-5 w-20" />
               </div>
-              <Skeleton className="h-4 w-64 mt-2" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center space-x-4 p-4 border rounded-lg animate-pulse">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-3 w-20" />
-                    </div>
-                    <Skeleton className="h-8 w-16" />
+            </div>
+          </div>
+
+          {/* Members list skeleton */}
+          <div className="mt-8 bg-card rounded-lg border p-6 shadow-sm animate-pulse">
+            <div className="flex items-center justify-between mb-4">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-5 w-20" />
+            </div>
+            <Skeleton className="h-4 w-64 mb-6" />
+            <div className="space-y-6">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-20" />
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  <Skeleton className="h-8 w-16" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -119,7 +115,7 @@ const HouseholdManagementView: React.FC = memo(() => {
   if (error) {
     return (
       <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           <div
             role="alert"
             aria-live="assertive"
@@ -135,7 +131,7 @@ const HouseholdManagementView: React.FC = memo(() => {
   if (!household) {
     return (
       <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           <div role="alert" className="p-4 border border-blue-500/50 text-blue-700 bg-blue-50 rounded-md">
             You are not a member of any household. Please join or create one first.
           </div>
@@ -145,27 +141,29 @@ const HouseholdManagementView: React.FC = memo(() => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
+    <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
+        <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
         {/* Header */}
-        <div className="mb-8 animate-in fade-in-0 slide-in-from-top-4 duration-500 delay-100">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Household Management</h1>
-          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-8" id="household-title">Household Management</h1>
+          <p className="text-muted-foreground dark:text-gray-300 mt-2 text-sm sm:text-base">
             Manage your household settings and members
           </p>
         </div>
 
         {/* Household Information */}
-        <div className="animate-in fade-in-0 slide-in-from-left-4 duration-500 delay-200">
+        <div className="mt-8 bg-card rounded-lg border p-6 shadow-sm">
           <HouseholdInfo
             household={household}
             currentUserRole={currentUserRole}
-            className="mb-6 sm:mb-8"
+            onUpdate={handleUpdateHousehold}
+            isUpdating={isUpdatingHousehold}
+            className=""
           />
         </div>
 
         {/* Members List */}
-        <div className="animate-in fade-in-0 slide-in-from-right-4 duration-500 delay-300">
+        <div className="mt-8 bg-card rounded-lg border p-6 shadow-sm">
           <MembersList
             members={members}
             currentUserRole={currentUserRole}
@@ -173,21 +171,10 @@ const HouseholdManagementView: React.FC = memo(() => {
             onUpdateRole={handleUpdateMemberRole}
             onRemoveMember={handleRemoveMember}
             isUpdating={isUpdatingMember}
-            className="mb-6 sm:mb-8"
+            className=""
           />
         </div>
 
-        {/* Household Settings (Admin only) */}
-        {currentUserRole === "admin" && (
-          <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-500">
-            <HouseholdSettings
-              household={household}
-              currentUserRole={currentUserRole}
-              onUpdate={handleUpdateHousehold}
-              isUpdating={isUpdatingHousehold}
-            />
-          </div>
-        )}
       </div>
     </div>
   );
