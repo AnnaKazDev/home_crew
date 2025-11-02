@@ -12,16 +12,15 @@ Widok powinien być dostępny pod ścieżką `/household`. Dostęp do tej ście�
 
 ```
 HouseholdManagementView (główny kontener)
-├── HouseholdInfo (informacje o gospodarstwie)
-│   ├── HouseholdName (nazwa gospodarstwa)
+├── HouseholdInfo (informacje o gospodarstwie + inline edycja)
+│   ├── HouseholdName (nazwa gospodarstwa z przyciskiem Edit dla adminów)
+│   ├── HouseholdNameEditor (inline formularz edycji nazwy)
 │   └── HouseholdPin (PIN - tylko dla adminów)
-├── MembersList (lista członków)
-│   └── MemberCard[] (karty poszczególnych członków)
-│       ├── MemberInfo (informacje o członku)
-│       ├── RoleSelector (zmiana roli - tylko dla adminów)
-│       └── RemoveButton (usunięcie członka - tylko dla adminów)
-└── HouseholdSettings (ustawienia gospodarstwa - tylko dla adminów)
-    └── UpdateHouseholdForm (formularz edycji)
+└── MembersList (lista członków)
+    └── MemberCard[] (karty poszczególnych członków)
+        ├── MemberInfo (informacje o członku)
+        ├── RoleSelector (zmiana roli - tylko dla adminów)
+        └── RemoveButton (usunięcie członka - tylko dla adminów)
 ```
 
 ## 4. Szczegóły komponentów
@@ -35,12 +34,12 @@ HouseholdManagementView (główny kontener)
 - **Propsy**: Brak (komponent standalone).
 
 ### HouseholdInfo
-- **Opis komponentu**: Komponent wyświetlający podstawowe informacje o gospodarstwie - nazwę i PIN dostępu.
-- **Główne elementy**: Dwa pola tekstowe (nazwa i PIN) w układzie karty, z odpowiednią stylizacją Tailwind CSS.
-- **Obsługiwane interakcje**: Wyświetlanie danych, ukrywanie PIN-u dla członków (tylko admin widzi PIN).
-- **Obsługiwana walidacja**: PIN widoczny tylko jeśli użytkownik ma rolę 'admin'.
-- **Typy**: HouseholdDTO.
-- **Propsy**: household: HouseholdDTO, currentUserRole: 'admin' | 'member'.
+- **Opis komponentu**: Komponent wyświetlający podstawowe informacje o gospodarstwie oraz umożliwiający inline edycję nazwy dla administratorów.
+- **Główne elementy**: Pole z nazwą (z przyciskiem Edit dla adminów), inline formularz edycji, PIN dostępu (tylko dla adminów).
+- **Obsługiwane interakcje**: Wyświetlanie danych, ukrywanie PIN-u dla członków, inline edycja nazwy przez adminów.
+- **Obsługiwana walidacja**: PIN widoczny tylko dla adminów, walidacja nazwy (3-100 znaków).
+- **Typy**: HouseholdDTO, UpdateHouseholdCmd.
+- **Propsy**: household: HouseholdDTO, currentUserRole: 'admin' | 'member', onUpdate?: (updates: UpdateHouseholdCmd) => Promise<void>, isUpdating?: boolean.
 
 ### MembersList
 - **Opis komponentu**: Lista wszystkich członków gospodarstwa z możliwością zarządzania rolami i usuwania.
@@ -58,13 +57,6 @@ HouseholdManagementView (główny kontener)
 - **Typy**: MemberDTO.
 - **Propsy**: member: MemberDTO, currentUserRole: 'admin' | 'member', currentUserId: string, onUpdateRole: (role: string) => void, onRemove: () => void.
 
-### HouseholdSettings
-- **Opis komponentu**: Sekcja ustawień gospodarstwa pozwalająca na edycję nazwy i innych parametrów.
-- **Główne elementy**: Formularz z polem tekstowym dla nazwy, przyciskiem zapisu, walidacją w czasie rzeczywistym.
-- **Obsługiwane interakcje**: Edycja nazwy gospodarstwa, walidacja i zapis zmian.
-- **Obsługiwana walidacja**: Nazwa musi mieć 3-100 znaków, pole obowiązkowe, trim whitespace.
-- **Typy**: HouseholdDTO, UpdateHouseholdCmd.
-- **Propsy**: household: HouseholdDTO, onUpdate: (updates: UpdateHouseholdCmd) => void.
 
 ## 5. Typy
 
@@ -137,7 +129,7 @@ Wszystkie wywołania API będą obsługiwane przez service layer z odpowiednią 
 ## 8. Interakcje użytkownika
 
 1. **Wyświetlanie danych**: Przy wejściu na stronę automatycznie ładują się dane gospodarstwa i członków
-2. **Edycja gospodarstwa**: Admin może kliknąć przycisk edycji nazwy, wprowadzić zmiany i zapisać
+2. **Inline edycja gospodarstwa**: Admin może kliknąć przycisk "Edit" obok nazwy gospodarstwa, wprowadzić zmiany inline i zapisać
 3. **Zarządzanie członkami**: Admin może zmienić rolę członka przez dropdown lub usunąć członka
 4. **Potwierdzenia**: Destruktywne akcje (usunięcie członka) wymagają potwierdzenia przez dialog
 5. **Feedback**: Wszystkie akcje dają natychmiastowy feedback przez toast notifications
@@ -172,11 +164,10 @@ Błędy będą prezentowane przez toast notifications oraz odpowiednie stany UI 
 
 1. **Przygotowanie struktury**: Utworzyć plik `src/pages/household.astro` i komponenty w `src/components/household/`
 2. **Implementacja hooka**: Stworzyć `useHouseholdManagement` hook z logiką pobierania i aktualizacji danych
-3. **Podstawowe komponenty**: Zaimplementować HouseholdManagementView i HouseholdInfo
+3. **Podstawowe komponenty**: Zaimplementować HouseholdManagementView i HouseholdInfo z inline edycją
 4. **Lista członków**: Dodać MembersList i MemberCard komponenty
-5. **Ustawienia**: Zaimplementować HouseholdSettings z formularzem edycji
-6. **Walidacja i bezpieczeństwo**: Dodać sprawdzenia ról i uprawnień
-7. **Obsługa błędów**: Zaimplementować kompleksową obsługę błędów API
-8. **UI/UX**: Dodać responsywność, animacje i poprawki wizualne
-9. **Testowanie**: Dodać unit testy i integration tests
-10. **Optymalizacja**: Implementować lazy loading i optymalizacje wydajności
+5. **Walidacja i bezpieczeństwo**: Dodać sprawdzenia ról i uprawnień
+6. **Obsługa błędów**: Zaimplementować kompleksową obsługę błędów API
+7. **UI/UX**: Dodać responsywność, animacje i poprawki wizualne
+8. **Testowanie**: Dodać unit testy i integration tests
+9. **Optymalizacja**: Implementować lazy loading i optymalizacje wydajności
