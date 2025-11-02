@@ -1,7 +1,6 @@
 ---
 import "../styles/global.css";
 import AppWithTheme from "../components/AppWithTheme";
-import Footer from "../components/Footer";
 
 interface Props {
   title?: string;
@@ -30,7 +29,6 @@ const { title = "10x Astro Starter" } = Astro.props;
   <body>
     <AppWithTheme client:load>
       <slot />
-      <Footer client:load />
     </AppWithTheme>
   </body>
 </html>
@@ -42,6 +40,5 @@ const { title = "10x Astro Starter" } = Astro.props;
     width: 100%;
     height: 100%;
     padding-top: 1.5rem; /* Space for fixed header */
-    padding-bottom: 3rem; /* Space for fixed footer */
   }
 </style>
