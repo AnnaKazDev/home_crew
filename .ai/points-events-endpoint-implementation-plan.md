@@ -4,6 +4,8 @@
 
 The GET /v1/points-events endpoint returns a paginated list of points events for the currently authenticated user. It allows filtering by event type and date range. Access is restricted by Row-Level Security - users can only see their own points events.
 
+**Note:** Points events serve as a historical ledger of point transactions. Current point totals are calculated fresh from `daily_chores` table (excluding deleted tasks), not summed from points_events. This ensures accuracy when tasks are deleted or modified.
+
 ## 2. Request Details
 
 - **HTTP Method:** GET

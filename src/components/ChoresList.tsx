@@ -59,8 +59,8 @@ export default function ChoresList() {
       <div className="flex items-center justify-center p-8 min-h-screen">
         <div className="glass rounded-2xl p-8 animate-float">
           <div className="flex items-center space-x-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
-            <div className="text-lg gradient-text-light font-medium">Loading chores...</div>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+            <div className="text-lg font-medium text-foreground">Loading chores...</div>
           </div>
         </div>
       </div>
@@ -70,10 +70,10 @@ export default function ChoresList() {
   if (error) {
     return (
       <div className="flex items-center justify-center p-8 min-h-screen">
-        <div className="glass rounded-2xl p-8 border-red-200 bg-red-50/80">
+        <div className="glass rounded-2xl p-8 border-destructive bg-destructive/10">
           <div className="text-center">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <div className="text-red-700 text-lg font-medium">{error}</div>
+            <div className="text-destructive text-6xl mb-4">⚠️</div>
+            <div className="text-destructive text-lg font-medium">{error}</div>
           </div>
         </div>
       </div>
@@ -114,16 +114,16 @@ export default function ChoresList() {
                 placeholder="Search for chores..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input-modern w-full pl-12 pr-4 py-4 text-lg"
+                className="w-full pl-12 pr-4 py-4 text-lg border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground border-border"
               />
             </div>
           </div>
           {searchTerm === "" && (
             <div className="text-center">
-              <p className="text-gray-600 text-lg mb-2 gradient-text-light font-medium">
+              <p className="text-foreground text-lg mb-2 gradient-text-light font-medium">
                 ✨ Discover household tasks to organize your home
               </p>
-              <p className="text-gray-500 text-sm">Search above or browse our curated collection below</p>
+              <p className="text-muted-foreground text-sm">Search above or browse our curated collection below</p>
             </div>
           )}
         </div>
@@ -134,8 +134,8 @@ export default function ChoresList() {
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
               <div className="text-2xl gradient-text mb-2 font-semibold">No chores found</div>
-              <div className="text-gray-500">Try adjusting your search term</div>
-              <div className="mt-4 text-sm text-gray-400">"{searchTerm}"</div>
+              <div className="text-muted-foreground">Try adjusting your search term</div>
+              <div className="mt-4 text-sm text-muted-foreground">"{searchTerm}"</div>
             </div>
           ) : (
             <div className="space-y-12">
@@ -161,7 +161,7 @@ export default function ChoresList() {
                             {chore.emoji}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-lg font-semibold text-gray-900 group-hover:gradient-text transition-all duration-200 leading-tight truncate">
+                            <h4 className="text-lg font-semibold text-foreground group-hover:gradient-text transition-all duration-200 leading-tight truncate">
                               {chore.title}
                             </h4>
                           </div>

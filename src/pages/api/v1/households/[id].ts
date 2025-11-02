@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { UpdateHouseholdCmdSchema, updateHousehold } from "@/lib/households.service";
-import { supabaseClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -46,7 +46,7 @@ export const PATCH: APIRoute = async (context) => {
       });
     }
 
-    const supabase = supabaseClient as SupabaseClient;
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
 
     // Update the household
     try {
