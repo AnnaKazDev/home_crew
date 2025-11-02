@@ -13,23 +13,15 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 
 ## 2. Lista widoków
 
-### 2.1 Widok powitalny (Landing)
+### 2.1 Landing z autentyfikacją
 - **Ścieżka**: `/`
-- **Główny cel**: Przywitanie niezalogowanych użytkowników i zachęcenie do rejestracji
-- **Kluczowe informacje**: Opis aplikacji, korzyści, przyciski rejestracji i logowania
-- **Kluczowe komponenty**: Welcome banner, feature highlights, CTA buttons
-- **UX**: Prosty, zachęcający design z jasnymi ścieżkami działania
-- **Dostępność**: ARIA labels na wszystkich przyciskach, keyboard navigation
-- **Bezpieczeństwo**: Brak wrażliwych danych, publiczny dostęp
+- **Główny cel**: Przywitanie niezalogowanych użytkowników i jednoczesne umożliwienie rejestracji/logowania na jednej stronie
+- **Kluczowe informacje**: Logo aplikacji, hasło reklamowe u góry; przełącznik rejestracja/logowanie poniżej, wieloetapowy proces rejestracji z wyborem roli (admin/członek), formularze rejestracji/logowania, wybór typu użytkownika, PIN dla członków
+- **Kluczowe komponenty**: Welcome header (logo, tagline), auth toggle, multi-step forms, validation feedback, role selector
+- **UX**: U góry powitanie, poniżej formularze; przełącznik między rejestracją a logowaniem, walidacja w czasie rzeczywistym, clear error messages, success redirect do dashboardu
+- **Dostępność**: ARIA labels na wszystkich przyciskach, form labels, error announcements, keyboard navigation między sekcjami i przełącznikiem
+- **Bezpieczeństwo**: Secure password fields, role-based validation, protection przed 409/422 errors, publiczny dostęp do sekcji powitalnej
 
-### 2.2 Rejestracja/Logowanie
-- **Ścieżka**: `/register`, `/login`
-- **Główny cel**: Wieloetapowy proces rejestracji z wyborem roli (admin/członek)
-- **Kluczowe informacje**: Formularze rejestracji/logowania, wybór typu użytkownika, PIN dla członków
-- **Kluczowe komponenty**: Multi-step forms, validation feedback, role selector
-- **UX**: Walidacja w czasie rzeczywistym, clear error messages, success redirect do dashboardu
-- **Dostępność**: Form labels, error announcements, keyboard navigation między krokami
-- **Bezpieczeństwo**: Secure password fields, role-based validation, protection przed 409/422 errors
 
 ### 2.3 Główny widok dzienny (Daily View)
 - **Ścieżka**: `/daily_chores` (po zalogowaniu)
@@ -89,7 +81,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 
 ### Główny przypadek użycia: Zarządzanie obowiązkami domowymi
 
-1. **Pierwsze uruchomienie**: Użytkownik odwiedza `/` → widzi landing page → klika "Zarejestruj się"
+1. **Pierwsze uruchomienie**: Użytkownik odwiedza `/` → jeśli niezalogowany: widzi landing z powitaniem u góry i formularzem rejestracji/logowania poniżej; jeśli zalogowany: automatyczne przekierowanie do Daily View (`/daily_chores`)
 2. **Rejestracja**: Wybór roli (admin/członek) → formularz rejestracji → walidacja → sukces → przekierowanie do Daily View
 3. **Admin flow**: Tworzenie gospodarstwa (nazwa) → otrzymanie PIN → zaproszenie rodziny
 4. **Member flow**: Wprowadzenie PIN → dołączenie do gospodarstwa → dostęp do wspólnych zadań
