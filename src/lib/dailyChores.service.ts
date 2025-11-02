@@ -138,17 +138,15 @@ export async function createDailyChore(
   // Prepare minimal chore data
   const minimalChoreData = {
     household_id: choreData.household_id,
-    date: new Date(choreData.date).toISOString().split('T')[0], // Ensure proper date format
+    date: new Date(choreData.date).toISOString().split("T")[0], // Ensure proper date format
     chore_catalog_id: choreData.chore_catalog_id,
     assignee_id: choreData.assignee_id,
     points: choreData.points,
     time_of_day: choreData.time_of_day,
-    status: choreData.status
+    status: choreData.status,
   };
 
-  const { error: simpleInsertError } = await supabase
-    .from("daily_chores")
-    .insert(minimalChoreData);
+  const { error: simpleInsertError } = await supabase.from("daily_chores").insert(minimalChoreData);
 
   if (simpleInsertError) {
     console.error("Simple insert failed:", simpleInsertError);
@@ -158,7 +156,9 @@ export async function createDailyChore(
   // Then fetch it
   const { data: createdChores, error: fetchError } = await supabase
     .from("daily_chores")
-    .select("id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at")
+    .select(
+      "id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at"
+    )
     .eq("household_id", householdId)
     .eq("date", data.date)
     .eq("chore_catalog_id", data.chore_catalog_id)
@@ -197,7 +197,6 @@ export async function updateDailyChore(
   data: UpdateDailyChoreCmdType
 ): Promise<DailyChoreDTO> {
   try {
-
     // Build update payload
     const updatePayload: Record<string, unknown> = {};
     if (data.status !== undefined) updatePayload.status = data.status;
@@ -209,7 +208,9 @@ export async function updateDailyChore(
       .from("daily_chores")
       .update(updatePayload)
       .eq("id", choreId)
-      .select("id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at")
+      .select(
+        "id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at"
+      )
       .single();
 
     if (updateError) {

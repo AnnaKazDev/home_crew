@@ -1,8 +1,8 @@
 "use client";
 
-import React from 'react';
-import { ThemeProvider } from './ThemeProvider';
-import AppHeader from './AppHeader';
+import React from "react";
+import { ThemeProvider } from "./ThemeProvider";
+import AppHeader from "./AppHeader";
 
 interface AppWithThemeProps {
   children: React.ReactNode;

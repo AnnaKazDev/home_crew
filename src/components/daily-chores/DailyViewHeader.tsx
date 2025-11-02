@@ -1,6 +1,6 @@
-import React from 'react';
-import { PointsBadge } from './PointsBadge';
-import { DateNavigator } from './DateNavigator';
+import React from "react";
+import { PointsBadge } from "./PointsBadge";
+import { DateNavigator } from "./DateNavigator";
 
 interface DailyViewHeaderProps {
   currentDate: string;
@@ -9,12 +9,7 @@ interface DailyViewHeaderProps {
   onDateChange: (date: string) => void;
 }
 
-export function DailyViewHeader({
-  currentDate,
-  totalPoints,
-  choresCount,
-  onDateChange,
-}: DailyViewHeaderProps) {
+export function DailyViewHeader({ currentDate, totalPoints, choresCount, onDateChange }: DailyViewHeaderProps) {
   const isLimitReached = choresCount >= 50;
 
   return (
@@ -26,10 +21,7 @@ export function DailyViewHeader({
 
       {/* Date navigator - full width like columns */}
       <div className="w-full">
-        <DateNavigator
-          currentDate={currentDate}
-          onDateChange={onDateChange}
-        />
+        <DateNavigator currentDate={currentDate} onDateChange={onDateChange} />
       </div>
     </div>
   );

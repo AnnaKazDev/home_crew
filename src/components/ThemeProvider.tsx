@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = 'light' | 'dark';
+type Theme = "light" | "dark";
 
 interface ThemeContextType {
   theme: Theme;
@@ -12,45 +12,49 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 }
 
 interface ThemeProviderProps {
   children: React.ReactNode;
+  initialTheme?: Theme;
 }
 
-export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>('dark');
+export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
+  const [theme, setTheme] = useState<Theme>(() => {
+    // If initialTheme is provided, use it
+    if (initialTheme) return initialTheme;
 
-  // Load theme from localStorage on mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme) {
-      setTheme(savedTheme);
+    // Otherwise, load from localStorage or default to dark (only on client)
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme") as Theme;
+      return savedTheme || "dark";
     }
-    // If no saved theme, keep the default 'dark'
-  }, []);
 
-  // Apply theme to document
+    // Default to dark during SSR
+    return "dark";
+  });
+
+  // Apply theme to document and save to localStorage whenever theme changes
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
+    if (theme === "dark") {
+      root.classList.add("dark");
     } else {
-      root.classList.remove('dark');
+      root.classList.remove("dark");
     }
-    localStorage.setItem('theme', theme);
+
+    // Save to localStorage only on client
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", theme);
+    }
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }

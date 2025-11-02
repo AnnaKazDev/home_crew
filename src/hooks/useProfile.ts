@@ -36,7 +36,9 @@ async function calculateFreshTotalPoints(supabase: any, userId: string): Promise
 
 export const useProfile = () => {
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
-  const [pointsDateRange, setPointsDateRange] = useState<{firstDate: string | null, lastDate: string | null} | null>(null);
+  const [pointsDateRange, setPointsDateRange] = useState<{ firstDate: string | null; lastDate: string | null } | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,16 +51,16 @@ export const useProfile = () => {
 
       if (useApi) {
         // Use API route when Supabase is not configured
-        const res = await fetch('/api/v1/profiles/me');
+        const res = await fetch("/api/v1/profiles/me");
         if (!res.ok) {
-          throw new Error('Failed to load profile');
+          throw new Error("Failed to load profile");
         }
         const profileData = await res.json();
 
         // Calculate fresh total points from current done tasks
         // For API mode, we need to use the service client to calculate fresh points
         const supabase = getSupabaseClient();
-        const currentUserId = 'e9d12995-1f3e-491d-9628-3c4137d266d1'; // Default user for development
+        const currentUserId = "e9d12995-1f3e-491d-9628-3c4137d266d1"; // Default user for development
         const freshTotalPoints = await calculateFreshTotalPoints(supabase, currentUserId);
 
         // Override the total_points with fresh calculation
@@ -69,10 +71,10 @@ export const useProfile = () => {
       } else {
         // Use Supabase directly
         const supabase = getSupabaseClient();
-        const currentUserId = 'e9d12995-1f3e-491d-9628-3c4137d266d1'; // Default user for development
+        const currentUserId = "e9d12995-1f3e-491d-9628-3c4137d266d1"; // Default user for development
 
         // For development user, use mock data approach like profiles.service.ts
-        if (currentUserId === 'e9d12995-1f3e-491d-9628-3c4137d266d1') {
+        if (currentUserId === "e9d12995-1f3e-491d-9628-3c4137d266d1") {
           // Try to get profile first
           const { data: profile, error: profileError } = await supabase
             .from("profiles")
@@ -84,10 +86,10 @@ export const useProfile = () => {
             // Create mock profile if it doesn't exist
             const mockProfile = {
               id: currentUserId,
-              name: 'Developer',
+              name: "Developer",
               avatar_url: null,
               total_points: 0,
-              email: 'dev@example.com',
+              email: "dev@example.com",
             };
             setProfile(mockProfile);
             setPointsDateRange({ firstDate: null, lastDate: null });
@@ -100,7 +102,7 @@ export const useProfile = () => {
               name: profile.name,
               avatar_url: profile.avatar_url,
               total_points: freshTotalPoints,
-              email: 'dev@example.com',
+              email: "dev@example.com",
             });
 
             // Get points date range for dev user
@@ -173,36 +175,33 @@ export const useProfile = () => {
         // Use API route when Supabase is not configured
         const updateData = {
           name: data.name,
-          avatar_url: data.avatar_url && data.avatar_url.trim() !== '' ? data.avatar_url : null,
+          avatar_url: data.avatar_url && data.avatar_url.trim() !== "" ? data.avatar_url : null,
         };
-        const res = await fetch('/api/v1/profiles/me', {
-          method: 'PATCH',
+        const res = await fetch("/api/v1/profiles/me", {
+          method: "PATCH",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(updateData),
         });
         if (!res.ok) {
-          throw new Error('Failed to update profile');
+          throw new Error("Failed to update profile");
         }
         const updatedData = await res.json();
         setProfile(updatedData);
       } else {
         // Use Supabase directly
         const supabase = getSupabaseClient();
-        const currentUserId = 'e9d12995-1f3e-491d-9628-3c4137d266d1'; // Default user for development
+        const currentUserId = "e9d12995-1f3e-491d-9628-3c4137d266d1"; // Default user for development
 
         const updateData = {
           name: data.name,
-          avatar_url: data.avatar_url && data.avatar_url.trim() !== '' ? data.avatar_url : null,
+          avatar_url: data.avatar_url && data.avatar_url.trim() !== "" ? data.avatar_url : null,
         };
 
         // For development user, handle like profiles.service.ts
-        if (currentUserId === 'e9d12995-1f3e-491d-9628-3c4137d266d1') {
-          const { error: updateError } = await supabase
-            .from("profiles")
-            .update(updateData)
-            .eq("id", currentUserId);
+        if (currentUserId === "e9d12995-1f3e-491d-9628-3c4137d266d1") {
+          const { error: updateError } = await supabase.from("profiles").update(updateData).eq("id", currentUserId);
 
           if (updateError) {
             console.log("Could not update profile, using mock data");
@@ -214,10 +213,7 @@ export const useProfile = () => {
           });
         } else {
           // Production logic
-          const { error: updateError } = await supabase
-            .from("profiles")
-            .update(updateData)
-            .eq("id", profile.id);
+          const { error: updateError } = await supabase.from("profiles").update(updateData).eq("id", profile.id);
 
           if (updateError) {
             setError("Failed to update profile");

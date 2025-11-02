@@ -19,15 +19,15 @@ const { title = "10x Astro Starter" } = Astro.props;
     <title>{title}</title>
     <script is:inline>
       // Apply theme immediately to prevent flash of wrong theme
-      const savedTheme = localStorage.getItem('theme');
-      const theme = savedTheme || 'dark'; // Default to dark
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
+      const savedTheme = localStorage.getItem("theme");
+      const theme = savedTheme || "dark"; // Default to dark
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
       }
     </script>
   </head>
   <body>
-    <AppWithTheme client:load>
+    <AppWithTheme client:only>
       <slot />
     </AppWithTheme>
   </body>

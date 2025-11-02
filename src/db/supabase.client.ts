@@ -5,7 +5,7 @@ import type { Database } from "../db/database.types.ts";
 const isServer = import.meta.env.SSR;
 
 // Use PUBLIC_ vars in the browser, fall back to server-only vars on the server
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ||  import.meta.env.SUPABASE_URL;
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || import.meta.env.SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;
 const supabaseServiceKey = isServer ? import.meta.env.SUPABASE_SERVICE_ROLE_KEY : undefined;
 
@@ -21,7 +21,7 @@ export function getSupabaseClient(): ReturnType<typeof createClient<Database>> {
     throw new Error("Supabase is not configured. Set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY.");
   }
   if (!cachedBrowserClient) {
-    const keyToUse = (isServer && supabaseServiceKey) ? supabaseServiceKey : (supabaseAnonKey as string);
+    const keyToUse = isServer && supabaseServiceKey ? supabaseServiceKey : (supabaseAnonKey as string);
     cachedBrowserClient = createClient<Database>(supabaseUrl as string, keyToUse);
   }
   return cachedBrowserClient;

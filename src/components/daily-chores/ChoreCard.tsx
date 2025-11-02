@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useDrag } from 'react-dnd';
+import React, { useState } from "react";
+import { useDrag } from "react-dnd";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DeleteChoreModal } from './DeleteChoreModal';
-import type { ChoreViewModel } from '@/types/daily-view.types';
-import type { MemberDTO } from '@/types';
+import { DeleteChoreModal } from "./DeleteChoreModal";
+import type { ChoreViewModel } from "@/types/daily-view.types";
+import type { MemberDTO } from "@/types";
 
 interface ChoreCardProps {
   chore: ChoreViewModel;
@@ -18,7 +18,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [{ isDragging }, drag] = useDrag({
-    type: 'chore',
+    type: "chore",
     item: { id: chore.id },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -38,11 +38,16 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
   // Helper function to get time of day text
   const getTimeOfDayText = (timeOfDay: string) => {
     switch (timeOfDay) {
-      case 'morning': return 'morning';
-      case 'afternoon': return 'afternoon';
-      case 'evening': return 'evening';
-      case 'night': return 'night';
-      default: return '';
+      case "morning":
+        return "morning";
+      case "afternoon":
+        return "afternoon";
+      case "evening":
+        return "evening";
+      case "night":
+        return "night";
+      default:
+        return "";
     }
   };
 
@@ -50,18 +55,20 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
     <Card
       ref={drag}
       className={`hover:shadow-md transition-shadow cursor-move border border-border bg-card ${
-        isDragging ? 'opacity-50' : ''
+        isDragging ? "opacity-50" : ""
       }`}
     >
       <CardContent className="p-4">
         <div className="grid grid-cols-[1fr_auto] gap-2">
           <div className="flex items-center space-x-3 min-w-0">
-            <span className="text-2xl flex-shrink-0">{chore.catalogEmoji || '📋'}</span>
+            <span className="text-2xl flex-shrink-0">{chore.catalogEmoji || "📋"}</span>
             <div className="min-w-0 flex-1">
               <h3 className="font-medium text-foreground truncate">
                 {chore.catalogTitle}
-                {chore.catalogTimeOfDay !== 'any' && (
-                  <span className="text-xs text-muted-foreground ml-1">({getTimeOfDayText(chore.catalogTimeOfDay)})</span>
+                {chore.catalogTimeOfDay !== "any" && (
+                  <span className="text-xs text-muted-foreground ml-1">
+                    ({getTimeOfDayText(chore.catalogTimeOfDay)})
+                  </span>
                 )}
                 {!chore.catalogPredefined && <span className="ml-1">✨</span>}
               </h3>

@@ -7,7 +7,7 @@ interface DailyPoints {
   points: number;
 }
 
-export const useDailyPoints = (days: number = 7) => {
+export const useDailyPoints = (days = 7) => {
   const [dailyPoints, setDailyPoints] = useState<DailyPoints[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,15 +28,15 @@ export const useDailyPoints = (days: number = 7) => {
           const date = new Date(today);
           date.setDate(date.getDate() - i);
           mockData.push({
-            date: date.toISOString().split('T')[0],
-            points: Math.floor(Math.random() * 50) // Mock data
+            date: date.toISOString().split("T")[0],
+            points: Math.floor(Math.random() * 50), // Mock data
           });
         }
         setDailyPoints(mockData);
       } else {
         // Use Supabase directly
         const supabase = getSupabaseClient();
-        const currentUserId = 'e9d12995-1f3e-491d-9628-3c4137d266d1'; // Default user for development
+        const currentUserId = "e9d12995-1f3e-491d-9628-3c4137d266d1"; // Default user for development
 
         const pointsData = await getUserDailyPointsSummary(supabase, currentUserId, days);
         setDailyPoints(pointsData);

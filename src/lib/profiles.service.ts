@@ -61,7 +61,7 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
   console.log("Fetching profile for userId:", userId);
 
   // For development: if user doesn't exist, create mock data
-  if (userId === 'e9d12995-1f3e-491d-9628-3c4137d266d1') {
+  if (userId === "e9d12995-1f3e-491d-9628-3c4137d266d1") {
     console.log("Using mock data for development user");
 
     // Try to get profile first
@@ -76,10 +76,10 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
       console.log("Creating mock profile for development");
       const mockProfile = {
         id: userId,
-        name: 'Developer',
+        name: "Developer",
         avatar_url: null,
         total_points: 0,
-        email: 'dev@example.com',
+        email: "dev@example.com",
       };
 
       // Try to insert the profile (this might fail if tables don't exist, but that's ok for now)
@@ -88,7 +88,7 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
           .from("profiles")
           .insert({
             id: userId,
-            name: 'Developer',
+            name: "Developer",
           })
           .single();
       } catch (insertError) {
@@ -106,7 +106,7 @@ export async function getProfile(supabase: SupabaseClient<Database>, userId: str
       name: profile.name,
       avatar_url: profile.avatar_url,
       total_points: freshTotalPoints,
-      email: 'dev@example.com', // Mock email for development
+      email: "dev@example.com", // Mock email for development
     };
   }
 
@@ -171,7 +171,7 @@ export async function updateProfile(
   data: UpdateProfileCmdType
 ): Promise<ProfileDTO> {
   // For development user, handle mock data
-  if (userId === 'e9d12995-1f3e-491d-9628-3c4137d266d1') {
+  if (userId === "e9d12995-1f3e-491d-9628-3c4137d266d1") {
     console.log("Updating mock profile for development user");
 
     // Try to update the profile
@@ -184,10 +184,7 @@ export async function updateProfile(
         updatePayload.avatar_url = data.avatar_url;
       }
 
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update(updatePayload)
-        .eq("id", userId);
+      const { error: updateError } = await supabase.from("profiles").update(updatePayload).eq("id", userId);
 
       if (updateError) {
         console.log("Could not update profile (might not exist yet), returning mock data");
@@ -198,7 +195,7 @@ export async function updateProfile(
         name: data.name,
         avatar_url: data.avatar_url || null,
         total_points: 0,
-        email: 'dev@example.com',
+        email: "dev@example.com",
       };
     } catch (error) {
       console.log("Database update failed, returning mock updated data");
@@ -207,7 +204,7 @@ export async function updateProfile(
         name: data.name,
         avatar_url: data.avatar_url || null,
         total_points: 0,
-        email: 'dev@example.com',
+        email: "dev@example.com",
       };
     }
   }
