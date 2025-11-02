@@ -187,7 +187,7 @@ export function useDailyView() {
 
       return viewModels;
     },
-    enabled: useApi || (isSupabaseConfigured && !!effectiveHouseholdId),
+    enabled: (useApi || (isSupabaseConfigured && !!effectiveHouseholdId)) && !!membersQuery.data,
     staleTime: 1 * 60 * 1000, // 1 minute
   });
 
