@@ -146,7 +146,7 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
               type="button"
               onClick={handleCancel}
               disabled={form.formState.isSubmitting}
-              className="px-4 py-2 text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-secondary-foreground bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>

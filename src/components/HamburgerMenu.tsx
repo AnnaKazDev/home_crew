@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface MenuItem {
@@ -87,9 +88,19 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
             style={{ top: '0' }} // Start from top to include header area
           >
             <div className="p-6">
-       
+              {/* Close Button - same styling as modal close buttons */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(false)}
+                className="ring-offset-background focus:ring-ring text-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 p-1.5"
+                title="Close menu"
+              >
+                <XIcon />
+                <span className="sr-only">Close menu</span>
+              </Button>
 
-              <nav className="flex flex-col space-y-3">
+              <nav className="flex flex-col space-y-3 pt-12">
                 {menuItems.map((item, index) => (
                   <a
                     key={index}
