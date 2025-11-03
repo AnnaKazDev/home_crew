@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { registerSchema, type RegisterFormData } from "@/lib/validation/auth.schemas";
 
 interface RegisterFormProps {
@@ -13,7 +14,14 @@ interface RegisterFormProps {
   loading: boolean;
 }
 
+interface RegistrationSuccess {
+  pin: string;
+  householdName: string;
+}
+
 const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading }) => {
+  const [successData, setSuccessData] = useState<RegistrationSuccess | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -28,6 +36,20 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
   });
 
   const selectedRole = watch("role");
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  };
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
@@ -48,14 +70,73 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
         throw new Error(result.error || 'Registration failed');
       }
 
-      // Success - redirect to profile page
-      window.location.href = '/daily_chores';
+      // Success - show PIN for admin or redirect for member
+      if (data.role === 'admin') {
+        setSuccessData({
+          pin: result.pin,
+          householdName: result.household.name
+        });
+      } else {
+        // For members, redirect immediately
+        window.location.href = '/daily_chores';
+      }
     } catch (error) {
       onError(error instanceof Error ? error.message : "Registration failed");
     } finally {
       onLoading(false);
     }
   };
+
+  // Show success screen for admin registration
+  if (successData) {
+    return (
+      <Card className="w-full max-w-md mx-auto bg-green-50 border-green-200">
+        <CardHeader className="text-center">
+          <CardTitle className="text-green-800 flex items-center justify-center gap-2">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            Registration Successful!
+          </CardTitle>
+          <CardDescription className="text-green-700">
+            Your household <strong>{successData.householdName}</strong> has been created.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="text-center">
+            <p className="text-sm text-green-700 mb-2">
+              Share this PIN with your family members so they can join your household:
+            </p>
+            <p className="text-xs text-green-600 mb-2">
+              You can also find this PIN later in the Household settings
+            </p>
+            <div className="bg-green-100 border border-green-300 rounded-lg p-4">
+              <div className="text-2xl font-mono font-bold text-green-800 tracking-wider">
+                {successData.pin}
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 border-green-300 text-green-700 hover:bg-green-100"
+              onClick={() => copyToClipboard(successData.pin)}
+            >
+              Copy PIN
+            </Button>
+            <Button
+              type="button"
+              className="flex-1 bg-green-600 hover:bg-green-700"
+              onClick={() => window.location.href = '/daily_chores'}
+            >
+              Continue to App
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" suppressHydrationWarning>
