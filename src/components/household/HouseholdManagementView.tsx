@@ -1,5 +1,6 @@
 import { useCallback, memo } from "react";
 import { useHouseholdManagement } from "@/hooks/useHouseholdManagement";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,8 @@ import MembersList from "./MembersList";
 import type { UpdateHouseholdCmd } from "@/types";
 
 const HouseholdManagementView: React.FC = memo(() => {
+  const { isAuthenticated, loading: authLoading } = useAuthRedirect();
+
   const {
     household,
     members,
@@ -21,6 +24,11 @@ const HouseholdManagementView: React.FC = memo(() => {
     updateMemberRole,
     removeMember,
   } = useHouseholdManagement();
+
+  // Redirect handled by useAuthRedirect hook
+  if (authLoading || !isAuthenticated) {
+    return null;
+  }
 
   const handleUpdateHousehold = useCallback(
     async (updates: UpdateHouseholdCmd) => {

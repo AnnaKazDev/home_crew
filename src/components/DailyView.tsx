@@ -2,6 +2,7 @@ import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useDailyView } from "@/hooks/useDailyView";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { DailyViewHeader } from "./daily-chores/DailyViewHeader";
 import { ChoreColumns } from "./daily-chores/ChoreColumns";
 import { AddChoreModal } from "./daily-chores/AddChoreModal";
@@ -12,6 +13,8 @@ import type { ChoreViewModel } from "@/types/daily-view.types";
 // Use ChoreViewModel from types
 
 export default function DailyView() {
+  const { isAuthenticated, loading: authLoading } = useAuthRedirect();
+
   const {
     // Data
     currentDate,
@@ -87,6 +90,11 @@ export default function DailyView() {
     }
     openAddModal();
   };
+
+  // Redirect handled by useAuthRedirect hook
+  if (authLoading || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
