@@ -1,15 +1,16 @@
-import {
-  CircleCheckIcon,
-  InfoIcon,
-  Loader2Icon,
-  OctagonXIcon,
-  TriangleAlertIcon,
-} from "lucide-react"
-import { useTheme } from "next-themes"
-import { Toaster as Sonner, type ToasterProps } from "sonner"
+import { CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, TriangleAlertIcon } from "lucide-react";
+import { useTheme } from "../ThemeProvider";
+import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  // Handle case where ThemeProvider might not be available
+  let theme: string = "dark";
+  try {
+    const themeContext = useTheme();
+    theme = themeContext.theme;
+  } catch (error) {
+    // ThemeProvider not available, use default dark theme
+  }
 
   return (
     <Sonner
@@ -32,7 +33,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }
       {...props}
     />
-  )
-}
+  );
+};
 
-export { Toaster }
+export { Toaster };

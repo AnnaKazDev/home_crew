@@ -23,7 +23,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# Temporary debug scripts
+# Temporary debug scripts and development files
 check-points.js
 create-test-user.js
 check-household-pin.js
@@ -33,5 +33,14 @@ test-fresh-points.js
 debug-points.js
 *-test-user.js
 check-*.js
+check-*.sql
 test-*.js
+test-*.sql
 debug-*.js
+reset_test_user_password.mjs
+check_test_user.mjs
+create_table.sql
+insert_seed.sql
+temp_households_schema.sql
+query.sql
+dev.log

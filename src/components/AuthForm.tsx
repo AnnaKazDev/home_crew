@@ -42,7 +42,7 @@ const AuthForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" suppressHydrationWarning={true}>
       <AuthModeToggle mode={mode} onModeChange={handleModeChange} />
 
       {error && <AuthErrorDisplay error={error} />}

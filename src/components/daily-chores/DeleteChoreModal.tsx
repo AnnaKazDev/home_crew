@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import type { ChoreViewModel } from '@/types/daily-view.types';
+import type { ChoreViewModel } from "@/types/daily-view.types";
 
 interface DeleteChoreModalProps {
   isOpen: boolean;

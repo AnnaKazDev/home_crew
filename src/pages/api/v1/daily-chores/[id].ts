@@ -70,7 +70,13 @@ export const PATCH: APIRoute = async (context) => {
 
     // Update the daily chore (use service client to bypass RLS)
     try {
-      const updatedChore = await updateDailyChore(supabase as SupabaseClient, householdId, id, DEFAULT_USER_ID, validationResult.data);
+      const updatedChore = await updateDailyChore(
+        supabase as SupabaseClient,
+        householdId,
+        id,
+        DEFAULT_USER_ID,
+        validationResult.data
+      );
 
       return new Response(JSON.stringify(updatedChore), {
         status: 200,

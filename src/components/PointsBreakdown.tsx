@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, TrendingUp, Trophy } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, TrendingUp, Trophy } from "lucide-react";
 
 interface DailyPoints {
   date: string;
@@ -14,58 +14,57 @@ interface PointsBreakdownProps {
   error?: string | null;
 }
 
-const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
-  dailyPoints,
-  loading = false,
-  error = null
-}) => {
+const PointsBreakdown: React.FC<PointsBreakdownProps> = ({ dailyPoints, loading = false, error = null }) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const baseDateFormat = date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
+    const baseDateFormat = date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
     });
 
-    if (dateStr === today.toISOString().split('T')[0]) {
-      return `${date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric'
+    if (dateStr === today.toISOString().split("T")[0]) {
+      return `${date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
       })} (Today)`;
-    } else if (dateStr === yesterday.toISOString().split('T')[0]) {
-      return date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric'
+    } else if (dateStr === yesterday.toISOString().split("T")[0]) {
+      return date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
       });
     } else {
-      return date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short'
+      return date.toLocaleDateString("en-US", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
       });
     }
   };
 
   const totalPoints = dailyPoints.reduce((sum, day) => sum + day.points, 0);
-  const maxPoints = Math.max(...dailyPoints.map(day => day.points), 0);
+  const maxPoints = Math.max(...dailyPoints.map((day) => day.points), 0);
   const avgPoints = dailyPoints.length > 0 ? Math.round(totalPoints / dailyPoints.length) : 0;
 
   // Calculate date range
-  const dateRange = dailyPoints.length > 0 ? (() => {
-    const sortedDates = dailyPoints
-      .filter(day => day.points > 0)
-      .map(day => day.date)
-      .sort();
-    if (sortedDates.length === 0) return null;
-    const firstDate = new Date(sortedDates[0]);
-    const lastDate = new Date(sortedDates[sortedDates.length - 1]);
-    return `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-  })() : null;
+  const dateRange =
+    dailyPoints.length > 0
+      ? (() => {
+          const sortedDates = dailyPoints
+            .filter((day) => day.points > 0)
+            .map((day) => day.date)
+            .sort();
+          if (sortedDates.length === 0) return null;
+          const firstDate = new Date(sortedDates[0]);
+          const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+          return `${firstDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${lastDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+        })()
+      : null;
 
   if (loading) {
     return (
@@ -116,7 +115,7 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
           <Calendar className="w-5 h-5" />
           Points Summary - Last 7 Days
         </CardTitle>
-          <div className="flex gap-4 text-sm text-muted-foreground">
+        <div className="flex gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Trophy className="w-4 h-4" />
             <span>Total: {totalPoints} pts</span>
@@ -133,11 +132,12 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
             const percentage = maxPoints > 0 ? (day.points / maxPoints) * 100 : 0;
 
             return (
-              <div key={day.date} className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors">
+              <div
+                key={day.date}
+                className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
+              >
                 <div className="flex items-center gap-3">
-                  <div className="font-medium min-w-[80px]">
-                    {formatDate(day.date)}
-                  </div>
+                  <div className="font-medium min-w-[80px]">{formatDate(day.date)}</div>
                   <div className="flex-1">
                     <div className="w-full bg-muted rounded-full h-2">
                       <div
@@ -149,7 +149,7 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
                 </div>
                 <Badge
                   variant={day.points > 0 ? "default" : "secondary"}
-                  className={`min-w-[50px] justify-center ${day.points === 0 ? 'dark:text-black' : ''}`}
+                  className={`min-w-[50px] justify-center ${day.points === 0 ? "dark:text-black" : ""}`}
                 >
                   {day.points > 0 ? `+${day.points}` : day.points}
                 </Badge>

@@ -1,21 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { CatalogItemDTO, MemberDTO } from '@/types';
+import type { CatalogItemDTO, MemberDTO } from "@/types";
 
 interface ChoreConfiguratorProps {
   selectedItem: CatalogItemDTO | null;
   customData: Partial<CatalogItemDTO> | null;
   members: MemberDTO[];
   currentDate: string;
-  onSubmit: (config: {
-    date: string;
-    assignee_id?: string | null;
-  }) => void;
+  onSubmit: (config: { date: string; assignee_id?: string | null }) => void;
   onCancel: () => void;
   isLoading: boolean;
 }
@@ -46,7 +43,7 @@ export function ChoreConfigurator({
     const newErrors: Record<string, string> = {};
 
     if (!config.date) {
-      newErrors.date = 'Date is required';
+      newErrors.date = "Date is required";
     }
 
     setErrors(newErrors);
@@ -65,17 +62,17 @@ export function ChoreConfigurator({
   };
 
   const handleChange = (field: string, value: string | null) => {
-    setConfig(prev => ({ ...prev, [field]: value }));
+    setConfig((prev) => ({ ...prev, [field]: value }));
     // Clear error when user makes selection
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const dateString = date.toISOString().split('T')[0];
-      handleChange('date', dateString);
+      const dateString = date.toISOString().split("T")[0];
+      handleChange("date", dateString);
       setIsCalendarOpen(false);
     }
   };
@@ -85,11 +82,16 @@ export function ChoreConfigurator({
   // Helper function to get time of day text
   const getTimeOfDayText = (timeOfDay: string) => {
     switch (timeOfDay) {
-      case 'morning': return 'morning';
-      case 'afternoon': return 'afternoon';
-      case 'evening': return 'evening';
-      case 'night': return 'night';
-      default: return '';
+      case "morning":
+        return "morning";
+      case "afternoon":
+        return "afternoon";
+      case "evening":
+        return "evening";
+      case "night":
+        return "night";
+      default:
+        return "";
     }
   };
 
@@ -101,18 +103,20 @@ export function ChoreConfigurator({
         <Card className="border border-border bg-card">
           <CardContent className="p-4">
             <div className="flex items-center space-x-3 min-w-0">
-              <span className="text-2xl flex-shrink-0">{currentItem?.emoji || '📋'}</span>
+              <span className="text-2xl flex-shrink-0">{currentItem?.emoji || "📋"}</span>
               <div className="min-w-0 flex-1">
                 <h3 className="font-medium text-foreground truncate">
-                  {currentItem?.title || 'Custom Chore'}
-                  {currentItem?.time_of_day && currentItem.time_of_day !== 'any' && (
-                    <span className="text-xs text-muted-foreground ml-1">({getTimeOfDayText(currentItem.time_of_day)})</span>
+                  {currentItem?.title || "Custom Chore"}
+                  {currentItem?.time_of_day && currentItem.time_of_day !== "any" && (
+                    <span className="text-xs text-muted-foreground ml-1">
+                      ({getTimeOfDayText(currentItem.time_of_day)})
+                    </span>
                   )}
                   {currentItem && !currentItem.predefined && <span className="ml-1">✨</span>}
                 </h3>
                 <div className="flex items-center space-x-2 mt-1">
                   <Badge variant="secondary" className="text-xs truncate text-black">
-                    {currentItem?.category || 'No category'}
+                    {currentItem?.category || "No category"}
                   </Badge>
                   <Badge variant="outline" className="text-xs flex-shrink-0">
                     {currentItem?.points || 0} pts
@@ -127,29 +131,25 @@ export function ChoreConfigurator({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Date */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
-            Date *
-          </label>
+          <label className="block text-sm font-medium text-foreground mb-1">Date *</label>
           <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
             <PopoverTrigger asChild>
               <button
                 type="button"
                 className={cn(
                   "group flex items-center justify-center w-full px-4 py-3 text-left font-normal border rounded-md bg-background hover:bg-accent hover:text-black focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                  errors.date ? 'border-destructive' : 'border-border'
+                  errors.date ? "border-destructive" : "border-border"
                 )}
               >
                 <span className="flex-1 text-muted-foreground group-hover:text-black">
-                  {config.date ? (
-                    new Date(config.date).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })
-                  ) : (
-                    'Pick a date'
-                  )}
+                  {config.date
+                    ? new Date(config.date).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "Pick a date"}
                 </span>
                 <CalendarIcon className="h-4 w-4 text-muted-foreground ml-2 group-hover:text-black" />
               </button>
@@ -170,22 +170,17 @@ export function ChoreConfigurator({
                         className
                       )}
                     />
-                  )
+                  ),
                 }}
               />
             </PopoverContent>
           </Popover>
-          {errors.date && (
-            <p className="mt-1 text-sm text-destructive">{errors.date}</p>
-          )}
+          {errors.date && <p className="mt-1 text-sm text-destructive">{errors.date}</p>}
         </div>
-
 
         {/* Assignee */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-3">
-            Assign to (optional)
-          </label>
+          <label className="block text-sm font-medium text-foreground mb-3">Assign to (optional)</label>
           <div className="space-y-2">
             <label className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border">
               <input
@@ -193,40 +188,46 @@ export function ChoreConfigurator({
                 name="assignee"
                 value=""
                 checked={config.assignee_id === null}
-                onChange={() => handleChange('assignee_id', null)}
+                onChange={() => handleChange("assignee_id", null)}
                 className="text-primary focus:ring-ring"
               />
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                 </div>
                 <div>
                   <div className="font-medium text-foreground group-hover:text-black">Unassigned</div>
-                  <div className="text-sm text-muted-foreground group-hover:text-black">Anyone can complete this chore</div>
+                  <div className="text-sm text-muted-foreground group-hover:text-black">
+                    Anyone can complete this chore
+                  </div>
                 </div>
               </div>
             </label>
 
-            {members.map(member => (
-              <label key={member.id} className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border">
+            {members.map((member) => (
+              <label
+                key={member.id}
+                className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border"
+              >
                 <input
                   type="radio"
                   name="assignee"
                   value={member.user_id}
                   checked={config.assignee_id === member.user_id}
-                  onChange={(e) => handleChange('assignee_id', e.target.value)}
+                  onChange={(e) => handleChange("assignee_id", e.target.value)}
                   className="text-primary focus:ring-ring"
                 />
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                     {member.avatar_url ? (
-                      <img
-                        src={member.avatar_url}
-                        alt={member.name}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
+                      <img src={member.avatar_url} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
                     ) : (
                       <span className="text-sm font-medium text-muted-foreground">
                         {member.name.charAt(0).toUpperCase()}
@@ -236,7 +237,7 @@ export function ChoreConfigurator({
                   <div>
                     <div className="font-medium text-foreground group-hover:text-black">{member.name}</div>
                     <div className="text-sm text-muted-foreground group-hover:text-black">
-                      {member.role === 'admin' ? 'Admin' : 'Member'}
+                      {member.role === "admin" ? "Admin" : "Member"}
                     </div>
                   </div>
                 </div>
@@ -260,14 +261,11 @@ export function ChoreConfigurator({
             disabled={isLoading}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center space-x-2"
           >
-            {isLoading && (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            )}
-            <span>{isLoading ? 'Adding...' : 'Add Chore'}</span>
+            {isLoading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
+            <span>{isLoading ? "Adding..." : "Add Chore"}</span>
           </button>
         </div>
       </form>
     </div>
   );
 }
-

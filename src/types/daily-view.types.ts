@@ -1,4 +1,4 @@
-import type { DailyChoreDTO, MemberDTO, HouseholdDTO } from '@/types';
+import type { DailyChoreDTO, MemberDTO, HouseholdDTO } from "@/types";
 
 /**
  * ViewModel types for Daily Chores View
@@ -13,7 +13,7 @@ export interface ChoreViewModel extends DailyChoreDTO {
   /** Category from catalog */
   catalogCategory: string;
   /** Time of day from catalog */
-  catalogTimeOfDay: 'morning' | 'afternoon' | 'evening' | 'any';
+  catalogTimeOfDay: "morning" | "afternoon" | "evening" | "any";
   /** Whether this is a predefined chore or custom */
   catalogPredefined: boolean;
   /** Name of assigned member */
@@ -69,7 +69,7 @@ export interface ChoreColumnsProps {
 
 export interface ChoreColumnProps {
   title: string;
-  status: 'todo' | 'done';
+  status: "todo" | "done";
   chores: ChoreViewModel[];
   members: MemberDTO[];
   onDrop: (choreId: string) => void;

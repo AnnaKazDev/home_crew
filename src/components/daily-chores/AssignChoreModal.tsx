@@ -1,20 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { AssignChoreModalProps, ChoreViewModel } from '@/types/daily-view.types';
-import type { MemberDTO } from '@/types';
+import type { AssignChoreModalProps, ChoreViewModel } from "@/types/daily-view.types";
+import type { MemberDTO } from "@/types";
 
-export function AssignChoreModal({
-  isOpen,
-  chore,
-  members,
-  onClose,
-  onSubmit,
-}: AssignChoreModalProps) {
-  const [selectedAssigneeId, setSelectedAssigneeId] = useState<string | null>(
-    chore?.assignee_id || null
-  );
+export function AssignChoreModal({ isOpen, chore, members, onClose, onSubmit }: AssignChoreModalProps) {
+  const [selectedAssigneeId, setSelectedAssigneeId] = useState<string | null>(chore?.assignee_id || null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,16 +28,16 @@ export function AssignChoreModal({
     try {
       // Validate that selected member is still in the household
       if (selectedAssigneeId) {
-        const selectedMember = members.find(m => m.user_id === selectedAssigneeId);
+        const selectedMember = members.find((m) => m.user_id === selectedAssigneeId);
         if (!selectedMember) {
-          throw new Error('Selected member is no longer in the household');
+          throw new Error("Selected member is no longer in the household");
         }
       }
 
       await onSubmit(selectedAssigneeId);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to assign chore');
+      setError(err instanceof Error ? err.message : "Failed to assign chore");
     } finally {
       setIsLoading(false);
     }
@@ -62,15 +54,15 @@ export function AssignChoreModal({
           {/* Chore Preview */}
           <div className="bg-muted/50 p-4 rounded-lg">
             <div className="flex items-start space-x-3">
-              <span className="text-2xl">{chore?.catalogEmoji ?? '📋'}</span>
+              <span className="text-2xl">{chore?.catalogEmoji ?? "📋"}</span>
               <div>
-                <h3 className="font-medium text-foreground">{chore?.catalogTitle ?? 'Chore'}</h3>
+                <h3 className="font-medium text-foreground">{chore?.catalogTitle ?? "Chore"}</h3>
                 <div className="flex items-center space-x-2 mt-1">
                   <Badge variant="outline" className="text-xs">
                     {chore?.points ?? 0} pts
                   </Badge>
                   <Badge variant="secondary" className="text-xs">
-                    {chore?.catalogCategory ?? 'General'}
+                    {chore?.catalogCategory ?? "General"}
                   </Badge>
                 </div>
               </div>
@@ -101,7 +93,12 @@ export function AssignChoreModal({
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
                   <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                 </div>
                 <div>
@@ -112,8 +109,11 @@ export function AssignChoreModal({
             </label>
 
             {/* Member options */}
-            {members.map(member => (
-              <label key={member.id} className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent border-2 border-border">
+            {members.map((member) => (
+              <label
+                key={member.id}
+                className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent border-2 border-border"
+              >
                 <input
                   type="radio"
                   name="assignee"
@@ -125,11 +125,7 @@ export function AssignChoreModal({
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
                     {member.avatar_url ? (
-                      <img
-                        src={member.avatar_url}
-                        alt={member.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
+                      <img src={member.avatar_url} alt={member.name} className="w-10 h-10 rounded-full object-cover" />
                     ) : (
                       <span className="text-sm font-medium text-muted-foreground">
                         {member.name.charAt(0).toUpperCase()}
@@ -139,7 +135,7 @@ export function AssignChoreModal({
                   <div>
                     <div className="font-medium text-foreground">{member.name}</div>
                     <div className="text-sm text-muted-foreground">
-                      {member.role === 'admin' ? 'Admin' : 'Member'}
+                      {member.role === "admin" ? "Admin" : "Member"}
                       {chore?.assignee_id === member.user_id && (
                         <span className="ml-2 text-primary font-medium">(Currently assigned)</span>
                       )}
@@ -155,7 +151,7 @@ export function AssignChoreModal({
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={isLoading}>
-              {isLoading ? 'Assigning...' : 'Assign Chore'}
+              {isLoading ? "Assigning..." : "Assign Chore"}
             </Button>
           </div>
         </div>

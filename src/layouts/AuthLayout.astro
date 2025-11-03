@@ -1,0 +1,51 @@
+---
+import "../styles/global.css";
+import { ThemeProvider } from "../components/ThemeProvider";
+import { AuthProvider } from "../contexts/AuthContext";
+import { Toaster } from "../components/ui/sonner";
+import AppHeader from "../components/AppHeader";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "Authentication - Home Crew" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script is:inline>
+      // Apply theme immediately to prevent flash of wrong theme
+      const savedTheme = localStorage.getItem("theme");
+      const theme = savedTheme || "dark"; // Default to dark
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+  </head>
+  <body>
+    <ThemeProvider client:idle>
+      <AuthProvider client:idle>
+        <AppHeader client:idle />
+        <slot />
+        <Toaster client:idle />
+      </AuthProvider>
+    </ThemeProvider>
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 1.5rem; /* Space for fixed header */
+  }
+</style>

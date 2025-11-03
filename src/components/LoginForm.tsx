@@ -22,20 +22,46 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading }) =>
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    console.log('🔥 LoginForm onSubmit called with data:', data);
     try {
       onLoading(true);
       onError("");
 
-      // TODO: Implement actual login logic with Supabase Auth
-      // For now, just simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log('📡 Using Supabase client directly');
+      // Create a fresh client instance to ensure proper configuration
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        import.meta.env.PUBLIC_SUPABASE_URL,
+        import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+        {
+          auth: {
+            persistSession: true,
+            storage: window.localStorage,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
+        }
+      );
 
-      console.log("Login attempt:", data);
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
-      // Simulate success for demo purposes
-      // In real implementation, this would redirect to dashboard
-      alert("Login functionality will be implemented with Supabase Auth");
+      if (error) {
+        console.error('Supabase login error:', error);
+        throw new Error(error.message);
+      }
+
+      console.log('📡 Login successful:', authData.user?.id);
+
+      // Success - redirect to daily_chores page (main app page for logged-in users)
+      console.log('Login successful, redirecting to daily_chores...');
+      setTimeout(() => {
+        window.location.href = '/daily_chores';
+      }, 500); // Shorter delay
     } catch (error) {
+      console.error('Login error:', error);
       onError(error instanceof Error ? error.message : "Login failed");
     } finally {
       onLoading(false);
@@ -49,8 +75,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading }) =>
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" action="#" suppressHydrationWarning>
+      <div className="space-y-2" suppressHydrationWarning>
         <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
           Email address
         </label>
@@ -99,7 +125,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading }) =>
         </Button>
       </div>
 
-      <Button type="submit" size="lg" className="w-full whitespace-normal" disabled={isSubmitting || loading}>
+      <Button
+        type="button"
+        size="lg"
+        className="w-full whitespace-normal"
+        disabled={isSubmitting || loading}
+        onClick={handleSubmit(onSubmit)}
+      >
         {isSubmitting || loading ? "Signing in..." : "Sign in"}
       </Button>
     </form>
