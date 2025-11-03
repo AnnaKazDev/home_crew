@@ -170,6 +170,26 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
         {errors.role && <p className="mt-1 text-sm text-destructive">{errors.role.message}</p>}
       </div>
 
+      {selectedRole === "admin" && (
+        <div className="space-y-2">
+          <label htmlFor="householdName" className="block text-sm font-medium text-foreground mb-1">
+            Household name *
+          </label>
+          <input
+            type="text"
+            id="householdName"
+            placeholder="e.g., Smith Family"
+            {...register("householdName")}
+            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
+              errors.householdName ? "border-destructive" : "border-border"
+            }`}
+            disabled={loading}
+            maxLength={100}
+          />
+          {errors.householdName && <p className="mt-1 text-sm text-destructive">{errors.householdName.message}</p>}
+        </div>
+      )}
+
       {selectedRole === "member" && (
         <div className="space-y-2">
           <label htmlFor="pin" className="block text-sm font-medium text-foreground mb-1">

@@ -18,12 +18,25 @@ export const registerSchema = z
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
     role: z.enum(["admin", "member"]),
+    householdName: z.string().optional(),
     pin: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   })
+  .refine(
+    (data) => {
+      if (data.role === "admin") {
+        return data.householdName && data.householdName.trim().length >= 2 && data.householdName.trim().length <= 100;
+      }
+      return true;
+    },
+    {
+      message: "Household name must be between 2 and 100 characters",
+      path: ["householdName"],
+    }
+  )
   .refine(
     (data) => {
       if (data.role === "member") {

@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const { name, email, password, role, pin } = validationResult.data;
+    const { name, email, password, role, householdName, pin } = validationResult.data;
 
     const supabase = getSupabaseServiceClient();
 
@@ -81,7 +81,7 @@ export const POST: APIRoute = async ({ request }) => {
       const { data: householdData, error: householdError } = await supabase
         .from('households')
         .insert({
-          name: `${name}'s Household`,
+          name: householdName!.trim(),
           pin_hash: hashPIN(householdPIN),
           current_pin: householdPIN
         })
