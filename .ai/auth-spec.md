@@ -52,9 +52,10 @@ Niniejsza specyfikacja opisuje kompleksową architekturę modułu rejestracji, l
   - Przycisk "Zaloguj się"
 
 - **`RegisterForm.tsx`** - Formularz rejestracji
-  - Pola: name (login/nick), email, password, confirmPassword, role (radio: Admin/Członek), pin (tylko dla roli Członek)
-  - Dynamiczne wyświetlanie pola PIN w zależności od wybranej roli
+  - Pola: name (login/nick), email, password, confirmPassword, role (radio: Admin/Członek), householdName (tylko dla roli Admin), pin (tylko dla roli Członek)
+  - Dynamiczne wyświetlanie pól w zależności od wybranej roli
   - Przycisk "Zarejestruj się"
+  - Success screen dla admina pokazujący PIN gospodarstwa
 
 - **`ResetPasswordForm.tsx`** - Formularz resetowania hasła
   - Pola: email
@@ -76,28 +77,20 @@ Niniejsza specyfikacja opisuje kompleksową architekturę modułu rejestracji, l
 ### 1.3 Context i hooki autentykacji
 
 #### Nowe hooki:
-- **`useAuth.ts`** - Główny hook zarządzania stanem autentykacji
+- **`useAuthRedirect.ts`** - Hook do automatycznego przekierowania niezalogowanych użytkowników
   ```typescript
-  interface UseAuthReturn {
-    user: User | null;
-    profile: ProfileDTO | null;
-    household: HouseholdDTO | null;
+  interface UseAuthRedirectReturn {
+    isAuthenticated: boolean;
     loading: boolean;
-    signIn: (email: string, password: string) => Promise<void>;
-    signUp: (data: SignUpData) => Promise<void>;
-    signOut: () => Promise<void>;
-    resetPassword: (email: string) => Promise<void>;
-    refreshProfile: () => Promise<void>;
+    user: User | null;
   }
   ```
 
-- **`useAuthGuard.ts`** - Hook do ochrony komponentów
-  ```typescript
-  interface UseAuthGuardReturn {
-    isAuthenticated: boolean;
-    redirectTo: string | null;
-  }
-  ```
+#### Istniejące hooki (rozszerzone):
+- **`useAuthStore`** (Zustand) - Główny store zarządzania stanem autentykacji
+  - Zarządzanie stanem użytkownika, profilu, gospodarstwa
+  - Metody: signIn, signUp, signOut, resetPassword
+  - Automatyczna synchronizacja z Supabase Auth
 
 #### Nowe konteksty:
 - **`AuthContext.tsx`** - Provider kontekstu autentykacji
@@ -107,42 +100,21 @@ Niniejsza specyfikacja opisuje kompleksową architekturę modułu rejestracji, l
 
 ### 1.4 Middleware i ochrona routów
 
-#### Rozszerzony middleware (`src/middleware/index.ts`):
+#### Aktualny middleware (`src/middleware/index.ts`):
 ```typescript
 export const onRequest = defineMiddleware(async (context, next) => {
-  // Istniejący kod inicjalizacji Supabase
+  // Inicjalizacja Supabase client
   context.locals.supabase = getSupabaseServiceClient();
 
-  // Nowa logika autentykacji
-  const { data: { session } } = await context.locals.supabase.auth.getSession();
-
-  if (session?.user) {
-    context.locals.user = session.user;
-    // Załaduj profil i gospodarstwo do context.locals
-    const profile = await loadUserProfile(context.locals.supabase, session.user.id);
-    const household = await loadUserHousehold(context.locals.supabase, session.user.id);
-    context.locals.profile = profile;
-    context.locals.household = household;
-  }
-
-  // Chronione route'y
-  const protectedRoutes = ['/daily_chores', '/household', '/profile', '/chores'];
-  const isProtectedRoute = protectedRoutes.some(route =>
-    context.url.pathname.startsWith(route)
-  );
-
-  if (isProtectedRoute && !session) {
-    return context.redirect('/auth');
-  }
-
-  // Przekierowanie zalogowanych z /auth na /daily_chores
-  if (context.url.pathname === '/auth' && session) {
-    return context.redirect('/daily_chores');
-  }
+  // Autentykacja jest obsługiwana po stronie klienta przez useAuthStore
+  // Komponenty używają useAuthRedirect hook do automatycznego przekierowania
+  // niezalogowanych użytkowników na /auth
 
   return next();
 });
 ```
+
+**Uwaga:** W obecnej implementacji ochrona route'ów jest realizowana po stronie klienta przez `useAuthRedirect` hook w komponentach React, a nie przez middleware po stronie serwera. To zapewnia lepsze doświadczenie SPA bez problemów z hydratacją.
 
 ### 1.5 Obsługa błędów i walidacja
 
@@ -185,11 +157,12 @@ export const registerSchema = z.object({
 #### Scenariusz 1: Rejestracja nowego administratora
 1. Użytkownik wchodzi na `/auth`
 2. Wybiera tryb rejestracji
-3. Wypełnia formularz (name, email, password, role=admin)
+3. Wypełnia formularz (name, email, password, role=admin, householdName)
 4. Po wysłaniu: tworzenie konta w Supabase Auth + profilu w `profiles`
-5. Automatyczne utworzenie gospodarstwa z 6-cyfrowym PIN
+5. Utworzenie gospodarstwa z podaną nazwą i wygenerowanym 6-cyfrowym PIN
 6. Wysłanie emaila potwierdzającego z PIN
-7. Przekierowanie do `/daily_chores`
+7. Wyświetlenie success screen z nazwą gospodarstwa i PIN do udostępnienia członkom rodziny
+8. Użytkownik może skopiować PIN lub kliknąć "Continue to App" żeby przejść do `/daily_chores`
 
 #### Scenariusz 2: Rejestracja członka rodziny
 1. Użytkownik wchodzi na `/auth`
