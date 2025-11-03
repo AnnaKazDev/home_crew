@@ -25,11 +25,6 @@ const HouseholdManagementView: React.FC = memo(() => {
     removeMember,
   } = useHouseholdManagement();
 
-  // Redirect handled by useAuthRedirect hook
-  if (authLoading || !isAuthenticated) {
-    return null;
-  }
-
   const handleUpdateHousehold = useCallback(
     async (updates: UpdateHouseholdCmd) => {
       try {
@@ -177,6 +172,11 @@ const HouseholdManagementView: React.FC = memo(() => {
         </div>
       </div>
     );
+  }
+
+  // Redirect handled by useAuthRedirect hook
+  if (authLoading || !isAuthenticated) {
+    return null;
   }
 
   return (

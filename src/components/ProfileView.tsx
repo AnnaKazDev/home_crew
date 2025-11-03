@@ -14,11 +14,6 @@ const ProfileView: React.FC = () => {
 
   console.log('ProfileView render:', { loading, profile, isAuthenticated, user: user?.id });
 
-  // Redirect handled by useAuthRedirect hook
-  if (loading || !isAuthenticated) {
-    return null;
-  }
-
   // No profile yet - show loading
   if (!profile) {
     return (
@@ -30,6 +25,11 @@ const ProfileView: React.FC = () => {
         </div>
       </div>
     );
+  }
+
+  // Redirect handled by useAuthRedirect hook
+  if (loading || !isAuthenticated) {
+    return null;
   }
 
   return (

@@ -91,6 +91,8 @@ export default function DailyView() {
     openAddModal();
   };
 
+  // All conditional returns moved to the end after all hooks are called
+
   // Redirect handled by useAuthRedirect hook
   if (authLoading || !isAuthenticated) {
     return null;
