@@ -44,3 +44,6 @@ insert_seed.sql
 temp_households_schema.sql
 query.sql
 dev.log
+
+# Team documentation
+todo.md
