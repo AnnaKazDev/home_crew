@@ -69,7 +69,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // Initialize auth state
   initialize: async () => {
     try {
-      console.log('AuthStore: Initializing...');
       const supabase = getSupabaseClient();
 
       // Get current session
@@ -82,7 +81,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
 
       if (session?.user) {
-        console.log('AuthStore: Found session for user:', session.user.id);
         get().setUser(session.user);
 
         // Fetch profile
@@ -104,9 +102,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
               ...profileData[0],
               email: session.user.email || '',
               total_points: profileData[0].total_points || 0
-            };
-            set({ profile });
-            console.log('AuthStore: Profile loaded:', profile);
+                };
+                set({ profile });
           }
         }
       } else {
@@ -123,7 +120,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const supabase = getSupabaseClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('AuthStore: Auth state change:', event, session?.user?.id);
 
         if (session?.user) {
           get().setUser(session.user);

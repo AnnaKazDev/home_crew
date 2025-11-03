@@ -44,6 +44,21 @@ export default function AppHeader() {
                 });
 
                 if (response.ok) {
+                  // Clear all Supabase-related data from localStorage
+                  const keysToRemove = [];
+                  for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.startsWith('sb-') || key.startsWith('supabase') || key.includes('auth'))) {
+                      keysToRemove.push(key);
+                    }
+                  }
+                  keysToRemove.forEach(key => localStorage.removeItem(key));
+
+                  // If no specific keys found, clear all localStorage as fallback
+                  if (keysToRemove.length === 0) {
+                    localStorage.clear();
+                  }
+
                   // Redirect to auth page after successful logout
                   window.location.href = '/auth';
                 } else {
@@ -96,52 +111,19 @@ export default function AppHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background dark:bg-black border-b border-border">
-      <div className="container relative flex h-14 items-center px-4">
+      <div className="w-full relative flex h-14 items-center px-4">
         {/* Logo/Brand and Hamburger Menu */}
         <div className="flex items-center space-x-2">
           <HamburgerMenu menuItems={menuItems} />
           <h1 className="text-lg font-semibold text-foreground dark:text-white">Home Crew</h1>
         </div>
 
-        {/* User greeting - visible on both mobile and desktop */}
-        {user && (
-          <div className="absolute right-16 top-1/2 -translate-y-1/2">
+        {/* Desktop controls - hidden on mobile, visible on desktop */}
+        <div className="hidden md:flex items-center space-x-4 ml-auto">
+          {user && (
             <span className="text-sm font-medium text-foreground dark:text-white">
               Hi, {profile?.name || user?.email?.split('@')[0] || 'Loading...'}!
             </span>
-          </div>
-        )}
-
-        {/* Desktop controls - hidden on mobile, visible on desktop */}
-        <div className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 items-center space-x-2">
-          {user && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={async () => {
-                try {
-                  const response = await fetch('/api/auth/logout', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                  });
-
-                  if (response.ok) {
-                    // Redirect to auth page after successful logout
-                    window.location.href = '/auth';
-                  } else {
-                    console.error('Logout failed');
-                  }
-                } catch (error) {
-                  console.error('Logout error:', error);
-                }
-              }}
-              className="px-3 py-1 h-8 text-xs bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg"
-              title="Sign out"
-            >
-              Sign out
-            </Button>
           )}
           <Button
             variant="outline"
