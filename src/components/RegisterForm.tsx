@@ -12,6 +12,7 @@ interface RegisterFormProps {
   onError: (error: string) => void;
   onLoading: (loading: boolean) => void;
   loading: boolean;
+  onSuccess?: (showSuccess: boolean) => void;
 }
 
 interface RegistrationSuccess {
@@ -19,7 +20,7 @@ interface RegistrationSuccess {
   householdName: string;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading, onSuccess }) => {
   const [successData, setSuccessData] = useState<RegistrationSuccess | null>(null);
 
   const {
@@ -55,6 +56,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
     try {
       onLoading(true);
       onError("");
+      onSuccess?.(false); // Hide toggle when starting submission
 
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -76,6 +78,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           pin: result.pin,
           householdName: result.household.name
         });
+        onSuccess?.(true); // Hide toggle when showing success screen
       } else {
         // For members, redirect immediately
         window.location.href = '/daily_chores';
@@ -102,7 +105,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             Your household <strong>{successData.householdName}</strong> has been created.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-6 space-y-4">
           <div className="text-center">
             <p className="text-sm text-green-700 mb-2">
               Share this PIN with your family members so they can join your household:
@@ -110,24 +113,30 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             <p className="text-xs text-green-600 mb-2">
               You can also find this PIN later in the Household settings
             </p>
-            <div className="bg-green-100 border border-green-300 rounded-lg p-4">
-              <div className="text-2xl font-mono font-bold text-green-800 tracking-wider">
-                {successData.pin}
+            <div className="flex items-center gap-2">
+              <div className="bg-green-100 border border-green-300 rounded-lg p-4 flex-1">
+                <div className="text-2xl font-mono font-bold text-green-800 tracking-wider">
+                  {successData.pin}
+                </div>
               </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="hover:scale-105 duration-200 border-green-300 text-green-700 hover:bg-green-100"
+                onClick={() => copyToClipboard(successData.pin)}
+                aria-label="Copy PIN to clipboard"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </Button>
             </div>
           </div>
           <div className="flex gap-2">
             <Button
               type="button"
-              variant="outline"
-              className="flex-1 border-green-300 text-green-700 hover:bg-green-100"
-              onClick={() => copyToClipboard(successData.pin)}
-            >
-              Copy PIN
-            </Button>
-            <Button
-              type="button"
-              className="flex-1 bg-green-600 hover:bg-green-700"
+              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white dark:text-black dark:hover:text-black"
               onClick={() => window.location.href = '/daily_chores'}
             >
               Continue to App

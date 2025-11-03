@@ -5,6 +5,7 @@ import AuthForm from "./AuthForm";
 
 const AuthPage: React.FC = () => {
   const [isDark, setIsDark] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     // Check initial theme
@@ -71,22 +72,23 @@ const AuthPage: React.FC = () => {
           borderColor: isDark ? 'rgba(75, 85, 99, 0.5)' : 'rgba(255, 255, 255, 0.2)'
         }}
       >
-        <div className="text-center space-y-6 mb-8">
+        {!showSuccess && (
+          <div className="text-center space-y-6 mb-8">
+            <h1 className={`text-3xl sm:text-4xl font-bold leading-tight ${
+              isDark ? "text-white" : "gradient-text"
+            }`}>
+              Welcome to <br /> Home Crew!
+            </h1>
 
-          <h1 className={`text-3xl sm:text-4xl font-bold leading-tight ${
-            isDark ? "text-white" : "gradient-text"
-          }`}>
-            Welcome to <br /> Home Crew!
-          </h1>
+            <p className={`text-lg max-w-sm mx-auto leading-relaxed ${
+              isDark ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Sign in to your account or create a new one to manage household chores.
+            </p>
+          </div>
+        )}
 
-          <p className={`text-lg max-w-sm mx-auto leading-relaxed ${
-            isDark ? "text-gray-300" : "text-gray-600"
-          }`}>
-            Sign in to your account or create a new one to manage household chores.
-          </p>
-        </div>
-
-        <AuthForm />
+        <AuthForm onSuccessChange={setShowSuccess} />
       </div>
     </div>
   );
