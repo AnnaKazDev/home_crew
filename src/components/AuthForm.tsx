@@ -31,7 +31,7 @@ const AuthForm: React.FC = () => {
   const renderForm = () => {
     switch (mode) {
       case "login":
-        return <LoginForm onError={handleError} onLoading={handleLoading} loading={loading} />;
+        return <LoginForm onError={handleError} onLoading={handleLoading} loading={loading} onModeChange={handleModeChange} />;
       case "register":
         return <RegisterForm onError={handleError} onLoading={handleLoading} loading={loading} />;
       case "reset-password":

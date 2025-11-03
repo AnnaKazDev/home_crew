@@ -16,26 +16,39 @@ const AuthModeToggle: React.FC<AuthModeToggleProps> = ({ mode, onModeChange }) =
 
   return (
     <div className="flex justify-center mb-6">
-      <div className="inline-flex rounded-lg bg-secondary p-1 shadow-sm">
+      {mode !== "reset-password" && (
+        <div className="inline-flex rounded-lg bg-secondary p-1 shadow-sm">
+          <Button
+            type="button"
+            variant={getButtonVariant("login")}
+            size="sm"
+            onClick={() => onModeChange("login")}
+            className="px-4 py-2 text-sm font-medium transition-all duration-200 dark:text-black dark:hover:text-black"
+          >
+            Sign in
+          </Button>
+          <Button
+            type="button"
+            variant={getButtonVariant("register")}
+            size="sm"
+            onClick={() => onModeChange("register")}
+            className="px-4 py-2 text-sm font-medium transition-all duration-200 dark:text-black dark:hover:text-black"
+          >
+            Sign up
+          </Button>
+        </div>
+      )}
+      {mode === "reset-password" && (
         <Button
           type="button"
-          variant={getButtonVariant("login")}
+          variant="link"
           size="sm"
           onClick={() => onModeChange("login")}
-          className="px-4 py-2 text-sm font-medium transition-all duration-200 dark:text-black dark:hover:text-black"
+          className="text-sm text-muted-foreground hover:text-foreground underline decoration-2 underline-offset-2"
         >
-          Sign in
+          ← Back to sign in
         </Button>
-        <Button
-          type="button"
-          variant={getButtonVariant("register")}
-          size="sm"
-          onClick={() => onModeChange("register")}
-          className="px-4 py-2 text-sm font-medium transition-all duration-200 dark:text-black dark:hover:text-black"
-        >
-          Sign up
-        </Button>
-      </div>
+      )}
     </div>
   );
 };
