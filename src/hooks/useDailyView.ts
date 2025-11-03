@@ -6,7 +6,7 @@ import { getCatalogItems } from "@/lib/choresCatalog.service";
 import { getHouseholdMembers } from "@/lib/household-members.service";
 import { getHouseholdForUser } from "@/lib/households.service";
 import { getProfile } from "@/lib/profiles.service";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/stores/auth.store";
 import type { ChoreViewModel, DailyViewState } from "@/types/daily-view.types";
 import type { MemberDTO, DailyChoreDTO, CreateDailyChoreCmd, UpdateDailyChoreCmd } from "@/types";
 
@@ -26,7 +26,7 @@ export const dailyViewKeys = {
  */
 export function useDailyView() {
   const queryClient = useQueryClient();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuthStore();
   const devHouseholdId = "11111111-aaaa-bbbb-cccc-222222222222";
   const useApi = !isSupabaseConfigured;
 

@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { getSupabaseClient, isSupabaseConfigured } from "@/db/supabase.client";
 import { getHouseholdForUser } from "@/lib/households.service";
 import { getHouseholdMembers, removeHouseholdMember } from "@/lib/household-members.service";
+import { useAuthStore } from "@/stores/auth.store";
 import type { HouseholdDTO, MemberDTO, UpdateHouseholdCmd } from "@/types";
 
 interface HouseholdManagementViewModel {
@@ -22,10 +23,11 @@ interface HouseholdManagementActions {
 }
 
 export const useHouseholdManagement = (): HouseholdManagementViewModel & HouseholdManagementActions => {
+  const { user } = useAuthStore();
   const [household, setHousehold] = useState<HouseholdDTO | null>(null);
   const [members, setMembers] = useState<MemberDTO[]>([]);
   const [currentUserRole, setCurrentUserRole] = useState<"admin" | "member">("member");
-  const [currentUserId] = useState<string>("e9d12995-1f3e-491d-9628-3c4137d266d1"); // Development user
+  const currentUserId = user?.id || "";
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdatingHousehold, setIsUpdatingHousehold] = useState(false);
@@ -34,6 +36,11 @@ export const useHouseholdManagement = (): HouseholdManagementViewModel & Househo
   const useApi = !isSupabaseConfigured;
 
   const loadData = async () => {
+    if (!user?.id) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
@@ -202,8 +209,10 @@ export const useHouseholdManagement = (): HouseholdManagementViewModel & Househo
   );
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (user?.id) {
+      loadData();
+    }
+  }, [user?.id]);
 
   return {
     household,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getSupabaseClient, isSupabaseConfigured } from "@/db/supabase.client";
 import { getUserDailyPointsSummary } from "@/lib/pointsEvents.service";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/stores/auth.store";
 
 interface DailyPoints {
   date: string;
@@ -12,7 +12,7 @@ export const useDailyPoints = (days = 7) => {
   const [dailyPoints, setDailyPoints] = useState<DailyPoints[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   const useApi = !isSupabaseConfigured;
 
