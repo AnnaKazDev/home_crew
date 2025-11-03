@@ -122,7 +122,7 @@ export default function AppHeader() {
         <div className="hidden md:flex items-center space-x-4 ml-auto">
           {user && (
             <span className="text-sm font-medium text-foreground dark:text-white">
-              Hi, {profile?.name || user?.email?.split('@')[0] || 'Loading...'}!
+              Hi, {profile?.name || user?.email?.split('@')[0] || 'Loading...'}
             </span>
           )}
           <Button
