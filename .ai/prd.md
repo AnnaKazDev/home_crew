@@ -48,9 +48,11 @@ FR-17 System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); p
 
 **Kryteria akceptacji:**
 
-1. Formularz rejestracji z rolą „Admin"
+1. Formularz rejestracji z rolą „Admin" dostępny w wspólnym widoku autentykacji
 2. Po wysłaniu: konto utworzone, PIN i nazwa zapisane, e-mail potwierdzający wysłany
 3. Użytkownik zostaje zalogowany i widzi pustą listę zadań na dany dzień
+4. Widok autentykacji zawiera przełącznik między rejestracją a logowaniem
+5. Uzytkownik moze się wylogowac poprzez przycisk w menu bocznym.
 
 ---
 
@@ -60,7 +62,7 @@ FR-17 System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); p
 
 **Kryteria akceptacji:**
 
-1. Formularz z polem PIN
+1. Formularz z polem PIN dostępny w wspólnym widoku autentyfikacji
 2. PIN zweryfikowany; konto przypisane do gospodarstwa
 3. Po rejestracji użytkownik widzi dzisiejszy widok zadań
 
@@ -176,6 +178,20 @@ FR-17 System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); p
 1. Po oznaczeniu zadania "Done" liczba punktów przypisana do zadania dodaje się do mojego konta.
 2. Punkty są przechowywane w profilu użytkownika.
 3. W MVP brak widoku nagród; punkty można zobaczyć w profilu (lub tylko w bazie).
+
+### US-013: Logowanie do aplikacji
+
+**Jako użytkownik posiadający konto chcę się zalogować do systemu, aby uzyskać dostęp do swoich obowiązków domowych.**
+
+**Kryteria akceptacji:**
+
+1. Formularz logowania z polami e-mail i hasło dostępny w wspólnym widoku autentykacji
+2. Walidacja danych wejściowych (wymagany e-mail i hasło)
+3. Po pomyślnym logowaniu użytkownik zostaje przekierowany do dziennego widoku zadań
+4. Obsługa błędów logowania z odpowiednimi komunikatami
+5. Przycisk "Zapomniałeś hasła?" prowadzący do resetowania hasła
+6. Użytkownik nie może korzystać z serwisu bez zalogowania się
+7. Zalogowany użytkownik wchodzący na główną stronę `/` zostaje automatycznie przekierowany do dziennego widoku zadań
 
 ## 6. Metryki sukcesu
 

@@ -277,7 +277,7 @@ export async function joinHousehold(
     if (h.pin_hash) {
       const { default: bcrypt } = await import("bcrypt");
       if (await bcrypt.compare(data.pin, h.pin_hash)) {
-      household = h;
+        household = h;
         break;
       }
     }

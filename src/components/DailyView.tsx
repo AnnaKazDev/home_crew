@@ -1,17 +1,20 @@
-import React from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useDailyView } from '@/hooks/useDailyView';
-import { DailyViewHeader } from './daily-chores/DailyViewHeader';
-import { ChoreColumns } from './daily-chores/ChoreColumns';
-import { AddChoreModal } from './daily-chores/AddChoreModal';
-import { AssignChoreModal } from './daily-chores/AssignChoreModal';
-import type { CreateDailyChoreCmd } from '@/types';
-import type { ChoreViewModel } from '@/types/daily-view.types';
+import React from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { useDailyView } from "@/hooks/useDailyView";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import { DailyViewHeader } from "./daily-chores/DailyViewHeader";
+import { ChoreColumns } from "./daily-chores/ChoreColumns";
+import { AddChoreModal } from "./daily-chores/AddChoreModal";
+import { AssignChoreModal } from "./daily-chores/AssignChoreModal";
+import type { CreateDailyChoreCmd } from "@/types";
+import type { ChoreViewModel } from "@/types/daily-view.types";
 
 // Use ChoreViewModel from types
 
 export default function DailyView() {
+  const { isAuthenticated, loading: authLoading } = useAuthRedirect();
+
   const {
     // Data
     currentDate,
@@ -49,8 +52,8 @@ export default function DailyView() {
   } = useDailyView();
 
   // Separate chores by status
-  const todoChores = chores.filter((chore: ChoreViewModel) => chore.status === 'todo');
-  const doneChores = chores.filter((chore: ChoreViewModel) => chore.status === 'done');
+  const todoChores = chores.filter((chore: ChoreViewModel) => chore.status === "todo");
+  const doneChores = chores.filter((chore: ChoreViewModel) => chore.status === "done");
 
   // Calculate total points from completed chores assigned to current user
   const totalPoints = doneChores
@@ -67,7 +70,7 @@ export default function DailyView() {
   };
 
   // Handle chore drop (drag and drop)
-  const handleChoreDrop = (choreId: string, targetStatus: 'todo' | 'done') => {
+  const handleChoreDrop = (choreId: string, targetStatus: "todo" | "done") => {
     const chore = chores.find((c: ChoreViewModel) => c.id === choreId);
     if (!chore || chore.status === targetStatus) {
       return; // No change needed
@@ -82,24 +85,30 @@ export default function DailyView() {
   const handleAddChoreClick = () => {
     // Check daily limit (50 chores) before opening modal
     if (chores.length >= 50) {
-      console.warn('Daily chore limit reached (50)');
+      console.warn("Daily chore limit reached (50)");
       return;
     }
     openAddModal();
   };
 
+  // All conditional returns moved to the end after all hooks are called
+
+  // Redirect handled by useAuthRedirect hook
+  if (authLoading || !isAuthenticated) {
+    return null;
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
-
-        {/* Header with Shadcn components */}
-        <DailyViewHeader
-          currentDate={currentDate}
-          totalPoints={totalPoints}
-          choresCount={chores.length}
-          onDateChange={setCurrentDate}
-        />
+          {/* Header with Shadcn components */}
+          <DailyViewHeader
+            currentDate={currentDate}
+            totalPoints={totalPoints}
+            choresCount={chores.length}
+            onDateChange={setCurrentDate}
+          />
 
           {/* Chore Columns with Drag & Drop */}
           <ChoreColumns
@@ -120,23 +129,23 @@ export default function DailyView() {
           </div>
         </div>
 
-      {/* Add Chore Modal */}
-      <AddChoreModal
-        isOpen={isAddModalOpen}
-        onClose={closeAddModal}
-        onSubmit={handleChoreCreate}
-        members={members}
-        currentDate={currentDate}
-      />
+        {/* Add Chore Modal */}
+        <AddChoreModal
+          isOpen={isAddModalOpen}
+          onClose={closeAddModal}
+          onSubmit={handleChoreCreate}
+          members={members}
+          currentDate={currentDate}
+        />
 
-      {/* Assign Chore Modal */}
-      <AssignChoreModal
-        isOpen={isAssignModalOpen}
-        chore={selectedChore}
-        members={members}
-        onClose={closeAssignModal}
-        onSubmit={handleAssignChore}
-      />
+        {/* Assign Chore Modal */}
+        <AssignChoreModal
+          isOpen={isAssignModalOpen}
+          chore={selectedChore}
+          members={members}
+          onClose={closeAssignModal}
+          onSubmit={handleAssignChore}
+        />
       </div>
     </DndProvider>
   );

@@ -94,7 +94,6 @@ export const GET: APIRoute = async (context) => {
  */
 export const POST: APIRoute = async (context) => {
   try {
-
     // Parse and validate request body
     let requestData: unknown;
     try {

@@ -1,5 +1,6 @@
 import { useCallback, memo } from "react";
 import { useHouseholdManagement } from "@/hooks/useHouseholdManagement";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,8 @@ import MembersList from "./MembersList";
 import type { UpdateHouseholdCmd } from "@/types";
 
 const HouseholdManagementView: React.FC = memo(() => {
+  const { isAuthenticated, loading: authLoading } = useAuthRedirect();
+
   const {
     household,
     members,
@@ -171,12 +174,19 @@ const HouseholdManagementView: React.FC = memo(() => {
     );
   }
 
+  // Redirect handled by useAuthRedirect hook
+  if (authLoading || !isAuthenticated) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
-        <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
+      <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-8" id="household-title">Household Management</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8" id="household-title">
+            Household Management
+          </h1>
           <p className="text-muted-foreground dark:text-gray-300 mt-2 text-sm sm:text-base">
             Manage your household settings and members
           </p>
@@ -204,7 +214,6 @@ const HouseholdManagementView: React.FC = memo(() => {
             className=""
           />
         </div>
-
       </div>
     </div>
   );

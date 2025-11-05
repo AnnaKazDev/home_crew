@@ -15,7 +15,6 @@ export const GET: APIRoute = async (context) => {
   try {
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 
-
     // Get household for current user
     try {
       const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);

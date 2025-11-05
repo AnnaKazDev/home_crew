@@ -45,6 +45,11 @@ export interface CreateHouseholdCmd {
   name: HouseholdRow["name"];
 }
 
+export interface UpdateHouseholdCmd {
+  name?: string;
+  timezone?: string;
+}
+
 export interface CreateHouseholdDTO extends Pick<HouseholdRow, "id" | "name"> {
   /** 6-digit PIN sent back only once to the admin */
   pin: string;

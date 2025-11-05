@@ -1,0 +1,3 @@
+-- Migration: 20251105000200_disable_profiles_rls.sql
+-- Description: This migration was disabled - RLS should remain enabled for security
+-- ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;

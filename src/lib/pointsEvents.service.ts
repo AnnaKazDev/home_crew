@@ -104,7 +104,7 @@ export async function getUserPointsEvents(
 export async function getUserPointsDateRange(
   supabase: SupabaseClient,
   userId: string
-): Promise<{firstDate: string | null, lastDate: string | null}> {
+): Promise<{ firstDate: string | null; lastDate: string | null }> {
   // Get the earliest and latest date for user's completed chores (exclude deleted)
   const { data: dateRange, error } = await supabase
     .from("daily_chores")
@@ -147,21 +147,21 @@ export async function getUserPointsDateRange(
 export async function getUserDailyPointsSummary(
   supabase: SupabaseClient,
   userId: string,
-  days: number = 7
-): Promise<{date: string, points: number}[]> {
+  days = 7
+): Promise<{ date: string; points: number }[]> {
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(endDate.getDate() - days + 1); // Include today
 
-  const startDateStr = startDate.toISOString().split('T')[0];
-  const endDateStr = endDate.toISOString().split('T')[0];
+  const startDateStr = startDate.toISOString().split("T")[0];
+  const endDateStr = endDate.toISOString().split("T")[0];
 
   // Generate all dates in the range
-  const allDates: {date: string, points: number}[] = [];
+  const allDates: { date: string; points: number }[] = [];
   for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
     allDates.push({
-      date: d.toISOString().split('T')[0],
-      points: 0
+      date: d.toISOString().split("T")[0],
+      points: 0,
     });
   }
 
@@ -185,15 +185,15 @@ export async function getUserDailyPointsSummary(
   const pointsByDate = new Map<string, number>();
 
   if (chores) {
-    chores.forEach(chore => {
+    chores.forEach((chore) => {
       const date = chore.date;
       pointsByDate.set(date, (pointsByDate.get(date) || 0) + (chore.points || 0));
     });
   }
 
   // Merge with all dates (ensuring we have entries for days with 0 points)
-  return allDates.map(dateEntry => ({
+  return allDates.map((dateEntry) => ({
     date: dateEntry.date,
-    points: pointsByDate.get(dateEntry.date) || 0
+    points: pointsByDate.get(dateEntry.date) || 0,
   }));
 }
