@@ -34,6 +34,11 @@ debug-points.js
 test_supabase.js
 check_rls.js
 check_user.js
+
+# Test artifacts and cache
+test-results/
+playwright-report/
+playwright/.cache/
 *-test-user.js
 check-*.js
 check-*.sql
