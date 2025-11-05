@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { getSupabaseClient } from '@/db/supabase.client';
-import type { ProfileDTO } from '@/types';
+import { create } from "zustand";
+import { getSupabaseClient } from "@/db/supabase.client";
+import type { ProfileDTO } from "@/types";
 
 interface User {
   id: string;
@@ -33,10 +33,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   profile: null,
 
   // Actions
-  setUser: (user) => set({
-    user,
-    isAuthenticated: !!user
-  }),
+  setUser: (user) =>
+    set({
+      user,
+      isAuthenticated: !!user,
+    }),
 
   setLoading: (loading) => set({ loading }),
 
@@ -44,13 +45,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   updateProfile: async (data) => {
     const { user } = get();
-    if (!user) throw new Error('Not authenticated');
+    if (!user) throw new Error("Not authenticated");
 
     const supabase = getSupabaseClient();
-    const { error } = await supabase
-      .from('profiles')
-      .update(data)
-      .eq('id', user.id);
+    const { error } = await supabase.from("profiles").update(data).eq("id", user.id);
 
     if (error) throw error;
 
@@ -60,8 +58,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({
         profile: {
           ...currentProfile,
-          ...data
-        }
+          ...data,
+        },
       });
     }
   },
@@ -72,10 +70,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const supabase = getSupabaseClient();
 
       // Get current session
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
 
       if (error) {
-        console.error('Auth error:', error);
+        console.error("Auth error:", error);
         set({ user: null, profile: null, loading: false });
         return;
       }
@@ -88,10 +89,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           `http://127.0.0.1:54321/rest/v1/profiles?select=*&id=eq.${session.user.id}`,
           {
             headers: {
-              'apikey': 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
-              'Authorization': `Bearer sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz`,
-              'Content-Type': 'application/json'
-            }
+              apikey: "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH",
+              Authorization: `Bearer sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH`,
+              "Content-Type": "application/json",
+            },
           }
         );
 
@@ -100,17 +101,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           if (profileData && profileData.length > 0) {
             const profile: ProfileDTO = {
               ...profileData[0],
-              email: session.user.email || '',
-              total_points: profileData[0].total_points || 0
-                };
-                set({ profile });
+              email: session.user.email || "",
+              total_points: profileData[0].total_points || 0,
+            };
+            set({ profile });
           }
         }
       } else {
         set({ user: null, profile: null });
       }
     } catch (error) {
-      console.error('AuthStore: Initialization error:', error);
+      console.error("AuthStore: Initialization error:", error);
       set({ user: null, profile: null });
     } finally {
       set({ loading: false });
@@ -118,46 +119,45 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     // Set up auth listener
     const supabase = getSupabaseClient();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        get().setUser(session.user);
 
-        if (session?.user) {
-          get().setUser(session.user);
-
-          // Fetch profile
-          try {
-            const profileResponse = await fetch(
-              `http://127.0.0.1:54321/rest/v1/profiles?select=*&id=eq.${session.user.id}`,
-              {
-                headers: {
-                  'apikey': 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
-                  'Authorization': `Bearer sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz`,
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-
-            if (profileResponse.ok) {
-              const profileData = await profileResponse.json();
-              if (profileData && profileData.length > 0) {
-                const profile: ProfileDTO = {
-                  ...profileData[0],
-                  email: session.user.email || '',
-                  total_points: profileData[0].total_points || 0
-                };
-                set({ profile });
-              }
+        // Fetch profile
+        try {
+          const profileResponse = await fetch(
+            `http://127.0.0.1:54321/rest/v1/profiles?select=*&id=eq.${session.user.id}`,
+            {
+              headers: {
+                apikey: "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH",
+                Authorization: `Bearer sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH`,
+                "Content-Type": "application/json",
+              },
             }
-          } catch (fetchError) {
-            console.error('AuthStore: Profile fetch error:', fetchError);
-          }
-        } else {
-          set({ user: null, profile: null });
-        }
+          );
 
-        set({ loading: false });
+          if (profileResponse.ok) {
+            const profileData = await profileResponse.json();
+            if (profileData && profileData.length > 0) {
+              const profile: ProfileDTO = {
+                ...profileData[0],
+                email: session.user.email || "",
+                total_points: profileData[0].total_points || 0,
+              };
+              set({ profile });
+            }
+          }
+        } catch (fetchError) {
+          console.error("AuthStore: Profile fetch error:", fetchError);
+        }
+      } else {
+        set({ user: null, profile: null });
       }
-    );
+
+      set({ loading: false });
+    });
 
     return () => subscription.unsubscribe();
   },
