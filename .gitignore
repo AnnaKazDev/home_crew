@@ -31,6 +31,8 @@ create-second-user.js
 test-db.js
 test-fresh-points.js
 debug-points.js
+test_supabase.js
+check_rls.js
 *-test-user.js
 check-*.js
 check-*.sql
