@@ -34,6 +34,11 @@ export function ChoreConfigurator({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
+  // Update config when currentDate changes
+  useEffect(() => {
+    setConfig(prev => ({ ...prev, date: currentDate }));
+  }, [currentDate]);
+
   // Update config when selectedItem changes
   useEffect(() => {
     // No time_of_day to update anymore

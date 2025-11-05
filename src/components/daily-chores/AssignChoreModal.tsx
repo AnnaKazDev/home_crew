@@ -19,6 +19,13 @@ export function AssignChoreModal({ isOpen, chore, members, onClose, onSubmit }: 
     }
   }, [isOpen, chore]);
 
+  // Clear error when selection changes
+  React.useEffect(() => {
+    if (error) {
+      setError(null);
+    }
+  }, [selectedAssigneeId]);
+
   const handleSubmit = async () => {
     if (!chore) return;
 
