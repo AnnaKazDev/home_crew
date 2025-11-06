@@ -23,8 +23,7 @@ src/
 │   ├── setup.ts            # Global test setup
 │   └── test-utils.tsx      # Custom render utilities
 e2e/                        # End-to-end tests
-├── home-page.spec.ts
-└── auth-page.spec.ts
+└── add-chore-flow.spec.ts
 ```
 
 ## Unit Tests (Vitest)
