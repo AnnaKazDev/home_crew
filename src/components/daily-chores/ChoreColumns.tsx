@@ -33,7 +33,7 @@ export function ChoreColumns({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div data-test-id="chore-columns" className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <ChoreColumn
         title="To Do"
         status="todo"

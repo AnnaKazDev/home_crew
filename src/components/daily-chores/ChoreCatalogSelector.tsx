@@ -123,7 +123,7 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
   }
 
   return (
-    <div className="space-y-6">
+    <div data-test-id="chore-catalog-selector" className="space-y-6">
       {/* Header */}
       <div className="text-center">
         <h3 className="text-lg font-semibold text-foreground mb-2">Add Chore to Daily View</h3>
@@ -171,6 +171,7 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
         {filteredItems.map((item) => (
           <button
             key={item.id}
+            data-test-id={`chore-catalog-item-${item.id}`}
             onClick={() => onItemSelect(item)}
             className="group p-4 border border-border rounded-lg hover:border-accent hover:bg-accent/50 transition-colors text-left"
           >

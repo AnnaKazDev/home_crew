@@ -43,6 +43,7 @@ export function ChoreColumn({
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
       data-testid={`chore-column-${status}`}
+      data-test-id={`chore-column-${status}`}
       className={`bg-card p-6 rounded-lg shadow min-h-[400px] transition-colors ${
         isOver ? "bg-accent border-2 border-dashed border-accent" : ""
       }`}

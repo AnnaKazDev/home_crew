@@ -124,7 +124,7 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent data-test-id="add-chore-modal" className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{getDialogTitle()}</DialogTitle>
         </DialogHeader>
@@ -137,25 +137,33 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate 
           )}
 
           {currentStep === "catalog" && (
-            <ChoreCatalogSelector
-              key={catalogKey}
-              onItemSelect={handleCatalogSelect}
-              onCreateCustom={handleCreateCustom}
-            />
+            <div data-test-id="add-chore-modal-catalog-step">
+              <ChoreCatalogSelector
+                key={catalogKey}
+                onItemSelect={handleCatalogSelect}
+                onCreateCustom={handleCreateCustom}
+              />
+            </div>
           )}
 
-          {currentStep === "form" && <ChoreForm onSubmit={handleFormSubmit} onCancel={handleFormCancel} />}
+          {currentStep === "form" && (
+            <div data-test-id="add-chore-modal-form-step">
+              <ChoreForm onSubmit={handleFormSubmit} onCancel={handleFormCancel} />
+            </div>
+          )}
 
           {currentStep === "config" && (
-            <ChoreConfigurator
-              selectedItem={selectedItem}
-              customData={null}
-              members={members}
-              currentDate={currentDate}
-              onSubmit={handleConfigSubmit}
-              onCancel={handleConfigCancel}
-              isLoading={isLoading}
-            />
+            <div data-test-id="add-chore-modal-config-step">
+              <ChoreConfigurator
+                selectedItem={selectedItem}
+                customData={null}
+                members={members}
+                currentDate={currentDate}
+                onSubmit={handleConfigSubmit}
+                onCancel={handleConfigCancel}
+                isLoading={isLoading}
+              />
+            </div>
           )}
         </div>
       </DialogContent>
