@@ -39,7 +39,7 @@ const ProfileView: React.FC = () => {
           User Profile
         </h1>
 
-        <ProfileForm profile={profile} onUpdate={async () => {}} />
+        <ProfileForm profile={profile} onUpdate={updateProfile} />
         <PointsDisplay points={profile.total_points} pointsDateRange={{ firstDate: null, lastDate: null }} />
         <div className="mt-8">
           <PointsBreakdown dailyPoints={[]} loading={false} error={null} />
