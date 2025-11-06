@@ -100,7 +100,7 @@ export default function DailyView() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
+      <div data-test-id="daily-view" className="min-h-screen bg-background pt-8 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header with Shadcn components */}
           <DailyViewHeader
