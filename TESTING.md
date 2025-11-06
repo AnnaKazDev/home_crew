@@ -15,10 +15,11 @@ This project uses a comprehensive testing setup with **Vitest** for unit tests a
 
 ```
 src/
-├── components/
-│   ├── __tests__/           # Unit tests for components
-│   └── daily-chores/
-│       └── __tests__/       # Unit tests for daily-chores components
+├── _tests/                 # Unit tests (moved from __tests__ for consistency)
+│   ├── components/         # Unit tests for components
+│   ├── daily-chores/       # Unit tests for daily-chores components
+│   ├── hooks/              # Unit tests for hooks
+│   └── integration/        # Integration tests
 ├── test/
 │   ├── setup.ts            # Global test setup
 │   └── test-utils.tsx      # Custom render utilities
@@ -102,48 +103,48 @@ npm run dev
 npm run test:e2e
 ```
 
-### Setup Środowiska Testowego
+### Test Environment Setup
 
-**Testy używają danych testowych z pliku `.env.test`** - wystarczy uruchomić bazę i serwer!
+**Tests use test data from `.env.test` file** - just start the database and server!
 
 ```bash
-# 1. Uruchom Supabase lokalnie
+# 1. Start Supabase locally
 supabase start
 
-# 2. Zresetuj bazę danych (zastosuje migracje i seed data)
+# 2. Reset the database (applies migrations and seed data)
 supabase db reset
 
-# 3. Skonfiguruj zmienne środowiskowe dla testów (BEZPIECZNE! 📋)
-# Pobierz wartości z Supabase CLI (lokalne klucze):
+# 3. Configure environment variables for tests (SECURE! 📋)
+# Get values from Supabase CLI (local keys):
 supabase status -o env
-# Dodaj do .env.test:
+# Add to .env.test:
 # SUPABASE_URL=http://127.0.0.1:54321
 # SUPABASE_SERVICE_ROLE_KEY=your_service_key_from_cli
 # TEST_USER_EMAIL=test@example.com
 # TEST_USER_PASSWORD=secure_password
 # TEST_USER_ID=generated_uuid
 
-# 4. Utwórz użytkownika testowego (jednorazowo, bezpiecznie)
-# Skopiuj create-test-user.example.js do create-test-user.js
+# 4. Create test user (one-time, secure setup)
+# Copy create-test-user.example.js to create-test-user.js
 cp create-test-user.example.js create-test-user.js
-# Uruchom: node create-test-user.js
+# Run: node create-test-user.js
 
-# 5. Uruchom serwer deweloperski w trybie test
+# 5. Start development server in test mode
 npm run dev:e2e
 
-# 6. W osobnym terminalu uruchom testy
+# 6. In another terminal, run tests
 npm run test:e2e
 ```
 
-**Użytkownicy testowi (zdefiniowani w `.env.test`):**
+**Test users (defined in `.env.test`):**
 - **Admin**: `dev@example.com` / `password` (ID: `e9d12995-1f3e-491d-9628-3c4137d266d1`)
 
-**Jak działają testy e2e:**
-- Testy wczytują dane z pliku `.env.test`
-- Używają normalnego endpointu `/api/auth/login` do logowania
-- Ustawiają ciasteczka sesji dla przeglądarki testowej
-- **Każdy test czyści po sobie** - usuwa dodane zadania na końcu testu
-- Środowisko pozostaje czyste między testami
+**How E2E tests work:**
+- Tests load data from `.env.test` file
+- Use the normal `/api/auth/login` endpoint for authentication
+- Set session cookies for the test browser
+- **Each test cleans up after itself** - removes added tasks at the end
+- Environment stays clean between tests
 
 ### Running E2E Tests
 
@@ -179,7 +180,7 @@ test.describe('My Feature', () => {
 ### E2E Configuration
 
 - **Browser**: Chromium only (as per guidelines)
-- **Base URL**: `http://localhost:4321`
+- **Base URL**: `http://localhost:3001`
 - **Parallel execution**: Enabled
 - **Screenshots**: On failure only
 - **Traces**: On first retry
