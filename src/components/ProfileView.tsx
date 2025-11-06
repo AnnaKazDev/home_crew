@@ -4,6 +4,7 @@ import React, { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useAuthStore } from "@/stores/auth.store";
+import { useDailyPoints } from "@/hooks/useDailyPoints";
 import ProfileForm from "./ProfileForm";
 import PointsDisplay from "./PointsDisplay";
 import PointsBreakdown from "./PointsBreakdown";
@@ -11,8 +12,23 @@ import PointsBreakdown from "./PointsBreakdown";
 const ProfileView: React.FC = () => {
   const { isAuthenticated, loading } = useAuthRedirect();
   const { user, profile, updateProfile } = useAuthStore();
+  const { dailyPoints, loading: pointsLoading, error: pointsError } = useDailyPoints();
 
   console.log('ProfileView render:', { loading, profile, isAuthenticated, user: user?.id });
+
+  // Calculate date range from daily points
+  const pointsDateRange = React.useMemo(() => {
+    if (!dailyPoints.length) return { firstDate: null, lastDate: null };
+
+    const datesWithPoints = dailyPoints.filter(day => day.points > 0);
+    if (!datesWithPoints.length) return { firstDate: null, lastDate: null };
+
+    const sortedDates = datesWithPoints.map(day => day.date).sort();
+    return {
+      firstDate: sortedDates[0],
+      lastDate: sortedDates[sortedDates.length - 1]
+    };
+  }, [dailyPoints]);
 
   // No profile yet - show loading
   if (!profile) {
@@ -40,9 +56,9 @@ const ProfileView: React.FC = () => {
         </h1>
 
         <ProfileForm profile={profile} onUpdate={updateProfile} />
-        <PointsDisplay points={profile.total_points} pointsDateRange={{ firstDate: null, lastDate: null }} />
+        <PointsDisplay points={profile.total_points} pointsDateRange={pointsDateRange} />
         <div className="mt-8">
-          <PointsBreakdown dailyPoints={[]} loading={false} error={null} />
+          <PointsBreakdown dailyPoints={dailyPoints} loading={pointsLoading} error={pointsError} />
         </div>
       </div>
     </div>
