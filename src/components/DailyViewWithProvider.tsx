@@ -7,7 +7,7 @@ import DailyView from "./DailyView";
 export default function DailyViewWithProvider() {
   console.log('DailyViewWithProvider rendering...');
 
-  // Force client-only rendering to avoid hydration mismatches in test environment
+  // Client-only component with React hooks
   try {
     return (
       <QueryProvider>

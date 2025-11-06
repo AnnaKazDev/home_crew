@@ -103,6 +103,49 @@ npm run dev
 npm run test:e2e
 ```
 
+### Setup Środowiska Testowego
+
+**Testy używają danych testowych z pliku `.env.test`** - wystarczy uruchomić bazę i serwer!
+
+```bash
+# 1. Uruchom Supabase lokalnie
+supabase start
+
+# 2. Zresetuj bazę danych (zastosuje migracje i seed data)
+supabase db reset
+
+# 3. Skonfiguruj zmienne środowiskowe dla testów (BEZPIECZNE! 📋)
+# Pobierz wartości z Supabase CLI (lokalne klucze):
+supabase status -o env
+# Dodaj do .env.test:
+# SUPABASE_URL=http://127.0.0.1:54321
+# SUPABASE_SERVICE_ROLE_KEY=your_service_key_from_cli
+# TEST_USER_EMAIL=test@example.com
+# TEST_USER_PASSWORD=secure_password
+# TEST_USER_ID=generated_uuid
+
+# 4. Utwórz użytkownika testowego (jednorazowo, bezpiecznie)
+# Skopiuj create-test-user.example.js do create-test-user.js
+cp create-test-user.example.js create-test-user.js
+# Uruchom: node create-test-user.js
+
+# 5. Uruchom serwer deweloperski w trybie test
+npm run dev:e2e
+
+# 6. W osobnym terminalu uruchom testy
+npm run test:e2e
+```
+
+**Użytkownicy testowi (zdefiniowani w `.env.test`):**
+- **Admin**: `dev@example.com` / `password` (ID: `e9d12995-1f3e-491d-9628-3c4137d266d1`)
+
+**Jak działają testy e2e:**
+- Testy wczytują dane z pliku `.env.test`
+- Używają normalnego endpointu `/api/auth/login` do logowania
+- Ustawiają ciasteczka sesji dla przeglądarki testowej
+- **Każdy test czyści po sobie** - usuwa dodane zadania na końcu testu
+- Środowisko pozostaje czyste między testami
+
 ### Running E2E Tests
 
 ```bash

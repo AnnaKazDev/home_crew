@@ -238,6 +238,32 @@ export async function updateDailyChore(
  * @param userId - The user ID making the deletion (for authorization)
  * @throws Error if chore not found or user not authorized
  */
+export async function deleteDailyChoresByDate(
+  supabase: SupabaseClient<Database>,
+  householdId: string,
+  date: string,
+  userId: string
+): Promise<void> {
+  // Check if user is admin of the household
+  const isAdmin = await checkUserIsAdmin(supabase, householdId, userId);
+  if (!isAdmin) {
+    throw new Error("UNAUTHORIZED");
+  }
+
+  // Soft delete all chores for the given date and household
+  const { error: deleteError } = await supabase
+    .from("daily_chores")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("household_id", householdId)
+    .eq("date", date)
+    .is("deleted_at", null);
+
+  if (deleteError) {
+    console.error("Error deleting chores by date:", deleteError);
+    throw new Error("DELETE_FAILED");
+  }
+}
+
 export async function deleteDailyChore(
   supabase: SupabaseClient<Database>,
   householdId: string,

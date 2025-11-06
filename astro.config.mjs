@@ -10,7 +10,7 @@ import node from "@astrojs/node";
 export default defineConfig({
   output: "server",
   integrations: [react(), tailwind(), sitemap()],
-  server: { port: 3001 },
+  server: { port: process.env.PORT ? parseInt(process.env.PORT) : 3001 },
   adapter: node({
     mode: "standalone",
   }),

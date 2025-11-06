@@ -27,6 +27,8 @@ export class ChoreConfigurator {
 
   async waitForConfigurator(): Promise<void> {
     await this.container.waitFor({ state: 'visible' });
+    // Wait for assignee options to be available
+    await this.assigneeOptions.first().waitFor({ state: 'visible' });
   }
 
   async getCurrentDate(): Promise<string> {

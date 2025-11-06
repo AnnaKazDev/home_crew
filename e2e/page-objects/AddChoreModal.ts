@@ -42,12 +42,18 @@ export class AddChoreModal {
   }
 
   async getCatalogItems(): Promise<Locator[]> {
+    // Wait for at least one catalog item to be visible before getting all items
+    await this.catalogItems.first().waitFor({ state: 'visible', timeout: 10000 });
     return this.catalogItems.all();
   }
 
   async selectRandomChore(): Promise<{ title: string; points: number; element: Locator }> {
     const items = await this.getCatalogItems();
-    console.log(`Found ${items.length} catalog items`);
+
+    if (items.length === 0) {
+      throw new Error('No catalog items found in the modal');
+    }
+
     const randomIndex = Math.floor(Math.random() * Math.min(items.length, 10)); // Limit to first 10 items
     const selectedItem = items[randomIndex];
 
@@ -58,7 +64,6 @@ export class AddChoreModal {
     const pointsMatch = itemText.match(/(\d+)\s*pts/);
     const points = pointsMatch ? parseInt(pointsMatch[1]) : 0;
 
-    console.log(`Selected chore: "${title}" with ${points} points`);
     await selectedItem.click();
 
     return { title, points, element: selectedItem };

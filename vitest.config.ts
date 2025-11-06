@@ -11,6 +11,7 @@ export default defineConfig({
     globals: true,
     css: true,
     exclude: ['**/e2e/**', '**/node_modules/**'],
+    include: ['src/_tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
   },
   resolve: {
     alias: {

@@ -94,7 +94,6 @@ export class AddChoreFlow {
 
     // Find the chore card in todo column
     const todoChores = await this.dailyChoresPage.getTodoChores();
-    console.log(`Found ${todoChores.length} chores in To Do column`);
 
     // Just verify that there are chores in the todo column
     // In a real e2e test, we would verify the specific chore was added,
@@ -112,10 +111,7 @@ export class AddChoreFlow {
       if (!title || points <= 0) {
         throw new Error('Chore data appears invalid');
       }
-
-      console.log(`Verified chore: "${title}" with ${points} points`);
     } catch (error) {
-      console.log(`Could not verify chore details: ${error}`);
       // Don't fail the test for this, as long as chores exist
     }
   }
