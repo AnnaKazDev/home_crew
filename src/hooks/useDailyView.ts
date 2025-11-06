@@ -163,11 +163,11 @@ export function useDailyView() {
     gcTime: 15 * 60 * 1000, // 15 minutes
   });
 
-  // Query for chores on current date - depends on catalog being loaded
+  // Query for chores on current date - depends on household being loaded
   const choresQuery = useQuery({
     queryKey: dailyViewKeys.chores(currentDate),
     queryFn: async () => {
-      console.log('Chores query starting for date:', currentDate);
+      console.log('Chores query starting for date:', currentDate, 'householdId:', effectiveHouseholdId);
       let chores: DailyChoreDTO[];
       if (useApi) {
         // Ensure household exists before fetching chores
@@ -181,9 +181,8 @@ export function useDailyView() {
         if (!res.ok) throw new Error("Failed to load chores");
         chores = await res.json();
       } else {
-        // Use effectiveHouseholdId, but it should be available due to dev-ensure logic
-        const householdId = effectiveHouseholdId || devHouseholdId;
-        chores = await getDailyChores(getSupabaseClient(), householdId, { date: currentDate });
+        // Use effectiveHouseholdId - should be the user's actual household now
+        chores = await getDailyChores(getSupabaseClient(), effectiveHouseholdId, { date: currentDate });
       }
 
       // Transform to ChoreViewModel with catalog enrichment
@@ -255,7 +254,7 @@ export function useDailyView() {
       console.log('Chores query completed successfully:', viewModels.length, 'chores');
       return viewModels;
     },
-    enabled: true, // Always try to load chores - dev-ensure will create household if needed
+    enabled: !!effectiveHouseholdId && !householdQuery.isLoading, // Wait for household to be loaded
     staleTime: 1 * 60 * 1000, // 1 minute
   });
 
