@@ -431,11 +431,11 @@ describe('ChoreConfigurator', () => {
       );
 
       // Select assignee
-      const johnRadio = screen.getByDisplayValue('user-123');
+     const johnRadio = screen.getByRole('radio', { name: /John Doe/ });
       await user.click(johnRadio);
 
       // Submit
-      const submitButton = screen.getByText('Add Chore');
+      const submitButton = screen.getByRole('button', { name: /Add Chore/ });
       await user.click(submitButton);
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
@@ -460,11 +460,11 @@ describe('ChoreConfigurator', () => {
       );
 
       // Ensure unassigned is selected (default)
-      const unassignedRadio = screen.getByDisplayValue('');
+      const unassignedRadio = screen.getByRole('radio', { name: /Unassigned/ });
       expect(unassignedRadio).toBeChecked();
 
       // Submit
-      const submitButton = screen.getByText('Add Chore');
+      const submitButton = screen.getByRole('button', { name: /Add Chore/ });
       await user.click(submitButton);
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
@@ -569,7 +569,7 @@ describe('ChoreConfigurator', () => {
       );
 
       // Submit
-      const submitButton = screen.getByText('Add Chore');
+      const submitButton = screen.getByRole('button', { name: /Add Chore/ });
       await user.click(submitButton);
 
       // Should handle error without crashing
