@@ -92,6 +92,15 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
               style={{ top: "0" }} // Start from top to include header area
             >
               <div className="p-6">
+                {/* Logo */}
+                <div className="flex mb-6">
+                  <img
+                    src="/logotype.png"
+                    alt="Logo"
+                    className="h-12 w-auto"
+                  />
+                </div>
+
                 {/* Close Button - same styling as modal close buttons */}
                 <Button
                   variant="ghost"
