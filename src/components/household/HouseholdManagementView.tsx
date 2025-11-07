@@ -1,12 +1,12 @@
-import { useCallback, memo } from "react";
-import { useHouseholdManagement } from "@/hooks/useHouseholdManagement";
-import { useAuthRedirect } from "@/hooks/useAuthRedirect";
-import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import HouseholdInfo from "./HouseholdInfo";
-import MembersList from "./MembersList";
-import type { UpdateHouseholdCmd } from "@/types";
+import { useCallback, memo } from 'react';
+import { useHouseholdManagement } from '@/hooks/useHouseholdManagement';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import HouseholdInfo from './HouseholdInfo';
+import MembersList from './MembersList';
+import type { UpdateHouseholdCmd } from '@/types';
 
 const HouseholdManagementView: React.FC = memo(() => {
   const { isAuthenticated, loading: authLoading } = useAuthRedirect();
@@ -29,21 +29,21 @@ const HouseholdManagementView: React.FC = memo(() => {
     async (updates: UpdateHouseholdCmd) => {
       try {
         await updateHousehold(updates);
-        toast.success("Household updated successfully!");
+        toast.success('Household updated successfully!');
       } catch (err) {
-        toast.error("Failed to update household");
+        toast.error('Failed to update household');
       }
     },
     [updateHousehold]
   );
 
   const handleUpdateMemberRole = useCallback(
-    async (memberId: string, role: "admin" | "member") => {
+    async (memberId: string, role: 'admin' | 'member') => {
       try {
         await updateMemberRole(memberId, role);
         toast.success(`Member role updated to ${role}!`);
       } catch (err) {
-        toast.error("Failed to update member role");
+        toast.error('Failed to update member role');
       }
     },
     [updateMemberRole]
@@ -53,9 +53,9 @@ const HouseholdManagementView: React.FC = memo(() => {
     async (memberId: string) => {
       try {
         await removeMember(memberId);
-        toast.success("Member removed successfully!");
+        toast.success('Member removed successfully!');
       } catch (err) {
-        toast.error("Failed to remove member");
+        toast.error('Failed to remove member');
       }
     },
     [removeMember]
@@ -63,7 +63,10 @@ const HouseholdManagementView: React.FC = memo(() => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background pt-[2rem] md:pt-[2.5rem] px-4 md:px-8" aria-live="polite">
+      <div
+        className="min-h-screen bg-background pt-[2rem] md:pt-[2.5rem] px-4 md:px-8"
+        aria-live="polite"
+      >
         <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           {/* Title skeleton */}
           <div className="mb-8">
@@ -218,5 +221,7 @@ const HouseholdManagementView: React.FC = memo(() => {
     </div>
   );
 });
+
+HouseholdManagementView.displayName = 'HouseholdManagementView';
 
 export default HouseholdManagementView;

@@ -42,7 +42,12 @@ global.fetch = vi.fn();
 
 // Import mocks
 import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
-import { getDailyChores, createDailyChore, updateDailyChore, deleteDailyChore } from '@/lib/dailyChores.service';
+import {
+  getDailyChores,
+  createDailyChore,
+  updateDailyChore,
+  deleteDailyChore,
+} from '@/lib/dailyChores.service';
 import { getCatalogItems } from '@/lib/choresCatalog.service';
 import { getHouseholdMembers } from '@/lib/household-members.service';
 import { getHouseholdForUser } from '@/lib/households.service';
@@ -88,9 +93,8 @@ function createWrapper() {
     },
   });
 
-  const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    React.createElement(QueryClientProvider, { client: queryClient }, children)
-  );
+  const Wrapper = ({ children }: { children: React.ReactNode }) =>
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
 
   return Wrapper;
 }
@@ -128,7 +132,7 @@ describe('useDailyView', () => {
   });
 
   describe('Initialization', () => {
-    it('initializes with today\'s date', () => {
+    it("initializes with today's date", () => {
       const { result } = renderHook(() => useDailyView(), {
         wrapper: createWrapper(),
       });
@@ -195,7 +199,6 @@ describe('useDailyView', () => {
 
       expect(getProfile).toHaveBeenCalledWith(getSupabaseClient(), 'user-123');
     });
-
 
     it('handles household query returning null gracefully', async () => {
       (getHouseholdForUser as any).mockResolvedValue(null);
@@ -271,10 +274,12 @@ describe('useDailyView', () => {
     });
 
     it('sets correct permissions for unassigned chores', async () => {
-      const unassignedChores = [{
-        ...mockChores[0],
-        assignee_id: null,
-      }];
+      const unassignedChores = [
+        {
+          ...mockChores[0],
+          assignee_id: null,
+        },
+      ];
       (getDailyChores as any).mockResolvedValue(unassignedChores);
 
       const { result } = renderHook(() => useDailyView(), {
@@ -319,7 +324,6 @@ describe('useDailyView', () => {
       act(() => {
         result.current.setCurrentDate('2024-01-20');
       });
-
     });
   });
 
@@ -409,16 +413,19 @@ describe('useDailyView', () => {
           wrapper: createWrapper(),
         });
 
-      act(() => {
-        result.current.handleChoreCreate(createCmd);
-      });
-
+        act(() => {
+          result.current.handleChoreCreate(createCmd);
+        });
 
         await waitFor(() => {
           expect(result.current.isCreatingChore).toBe(false);
         });
 
-        expect(createDailyChore).toHaveBeenCalledWith(getSupabaseClient(), '11111111-aaaa-bbbb-cccc-222222222222', createCmd);
+        expect(createDailyChore).toHaveBeenCalledWith(
+          getSupabaseClient(),
+          '11111111-aaaa-bbbb-cccc-222222222222',
+          createCmd
+        );
         expect(result.current.isAddModalOpen).toBe(false); // Modal should close on success
       });
 
@@ -446,7 +453,11 @@ describe('useDailyView', () => {
           expect(result.current.isCreatingChore).toBe(false);
         });
 
-        expect(createDailyChore).toHaveBeenCalledWith(getSupabaseClient(), '11111111-aaaa-bbbb-cccc-222222222222', createCmd);
+        expect(createDailyChore).toHaveBeenCalledWith(
+          getSupabaseClient(),
+          '11111111-aaaa-bbbb-cccc-222222222222',
+          createCmd
+        );
         // Modal state is not affected by mutation failure
       });
     });
@@ -462,12 +473,11 @@ describe('useDailyView', () => {
 
         const { result } = renderHook(() => useDailyView(), {
           wrapper: createWrapper(),
-      });
+        });
 
-      act(() => {
-        result.current.handleChoreUpdate('chore-1', updates);
-      });
-
+        act(() => {
+          result.current.handleChoreUpdate('chore-1', updates);
+        });
 
         await waitFor(() => {
           expect(result.current.isUpdatingChore).toBe(false);
@@ -518,10 +528,9 @@ describe('useDailyView', () => {
           wrapper: createWrapper(),
         });
 
-      act(() => {
-        result.current.handleChoreDelete('chore-1');
-      });
-
+        act(() => {
+          result.current.handleChoreDelete('chore-1');
+        });
 
         await waitFor(() => {
           expect(result.current.isDeletingChore).toBe(false);
@@ -578,9 +587,6 @@ describe('useDailyView', () => {
         expect(result.current.isLoading).toBe(false);
       });
     });
-
-
-
   });
 
   describe('API vs Supabase Mode', () => {
@@ -603,9 +609,8 @@ describe('useDailyView', () => {
       });
       global.fetch = mockFetch;
 
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        React.createElement(QueryClientProvider, { client: freshQueryClient }, children)
-      );
+      const wrapper = ({ children }: { children: React.ReactNode }) =>
+        React.createElement(QueryClientProvider, { client: freshQueryClient }, children);
 
       const { result } = renderHook(() => useDailyView(), {
         wrapper,
@@ -614,7 +619,6 @@ describe('useDailyView', () => {
       await waitFor(() => {
         expect(result.current.members).toEqual(mockMembers);
       });
-
     });
 
     it('uses Supabase mode when configured', async () => {
@@ -669,10 +673,12 @@ describe('useDailyView', () => {
     });
 
     it('handles chores with unknown assignee', async () => {
-      const choresWithUnknownAssignee = [{
-        ...mockChores[0],
-        assignee_id: 'unknown-user',
-      }];
+      const choresWithUnknownAssignee = [
+        {
+          ...mockChores[0],
+          assignee_id: 'unknown-user',
+        },
+      ];
       (getDailyChores as any).mockResolvedValue(choresWithUnknownAssignee);
 
       const { result } = renderHook(() => useDailyView(), {

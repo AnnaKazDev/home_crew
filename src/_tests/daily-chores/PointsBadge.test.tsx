@@ -45,12 +45,7 @@ describe('PointsBadge', () => {
     render(<PointsBadge totalPoints={30} />);
 
     const badge = screen.getByText('⭐ 30 points earned today');
-    expect(badge).toHaveClass(
-      'text-lg',
-      'px-4',
-      'py-2',
-      'text-black'
-    );
+    expect(badge).toHaveClass('text-lg', 'px-4', 'py-2', 'text-black');
   });
 
   it('contains star emoji', () => {
@@ -69,7 +64,7 @@ describe('PointsBadge', () => {
 
   it('renders with TypeScript strict typing', () => {
     // Test that component works with proper TypeScript usage
-    const points: number = 10;
+    const points = 10;
     render(<PointsBadge totalPoints={points} />);
 
     expect(screen.getByText('⭐ 10 points earned today')).toBeInTheDocument();

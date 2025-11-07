@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { getSupabaseClient } from "@/db/supabase.client";
-import type { ProfileDTO } from "@/types";
+import { create } from 'zustand';
+import { getSupabaseClient } from '@/db/supabase.client';
+import type { ProfileDTO } from '@/types';
 
 interface User {
   id: string;
@@ -45,10 +45,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   updateProfile: async (data) => {
     const { user } = get();
-    if (!user) throw new Error("Not authenticated");
+    if (!user) throw new Error('Not authenticated');
 
     const supabase = getSupabaseClient();
-    const { error } = await supabase.from("profiles").update(data).eq("id", user.id);
+    const { error } = await supabase.from('profiles').update(data).eq('id', user.id);
 
     if (error) throw error;
 
@@ -80,7 +80,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.log('auth.store: Session check result:', { session: !!session, error });
 
       if (error) {
-        console.error("Auth error:", error);
+        console.error('Auth error:', error);
         set({ user: null, profile: null, loading: false });
         return;
       }
@@ -98,7 +98,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (!profileError && profileData) {
           const profile: ProfileDTO = {
             ...profileData,
-            email: session.user.email || "",
+            email: session.user.email || '',
             total_points: profileData.total_points || 0,
           };
           set({ profile });
@@ -107,7 +107,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({ user: null, profile: null });
       }
     } catch (error) {
-      console.error("AuthStore: Initialization error:", error);
+      console.error('AuthStore: Initialization error:', error);
       set({ user: null, profile: null });
     } finally {
       set({ loading: false });
@@ -132,13 +132,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           if (!profileError && profileData) {
             const profile: ProfileDTO = {
               ...profileData,
-              email: session.user.email || "",
+              email: session.user.email || '',
               total_points: profileData.total_points || 0,
             };
             set({ profile });
           }
         } catch (fetchError) {
-          console.error("AuthStore: Profile fetch error:", fetchError);
+          console.error('AuthStore: Profile fetch error:', fetchError);
         }
       } else {
         set({ user: null, profile: null });

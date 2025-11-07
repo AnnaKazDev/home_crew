@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useAuthStore } from "@/stores/auth.store";
+import { useEffect } from 'react';
+import { useAuthStore } from '@/stores/auth.store';
 
 /**
  * Hook that redirects to /auth if user is not authenticated

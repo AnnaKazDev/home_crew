@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { loginSchema, type LoginFormData } from "@/lib/validation/auth.schemas";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { loginSchema, type LoginFormData } from '@/lib/validation/auth.schemas';
 
 interface LoginFormProps {
   onError: (error: string) => void;
   onLoading: (loading: boolean) => void;
   loading: boolean;
-  onModeChange?: (mode: "login" | "register" | "reset-password") => void;
+  onModeChange?: (mode: 'login' | 'register' | 'reset-password') => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onModeChange }) => {
@@ -26,7 +26,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
     console.log('🔥 LoginForm onSubmit called with data:', data);
     try {
       onLoading(true);
-      onError("");
+      onError('');
 
       console.log('📡 Using Supabase client directly');
       // Create a fresh client instance to ensure proper configuration
@@ -39,8 +39,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
             persistSession: true,
             storage: window.localStorage,
             autoRefreshToken: true,
-            detectSessionInUrl: true
-          }
+            detectSessionInUrl: true,
+          },
         }
       );
 
@@ -63,7 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
       }, 500); // Shorter delay
     } catch (error) {
       console.error('Login error:', error);
-      onError(error instanceof Error ? error.message : "Login failed");
+      onError(error instanceof Error ? error.message : 'Login failed');
     } finally {
       onLoading(false);
     }
@@ -71,12 +71,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
 
   const handleForgotPassword = () => {
     if (onModeChange) {
-      onModeChange("reset-password");
+      onModeChange('reset-password');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" action="#" suppressHydrationWarning>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4"
+      action="#"
+      suppressHydrationWarning
+    >
       <div className="space-y-2" suppressHydrationWarning>
         <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
           Email address
@@ -86,9 +91,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
           id="email"
           placeholder="your@email.com"
           autoComplete="email"
-          {...register("email")}
+          {...register('email')}
           className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-            errors.email ? "border-destructive" : "border-border"
+            errors.email ? 'border-destructive' : 'border-border'
           }`}
           disabled={loading}
         />
@@ -104,13 +109,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
           id="password"
           placeholder="Enter your password"
           autoComplete="current-password"
-          {...register("password")}
+          {...register('password')}
           className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-            errors.password ? "border-destructive" : "border-border"
+            errors.password ? 'border-destructive' : 'border-border'
           }`}
           disabled={loading}
         />
-        {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
+        {errors.password && (
+          <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>
+        )}
       </div>
 
       <div className="flex justify-end">
@@ -133,7 +140,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
         disabled={isSubmitting || loading}
         onClick={handleSubmit(onSubmit)}
       >
-        {isSubmitting || loading ? "Signing in..." : "Sign in"}
+        {isSubmitting || loading ? 'Signing in...' : 'Sign in'}
       </Button>
     </form>
   );

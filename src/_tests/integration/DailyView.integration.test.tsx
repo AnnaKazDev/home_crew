@@ -43,7 +43,7 @@ vi.mock('@/components/daily-chores/ChoreColumns', () => ({
     onChoreDrop,
     onChoreAssign,
     onChoreDelete,
-    onAddChoreClick
+    onAddChoreClick,
   }: any) => (
     <div data-testid="chore-columns">
       <div data-testid="todo-count">{todoChores.length}</div>
@@ -65,7 +65,10 @@ vi.mock('@/components/daily-chores/AddChoreModal', () => ({
   AddChoreModal: ({ isOpen, onClose, onSubmit }: any) =>
     isOpen ? (
       <div data-testid="add-chore-modal">
-        <button data-testid="modal-submit" onClick={() => onSubmit({ date: '2024-01-15', chore_catalog_id: 'catalog-1' })}>
+        <button
+          data-testid="modal-submit"
+          onClick={() => onSubmit({ date: '2024-01-15', chore_catalog_id: 'catalog-1' })}
+        >
           Submit Chore
         </button>
         <button data-testid="modal-close" onClick={onClose}>

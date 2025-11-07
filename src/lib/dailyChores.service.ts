@@ -1,7 +1,7 @@
-import { z } from "zod";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/db/database.types";
-import type { DailyChoreDTO } from "@/types";
+import { z } from 'zod';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/db/database.types';
+import type { DailyChoreDTO } from '@/types';
 
 /**
  * Zod schema for validating CreateDailyChoreCmd
@@ -10,14 +10,17 @@ import type { DailyChoreDTO } from "@/types";
 export const CreateDailyChoreCmdSchema = z.object({
   date: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format')
     .refine((date) => {
       const parsed = new Date(date);
       return !isNaN(parsed.getTime()) && parsed.toISOString().startsWith(date);
-    }, "Invalid date format"),
-  chore_catalog_id: z.string().uuid("Invalid chore catalog ID format"),
-  assignee_id: z.string().uuid("Invalid assignee ID format").nullable().optional(),
-  time_of_day: z.enum(["morning", "afternoon", "evening", "night", "any"]).default("any").optional(),
+    }, 'Invalid date format'),
+  chore_catalog_id: z.string().uuid('Invalid chore catalog ID format'),
+  assignee_id: z.string().uuid('Invalid assignee ID format').nullable().optional(),
+  time_of_day: z
+    .enum(['morning', 'afternoon', 'evening', 'night', 'any'])
+    .default('any')
+    .optional(),
 });
 
 /**
@@ -26,12 +29,12 @@ export const CreateDailyChoreCmdSchema = z.object({
  */
 export const UpdateDailyChoreCmdSchema = z
   .object({
-    status: z.enum(["todo", "done"]).optional(),
-    assignee_id: z.string().uuid("Invalid assignee ID format").nullable().optional(),
+    status: z.enum(['todo', 'done']).optional(),
+    assignee_id: z.string().uuid('Invalid assignee ID format').nullable().optional(),
   })
   .refine(
     (data) => data.status !== undefined || data.assignee_id !== undefined,
-    "At least one field (status or assignee_id) must be provided"
+    'At least one field (status or assignee_id) must be provided'
   );
 
 type CreateDailyChoreCmdType = z.infer<typeof CreateDailyChoreCmdSchema>;
@@ -51,34 +54,34 @@ export async function getDailyChores(
   householdId: string,
   filters: {
     date?: string;
-    status?: "todo" | "done";
+    status?: 'todo' | 'done';
     assignee_id?: string;
   } = {}
 ): Promise<DailyChoreDTO[]> {
   // Default to today's date if not specified
-  const targetDate = filters.date || new Date().toISOString().split("T")[0];
+  const targetDate = filters.date || new Date().toISOString().split('T')[0];
 
   let query = supabase
-    .from("daily_chores")
-    .select("*")
-    .eq("household_id", householdId)
-    .eq("date", targetDate)
-    .is("deleted_at", null);
+    .from('daily_chores')
+    .select('*')
+    .eq('household_id', householdId)
+    .eq('date', targetDate)
+    .is('deleted_at', null);
 
   // Apply optional filters
   if (filters.status) {
-    query = query.eq("status", filters.status);
+    query = query.eq('status', filters.status);
   }
 
   if (filters.assignee_id) {
-    query = query.eq("assignee_id", filters.assignee_id);
+    query = query.eq('assignee_id', filters.assignee_id);
   }
 
-  const { data: chores, error } = await query.order("time_of_day", { ascending: true });
+  const { data: chores, error } = await query.order('time_of_day', { ascending: true });
 
   if (error) {
-    console.error("Error fetching daily chores:", error);
-    throw new Error("Failed to fetch daily chores");
+    console.error('Error fetching daily chores:', error);
+    throw new Error('Failed to fetch daily chores');
   }
 
   if (!chores) {
@@ -103,24 +106,24 @@ export async function createDailyChore(
   householdId: string,
   data: CreateDailyChoreCmdType
 ): Promise<DailyChoreDTO> {
-  console.log("🔍 Creating daily chore from catalog");
+  console.log('🔍 Creating daily chore from catalog');
 
   // Fetch the chore catalog item to get points and time_of_day
   const { data: catalogItem, error: catalogError } = await supabase
-    .from("chores_catalog")
-    .select("id, title, points, time_of_day")
-    .eq("id", data.chore_catalog_id)
-    .is("deleted_at", null)
+    .from('chores_catalog')
+    .select('id, title, points, time_of_day')
+    .eq('id', data.chore_catalog_id)
+    .is('deleted_at', null)
     .single();
 
-  console.log("Catalog query result:", { catalogItem, catalogError });
+  console.log('Catalog query result:', { catalogItem, catalogError });
 
   if (catalogError || !catalogItem) {
-    console.error("Error fetching chore catalog item:", catalogError);
-    throw new Error("CATALOG_ITEM_NOT_FOUND");
+    console.error('Error fetching chore catalog item:', catalogError);
+    throw new Error('CATALOG_ITEM_NOT_FOUND');
   }
 
-  console.log("Found catalog item:", catalogItem);
+  console.log('Found catalog item:', catalogItem);
 
   // TEMP: Skip all validations for debugging
 
@@ -131,14 +134,14 @@ export async function createDailyChore(
     chore_catalog_id: data.chore_catalog_id,
     points: catalogItem.points,
     time_of_day: data.time_of_day || catalogItem.time_of_day,
-    status: "todo" as const,
+    status: 'todo' as const,
     assignee_id: data.assignee_id || null,
   };
 
   // Prepare minimal chore data
   const minimalChoreData = {
     household_id: choreData.household_id,
-    date: new Date(choreData.date).toISOString().split("T")[0], // Ensure proper date format
+    date: new Date(choreData.date).toISOString().split('T')[0], // Ensure proper date format
     chore_catalog_id: choreData.chore_catalog_id,
     assignee_id: choreData.assignee_id,
     points: choreData.points,
@@ -146,32 +149,32 @@ export async function createDailyChore(
     status: choreData.status,
   };
 
-  const { error: simpleInsertError } = await supabase.from("daily_chores").insert(minimalChoreData);
+  const { error: simpleInsertError } = await supabase.from('daily_chores').insert(minimalChoreData);
 
   if (simpleInsertError) {
-    console.error("Simple insert failed:", simpleInsertError);
+    console.error('Simple insert failed:', simpleInsertError);
     throw new Error(`INSERT_FAILED: ${simpleInsertError.message}`);
   }
 
   // Then fetch it
   const { data: createdChores, error: fetchError } = await supabase
-    .from("daily_chores")
+    .from('daily_chores')
     .select(
-      "id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at"
+      'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at'
     )
-    .eq("household_id", householdId)
-    .eq("date", data.date)
-    .eq("chore_catalog_id", data.chore_catalog_id)
-    .order("created_at", { ascending: false })
+    .eq('household_id', householdId)
+    .eq('date', data.date)
+    .eq('chore_catalog_id', data.chore_catalog_id)
+    .order('created_at', { ascending: false })
     .limit(1);
 
   if (fetchError) {
-    console.error("Error fetching created chore:", fetchError);
-    throw new Error("Failed to fetch created daily chore");
+    console.error('Error fetching created chore:', fetchError);
+    throw new Error('Failed to fetch created daily chore');
   }
 
   if (!createdChores || createdChores.length === 0) {
-    throw new Error("Failed to retrieve created daily chore");
+    throw new Error('Failed to retrieve created daily chore');
   }
 
   const createdChore = createdChores[0];
@@ -205,26 +208,26 @@ export async function updateDailyChore(
 
     // Try update with select in one query
     const { data: updatedChore, error: updateError } = await supabase
-      .from("daily_chores")
+      .from('daily_chores')
       .update(updatePayload)
-      .eq("id", choreId)
+      .eq('id', choreId)
       .select(
-        "id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at"
+        'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at'
       )
       .single();
 
     if (updateError) {
-      console.error("Error updating daily chore:", updateError);
+      console.error('Error updating daily chore:', updateError);
       throw new Error(`UPDATE_FAILED: ${updateError.message}`);
     }
 
     if (!updatedChore) {
-      throw new Error("No data returned from update");
+      throw new Error('No data returned from update');
     }
 
     return mapToDTO(updatedChore);
   } catch (error) {
-    console.error("Exception in updateDailyChore:", error);
+    console.error('Exception in updateDailyChore:', error);
     throw error;
   }
 }
@@ -247,20 +250,20 @@ export async function deleteDailyChoresByDate(
   // Check if user is admin of the household
   const isAdmin = await checkUserIsAdmin(supabase, householdId, userId);
   if (!isAdmin) {
-    throw new Error("UNAUTHORIZED");
+    throw new Error('UNAUTHORIZED');
   }
 
   // Soft delete all chores for the given date and household
   const { error: deleteError } = await supabase
-    .from("daily_chores")
+    .from('daily_chores')
     .update({ deleted_at: new Date().toISOString() })
-    .eq("household_id", householdId)
-    .eq("date", date)
-    .is("deleted_at", null);
+    .eq('household_id', householdId)
+    .eq('date', date)
+    .is('deleted_at', null);
 
   if (deleteError) {
-    console.error("Error deleting chores by date:", deleteError);
-    throw new Error("DELETE_FAILED");
+    console.error('Error deleting chores by date:', deleteError);
+    throw new Error('DELETE_FAILED');
   }
 }
 
@@ -272,16 +275,16 @@ export async function deleteDailyChore(
 ): Promise<void> {
   // Verify chore exists and belongs to this household
   const { data: existingChore, error: checkError } = await supabase
-    .from("daily_chores")
-    .select("assignee_id")
-    .eq("id", choreId)
-    .eq("household_id", householdId)
-    .is("deleted_at", null)
+    .from('daily_chores')
+    .select('assignee_id')
+    .eq('id', choreId)
+    .eq('household_id', householdId)
+    .is('deleted_at', null)
     .single();
 
   if (checkError || !existingChore) {
-    console.error("Error checking chore for deletion:", checkError);
-    throw new Error("NOT_FOUND");
+    console.error('Error checking chore for deletion:', checkError);
+    throw new Error('NOT_FOUND');
   }
 
   // Check authorization: only assignee or admin can delete
@@ -289,19 +292,19 @@ export async function deleteDailyChore(
   const isAdmin = await checkUserIsAdmin(supabase, householdId, userId);
 
   if (!isAssignee && !isAdmin) {
-    throw new Error("UNAUTHORIZED");
+    throw new Error('UNAUTHORIZED');
   }
 
   // Soft delete by setting deleted_at
   const { error: deleteError } = await supabase
-    .from("daily_chores")
+    .from('daily_chores')
     .update({ deleted_at: new Date().toISOString() })
-    .eq("id", choreId)
-    .eq("household_id", householdId);
+    .eq('id', choreId)
+    .eq('household_id', householdId);
 
   if (deleteError) {
-    console.error("Error deleting daily chore:", deleteError);
-    throw new Error("Failed to delete daily chore");
+    console.error('Error deleting daily chore:', deleteError);
+    throw new Error('Failed to delete daily chore');
   }
 }
 
@@ -314,23 +317,23 @@ async function checkUserIsAdmin(
   userId: string
 ): Promise<boolean> {
   const { data: member, error } = await supabase
-    .from("household_members")
-    .select("role")
-    .eq("household_id", householdId)
-    .eq("user_id", userId)
+    .from('household_members')
+    .select('role')
+    .eq('household_id', householdId)
+    .eq('user_id', userId)
     .single();
 
   if (error || !member) {
     return false;
   }
 
-  return member.role === "admin";
+  return member.role === 'admin';
 }
 
 /**
  * Helper function to map a daily chore row to DailyChoreDTO
  */
-function mapToDTO(chore: Database["public"]["Tables"]["daily_chores"]["Row"]): DailyChoreDTO {
+function mapToDTO(chore: Database['public']['Tables']['daily_chores']['Row']): DailyChoreDTO {
   return {
     id: chore.id,
     date: chore.date,

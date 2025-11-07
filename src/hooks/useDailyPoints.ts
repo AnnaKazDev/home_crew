@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { getSupabaseClient, isSupabaseConfigured } from "@/db/supabase.client";
-import { getUserDailyPointsSummary } from "@/lib/pointsEvents.service";
-import { useAuthStore } from "@/stores/auth.store";
+import { useEffect, useState } from 'react';
+import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
+import { getUserDailyPointsSummary } from '@/lib/pointsEvents.service';
+import { useAuthStore } from '@/stores/auth.store';
 
 interface DailyPoints {
   date: string;
@@ -30,7 +30,7 @@ export const useDailyPoints = (days = 7) => {
           const date = new Date(today);
           date.setDate(date.getDate() - i);
           mockData.push({
-            date: date.toISOString().split("T")[0],
+            date: date.toISOString().split('T')[0],
             points: Math.floor(Math.random() * 50), // Mock data
           });
         }
@@ -41,7 +41,7 @@ export const useDailyPoints = (days = 7) => {
         const currentUserId = user?.id;
 
         if (!currentUserId) {
-          setError("User not authenticated");
+          setError('User not authenticated');
           return;
         }
 
@@ -49,7 +49,7 @@ export const useDailyPoints = (days = 7) => {
         setDailyPoints(pointsData);
       }
     } catch (err) {
-      setError("Nieoczekiwany błąd podczas ładowania punktów");
+      setError('Nieoczekiwany błąd podczas ładowania punktów');
       console.error(err);
     } finally {
       setLoading(false);

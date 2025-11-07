@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 interface Chore {
   id: string;
@@ -21,10 +21,10 @@ export default function ChoresList() {
   const [data, setData] = useState<ChoresData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetch("/api/v1/catalog?type=all")
+    fetch('/api/v1/catalog?type=all')
       .then((response) => response.json())
       .then((chores: Chore[]) => {
         // Group by category
@@ -48,9 +48,9 @@ export default function ChoresList() {
         setLoading(false);
       })
       .catch((err) => {
-        setError("Failed to load chores");
+        setError('Failed to load chores');
         setLoading(false);
-        console.error("Error loading chores:", err);
+        console.error('Error loading chores:', err);
       });
   }, []);
 
@@ -100,7 +100,12 @@ export default function ChoresList() {
           <div className="mb-6">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -118,12 +123,14 @@ export default function ChoresList() {
               />
             </div>
           </div>
-          {searchTerm === "" && (
+          {searchTerm === '' && (
             <div className="text-center">
               <p className="text-foreground text-lg mb-2 gradient-text-light font-medium">
                 ✨ Discover household tasks to organize your home
               </p>
-              <p className="text-muted-foreground text-sm">Search above or browse our curated collection below</p>
+              <p className="text-muted-foreground text-sm">
+                Search above or browse our curated collection below
+              </p>
             </div>
           )}
         </div>
@@ -153,7 +160,7 @@ export default function ChoresList() {
                     {chores.map((chore, index) => (
                       <div
                         key={chore.id}
-                        className={`group card-hover p-6 rounded-2xl border border-gray-100/60 bg-gradient-to-br from-white/90 to-white/60 shadow-lg hover:shadow-xl hover:from-blue-50/90 hover:to-indigo-50/60 hover:scale-[1.02] transition-all duration-300 cursor-pointer backdrop-blur-sm m-[30px] ${index % 2 === 0 ? "animate-float" : ""} p-5`}
+                        className={`group card-hover p-6 rounded-2xl border border-gray-100/60 bg-gradient-to-br from-white/90 to-white/60 shadow-lg hover:shadow-xl hover:from-blue-50/90 hover:to-indigo-50/60 hover:scale-[1.02] transition-all duration-300 cursor-pointer backdrop-blur-sm m-[30px] ${index % 2 === 0 ? 'animate-float' : ''} p-5`}
                         style={{ animationDelay: `${index * 0.1}s` }}
                       >
                         <div className="flex items-center space-x-4">

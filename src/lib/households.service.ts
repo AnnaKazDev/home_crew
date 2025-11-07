@@ -1,7 +1,7 @@
-import { z } from "zod";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/db/database.types";
-import type { HouseholdDTO, CreateHouseholdDTO } from "@/types";
+import { z } from 'zod';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/db/database.types';
+import type { HouseholdDTO, CreateHouseholdDTO } from '@/types';
 
 type CreateHouseholdCmdType = z.infer<typeof CreateHouseholdCmdSchema>;
 type JoinHouseholdCmdType = z.infer<typeof JoinHouseholdCmdSchema>;
@@ -14,8 +14,8 @@ type UpdateHouseholdCmdType = z.infer<typeof UpdateHouseholdCmdSchema>;
 export const CreateHouseholdCmdSchema = z.object({
   name: z
     .string()
-    .min(3, "Household name must be at least 3 characters")
-    .max(100, "Household name must be 100 characters or less")
+    .min(3, 'Household name must be at least 3 characters')
+    .max(100, 'Household name must be 100 characters or less')
     .transform((val) => val.trim()),
 });
 
@@ -26,8 +26,8 @@ export const CreateHouseholdCmdSchema = z.object({
 export const JoinHouseholdCmdSchema = z.object({
   pin: z
     .string()
-    .length(6, "PIN must be exactly 6 digits")
-    .regex(/^\d{6}$/, "PIN must contain only digits"),
+    .length(6, 'PIN must be exactly 6 digits')
+    .regex(/^\d{6}$/, 'PIN must contain only digits'),
 });
 
 /**
@@ -37,8 +37,8 @@ export const JoinHouseholdCmdSchema = z.object({
 export const UpdateHouseholdCmdSchema = z.object({
   name: z
     .string()
-    .min(3, "Household name must be at least 3 characters")
-    .max(100, "Household name must be 100 characters or less")
+    .min(3, 'Household name must be at least 3 characters')
+    .max(100, 'Household name must be 100 characters or less')
     .transform((val) => val.trim())
     .optional(),
   timezone: z.string().optional(),
@@ -64,20 +64,20 @@ export async function generateUniquePinWithHash(
 
     // Check if PIN already exists
     const { data: existingHousehold, error } = await supabase
-      .from("households")
-      .select("id")
-      .eq("current_pin", pin)
+      .from('households')
+      .select('id')
+      .eq('current_pin', pin)
       .single();
 
-    if (error && error.code !== "PGRST116") {
+    if (error && error.code !== 'PGRST116') {
       // PGRST116 = no rows returned
-      throw new Error("Database error while checking PIN uniqueness");
+      throw new Error('Database error while checking PIN uniqueness');
     }
 
     // If no existing household found, PIN is unique
     if (!existingHousehold) {
       // Generate bcrypt hash for the PIN (server-only)
-      const { default: bcrypt } = await import("bcrypt");
+      const { default: bcrypt } = await import('bcrypt');
       const saltRounds = 12;
       const hash = await bcrypt.hash(pin, saltRounds);
 
@@ -87,7 +87,7 @@ export async function generateUniquePinWithHash(
     attempts++;
   }
 
-  throw new Error("Unable to generate unique PIN after multiple attempts");
+  throw new Error('Unable to generate unique PIN after multiple attempts');
 }
 
 /**
@@ -106,17 +106,17 @@ export async function createHousehold(
 ): Promise<CreateHouseholdDTO> {
   // Check if user already belongs to a household
   const { data: existingMembership, error: membershipError } = await supabase
-    .from("household_members")
-    .select("household_id")
-    .eq("user_id", userId)
+    .from('household_members')
+    .select('household_id')
+    .eq('user_id', userId)
     .single();
 
-  if (membershipError && membershipError.code !== "PGRST116") {
-    throw new Error("Database error while checking user membership");
+  if (membershipError && membershipError.code !== 'PGRST116') {
+    throw new Error('Database error while checking user membership');
   }
 
   if (existingMembership) {
-    throw new Error("USER_ALREADY_IN_HOUSEHOLD");
+    throw new Error('USER_ALREADY_IN_HOUSEHOLD');
   }
 
   // Generate unique PIN with hash
@@ -127,34 +127,37 @@ export async function createHousehold(
   pinExpiresAt.setHours(pinExpiresAt.getHours() + 24);
 
   // Create household and add user as admin in a transaction
-  const { data: result, error: transactionError } = await (supabase.rpc as any)("create_household_with_admin", {
-    p_name: data.name,
-    p_pin: pin,
-    p_user_id: userId,
-  });
+  const { data: result, error: transactionError } = await (supabase.rpc as any)(
+    'create_household_with_admin',
+    {
+      p_name: data.name,
+      p_pin: pin,
+      p_user_id: userId,
+    }
+  );
 
   if (transactionError) {
-    console.error("Error creating household:", transactionError);
-    throw new Error("Failed to create household");
+    console.error('Error creating household:', transactionError);
+    throw new Error('Failed to create household');
   }
 
   if (!result || (result as any[]).length === 0) {
-    throw new Error("Failed to retrieve created household");
+    throw new Error('Failed to retrieve created household');
   }
 
   const household = (result as any[])[0];
 
   // Update household with PIN hash and expiration
   const { error: updateError } = await supabase
-    .from("households")
+    .from('households')
     .update({
       pin_hash: hash,
       pin_expires_at: pinExpiresAt.toISOString(),
     })
-    .eq("id", household.id);
+    .eq('id', household.id);
 
   if (updateError) {
-    console.error("Error updating household with PIN hash:", updateError);
+    console.error('Error updating household with PIN hash:', updateError);
     // Don't throw here as household was already created successfully
   }
 
@@ -179,9 +182,9 @@ export async function getHouseholdForUser(
 ): Promise<HouseholdDTO | null> {
   // First check if user exists in household_members
   const { data: memberCheck, error: memberError } = await supabase
-    .from("household_members")
-    .select("household_id, role")
-    .eq("user_id", userId)
+    .from('household_members')
+    .select('household_id, role')
+    .eq('user_id', userId)
     .maybeSingle();
 
   if (memberError || !memberCheck) {
@@ -190,7 +193,7 @@ export async function getHouseholdForUser(
 
   // Get household membership with role
   const { data: membership, error: membershipError } = await supabase
-    .from("household_members")
+    .from('household_members')
     .select(
       `
       role,
@@ -202,14 +205,14 @@ export async function getHouseholdForUser(
       )
     `
     )
-    .eq("user_id", userId)
+    .eq('user_id', userId)
     .single();
 
   if (membershipError) {
-    if (membershipError.code === "PGRST116") {
+    if (membershipError.code === 'PGRST116') {
       return null; // User not in any household
     }
-    throw new Error("Database error while retrieving household");
+    throw new Error('Database error while retrieving household');
   }
 
   if (!membership.households) {
@@ -225,7 +228,7 @@ export async function getHouseholdForUser(
     timezone: household.timezone,
   };
 
-  if (membership.role === "admin") {
+  if (membership.role === 'admin') {
     householdDTO.pin = household.current_pin;
   }
 
@@ -248,34 +251,34 @@ export async function joinHousehold(
 ): Promise<HouseholdDTO> {
   // Check if user already belongs to a household
   const { data: existingMembership, error: membershipError } = await supabase
-    .from("household_members")
-    .select("household_id")
-    .eq("user_id", userId)
+    .from('household_members')
+    .select('household_id')
+    .eq('user_id', userId)
     .single();
 
-  if (membershipError && membershipError.code !== "PGRST116") {
-    throw new Error("Database error while checking user membership");
+  if (membershipError && membershipError.code !== 'PGRST116') {
+    throw new Error('Database error while checking user membership');
   }
 
   if (existingMembership) {
-    throw new Error("USER_ALREADY_IN_HOUSEHOLD");
+    throw new Error('USER_ALREADY_IN_HOUSEHOLD');
   }
 
   // Find households that could match (to check PIN hash)
   const { data: households, error: householdError } = await supabase
-    .from("households")
-    .select("id, name, timezone, pin_expires_at, pin_hash")
-    .not("pin_hash", "is", null);
+    .from('households')
+    .select('id, name, timezone, pin_expires_at, pin_hash')
+    .not('pin_hash', 'is', null);
 
   if (householdError) {
-    throw new Error("Database error while finding household");
+    throw new Error('Database error while finding household');
   }
 
   // Find household by comparing PIN hash
   let household = null;
   for (const h of households || []) {
     if (h.pin_hash) {
-      const { default: bcrypt } = await import("bcrypt");
+      const { default: bcrypt } = await import('bcrypt');
       if (await bcrypt.compare(data.pin, h.pin_hash)) {
         household = h;
         break;
@@ -284,24 +287,24 @@ export async function joinHousehold(
   }
 
   if (!household) {
-    throw new Error("INVALID_PIN");
+    throw new Error('INVALID_PIN');
   }
 
   // Check if PIN is expired
   if (household.pin_expires_at && new Date(household.pin_expires_at) < new Date()) {
-    throw new Error("PIN_EXPIRED");
+    throw new Error('PIN_EXPIRED');
   }
 
   // Add user to household as member
-  const { error: joinError } = await supabase.from("household_members").insert({
+  const { error: joinError } = await supabase.from('household_members').insert({
     household_id: household.id,
     user_id: userId,
-    role: "member",
+    role: 'member',
   });
 
   if (joinError) {
-    console.error("Error joining household:", joinError);
-    throw new Error("Failed to join household");
+    console.error('Error joining household:', joinError);
+    throw new Error('Failed to join household');
   }
 
   return {
@@ -329,18 +332,18 @@ export async function updateHousehold(
 ): Promise<HouseholdDTO> {
   // Check if user is admin of this household
   const { data: membership, error: membershipError } = await supabase
-    .from("household_members")
-    .select("role")
-    .eq("household_id", householdId)
-    .eq("user_id", userId)
+    .from('household_members')
+    .select('role')
+    .eq('household_id', householdId)
+    .eq('user_id', userId)
     .single();
 
   if (membershipError || !membership) {
-    throw new Error("NOT_HOUSEHOLD_MEMBER");
+    throw new Error('NOT_HOUSEHOLD_MEMBER');
   }
 
-  if (membership.role !== "admin") {
-    throw new Error("NOT_HOUSEHOLD_ADMIN");
+  if (membership.role !== 'admin') {
+    throw new Error('NOT_HOUSEHOLD_ADMIN');
   }
 
   // Prepare update data
@@ -352,26 +355,26 @@ export async function updateHousehold(
     // No changes to make, return current household data
     const currentHousehold = await getHouseholdForUser(supabase, userId);
     if (!currentHousehold) {
-      throw new Error("Household not found");
+      throw new Error('Household not found');
     }
     return currentHousehold;
   }
 
   // Update household
   const { data: updatedHousehold, error: updateError } = await supabase
-    .from("households")
+    .from('households')
     .update(updateData)
-    .eq("id", householdId)
-    .select("id, name, timezone, current_pin")
+    .eq('id', householdId)
+    .select('id, name, timezone, current_pin')
     .single();
 
   if (updateError) {
-    console.error("Error updating household:", updateError);
-    throw new Error("Failed to update household");
+    console.error('Error updating household:', updateError);
+    throw new Error('Failed to update household');
   }
 
   if (!updatedHousehold) {
-    throw new Error("Household not found after update");
+    throw new Error('Household not found after update');
   }
 
   // Return updated data with PIN for admin

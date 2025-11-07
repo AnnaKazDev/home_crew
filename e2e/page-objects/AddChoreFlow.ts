@@ -63,7 +63,7 @@ export class AddChoreFlow {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
       });
       await this.choreConfigurator.verifyCurrentDate(today);
     }
@@ -75,13 +75,14 @@ export class AddChoreFlow {
     await this.addChoreModal.modal.waitFor({ state: 'hidden' });
 
     // Create unique identifier for the chore
-    const uniqueId = uniqueSuffix || `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const uniqueId =
+      uniqueSuffix || `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     return {
       ...selectedChore,
       assigneeName: userName,
       date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      id: uniqueId
+      id: uniqueId,
     };
   }
 
@@ -121,7 +122,7 @@ export class AddChoreFlow {
    */
   async getTodoChores(): Promise<ChoreCard[]> {
     const choreLocators = await this.dailyChoresPage.getTodoChores();
-    return choreLocators.map(locator => new ChoreCard(this.page, locator));
+    return choreLocators.map((locator) => new ChoreCard(this.page, locator));
   }
 
   /**
@@ -129,6 +130,6 @@ export class AddChoreFlow {
    */
   async getDoneChores(): Promise<ChoreCard[]> {
     const choreLocators = await this.dailyChoresPage.getDoneChores();
-    return choreLocators.map(locator => new ChoreCard(this.page, locator));
+    return choreLocators.map((locator) => new ChoreCard(this.page, locator));
   }
 }

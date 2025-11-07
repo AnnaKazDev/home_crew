@@ -1,6 +1,10 @@
-import type { APIRoute } from "astro";
-import { UpdateHouseholdCmdSchema, updateHousehold } from "@/lib/households.service";
-import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import type { APIRoute } from 'astro';
+import { UpdateHouseholdCmdSchema, updateHousehold } from '@/lib/households.service';
+import {
+  getSupabaseServiceClient,
+  DEFAULT_USER_ID,
+  type SupabaseClient,
+} from '@/db/supabase.client';
 
 export const prerender = false;
 
@@ -16,9 +20,9 @@ export const PATCH: APIRoute = async (context) => {
     const { id } = context.params;
 
     if (!id) {
-      return new Response(JSON.stringify({ error: "Household ID is required" }), {
+      return new Response(JSON.stringify({ error: 'Household ID is required' }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -27,9 +31,9 @@ export const PATCH: APIRoute = async (context) => {
     try {
       requestData = await context.request.json();
     } catch {
-      return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
+      return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -37,12 +41,12 @@ export const PATCH: APIRoute = async (context) => {
     const validationResult = UpdateHouseholdCmdSchema.safeParse(requestData);
     if (!validationResult.success) {
       const details = validationResult.error.errors.map((err) => ({
-        path: err.path.join("."),
+        path: err.path.join('.'),
         message: err.message,
       }));
-      return new Response(JSON.stringify({ error: "Validation error", details }), {
+      return new Response(JSON.stringify({ error: 'Validation error', details }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -52,35 +56,40 @@ export const PATCH: APIRoute = async (context) => {
     try {
       const household = await updateHousehold(supabase, id, DEFAULT_USER_ID, validationResult.data);
 
-      return new Response(JSON.stringify(household), { status: 200, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(household), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
     } catch (serviceError) {
-      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+      const errorMessage = serviceError instanceof Error ? serviceError.message : 'Unknown error';
 
-      if (errorMessage === "NOT_HOUSEHOLD_MEMBER") {
-        return new Response(JSON.stringify({ error: "Not a member of this household" }), {
+      if (errorMessage === 'NOT_HOUSEHOLD_MEMBER') {
+        return new Response(JSON.stringify({ error: 'Not a member of this household' }), {
           status: 403,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      if (errorMessage === "NOT_HOUSEHOLD_ADMIN") {
+      if (errorMessage === 'NOT_HOUSEHOLD_ADMIN') {
         return new Response(
-          JSON.stringify({ error: "Only household administrators can update household information" }),
-          { status: 403, headers: { "Content-Type": "application/json" } }
+          JSON.stringify({
+            error: 'Only household administrators can update household information',
+          }),
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
         );
       }
 
-      console.error("Service error updating household:", serviceError);
-      return new Response(JSON.stringify({ error: "Internal server error" }), {
+      console.error('Service error updating household:', serviceError);
+      return new Response(JSON.stringify({ error: 'Internal server error' }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
   } catch (error) {
-    console.error("Unexpected error in PATCH /v1/households/:id:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
+    console.error('Unexpected error in PATCH /v1/households/:id:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };

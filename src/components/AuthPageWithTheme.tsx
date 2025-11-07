@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { ThemeProvider } from "./ThemeProvider";
-import AuthPage from "./AuthPage";
+import React from 'react';
+import { ThemeProvider } from './ThemeProvider';
+import AuthPage from './AuthPage';
 
 const AuthPageWithTheme: React.FC = () => {
   return (

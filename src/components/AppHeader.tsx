@@ -1,37 +1,33 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useTheme } from "./ThemeProvider";
-import { useAuthStore } from "@/stores/auth.store";
-import HamburgerMenu from "./HamburgerMenu";
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { useTheme } from './ThemeProvider';
+import { useAuthStore } from '@/stores/auth.store';
+import HamburgerMenu from './HamburgerMenu';
 
 export default function AppHeader() {
   const { theme, toggleTheme } = useTheme();
   const { profile, user, loading: authLoading, isAuthenticated } = useAuthStore();
 
-
-
-
-
   const menuItems = [
     {
-      label: "Daily Chores",
-      href: "/daily_chores",
+      label: 'Daily Chores',
+      href: '/daily_chores',
     },
     {
-      label: "Household Management",
-      href: "/household",
+      label: 'Household Management',
+      href: '/household',
     },
     {
-      label: "Your Profile",
-      href: "/profile",
+      label: 'Your Profile',
+      href: '/profile',
     },
     { separator: true },
     ...(user
       ? [
           {
-            label: "Sign out",
+            label: 'Sign out',
             onClick: async () => {
               try {
                 const response = await fetch('/api/auth/logout', {
@@ -46,11 +42,14 @@ export default function AppHeader() {
                   const keysToRemove = [];
                   for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
-                    if (key && (key.startsWith('sb-') || key.startsWith('supabase') || key.includes('auth'))) {
+                    if (
+                      key &&
+                      (key.startsWith('sb-') || key.startsWith('supabase') || key.includes('auth'))
+                    ) {
                       keysToRemove.push(key);
                     }
                   }
-                  keysToRemove.forEach(key => localStorage.removeItem(key));
+                  keysToRemove.forEach((key) => localStorage.removeItem(key));
 
                   // If no specific keys found, clear all localStorage as fallback
                   if (keysToRemove.length === 0) {
@@ -71,39 +70,40 @@ export default function AppHeader() {
       : []),
     // Theme toggle in mobile menu
     {
-      label: theme === "light" ? "Switch to dark mode" : "Switch to light mode",
+      label: theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode',
       onClick: toggleTheme,
-      icon: theme === "light" ? (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-          />
-        </svg>
-      ) : (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-          />
-        </svg>
-      ),
+      icon:
+        theme === 'light' ? (
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            />
+          </svg>
+        ) : (
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            />
+          </svg>
+        ),
     },
   ];
 
@@ -129,7 +129,10 @@ export default function AppHeader() {
         <div className="hidden md:flex items-center space-x-4 ml-auto">
           {user && (
             <span className="text-lg font-medium text-foreground dark:text-white">
-              Hi, <span className="font-bold text-primary">{profile?.name || user?.email?.split('@')[0] || 'Loading...'}</span>
+              Hi,{' '}
+              <span className="font-bold text-primary">
+                {profile?.name || user?.email?.split('@')[0] || 'Loading...'}
+              </span>
             </span>
           )}
           <Button
@@ -137,9 +140,9 @@ export default function AppHeader() {
             size="sm"
             onClick={toggleTheme}
             className="w-9 h-9 p-0 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg"
-            title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
-            {theme === "light" ? (
+            {theme === 'light' ? (
               // Moon icon for dark mode
               <svg
                 className="w-4 h-4 text-gray-600 dark:text-gray-300"

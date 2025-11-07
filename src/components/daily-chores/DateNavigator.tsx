@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface DateNavigatorProps {
   currentDate: string;
@@ -14,28 +14,28 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
   const handlePrevDay = () => {
     const date = new Date(currentDate);
     date.setDate(date.getDate() - 1);
-    onDateChange(date.toISOString().split("T")[0]);
+    onDateChange(date.toISOString().split('T')[0]);
   };
 
   const handleNextDay = () => {
     const date = new Date(currentDate);
     date.setDate(date.getDate() + 1);
-    onDateChange(date.toISOString().split("T")[0]);
+    onDateChange(date.toISOString().split('T')[0]);
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      onDateChange(date.toISOString().split("T")[0]);
+      onDateChange(date.toISOString().split('T')[0]);
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   };
 
@@ -50,10 +50,15 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
         </div>
 
         <div className="flex flex-col items-center justify-center text-center">
-          <div className="hidden md:block text-lg font-semibold text-foreground mb-2">{formatDate(currentDate)}</div>
+          <div className="hidden md:block text-lg font-semibold text-foreground mb-2">
+            {formatDate(currentDate)}
+          </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button data-test-id="date-navigator-pick-date" className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80">
+              <Button
+                data-test-id="date-navigator-pick-date"
+                className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80"
+              >
                 Pick a date
                 <CalendarIcon className="ml-2 h-4 w-4" />
               </Button>
@@ -74,7 +79,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
                     <button
                       {...props}
                       className={cn(
-                        "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-black h-12 w-12 text-base font-normal",
+                        'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-black h-12 w-12 text-base font-normal',
                         className
                       )}
                     />
@@ -104,7 +109,10 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
 
           <Popover>
             <PopoverTrigger asChild>
-              <Button data-test-id="date-navigator-pick-date-mobile" className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80">
+              <Button
+                data-test-id="date-navigator-pick-date-mobile"
+                className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80"
+              >
                 <span>Pick a date</span>
                 <CalendarIcon className="h-4 w-4" />
               </Button>
@@ -125,7 +133,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
                     <button
                       {...props}
                       className={cn(
-                        "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-black h-12 w-12 text-base font-normal",
+                        'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-black h-12 w-12 text-base font-normal',
                         className
                       )}
                     />

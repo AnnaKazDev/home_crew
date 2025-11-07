@@ -8,15 +8,17 @@ async function loginWithTestUser(page: any) {
   const testUserPassword = process.env.TEST_USER_PASSWORD;
 
   if (!testUserEmail || !testUserPassword) {
-    throw new Error('Test user credentials not found in environment variables. Make sure .env.test is loaded.');
+    throw new Error(
+      'Test user credentials not found in environment variables. Make sure .env.test is loaded.'
+    );
   }
 
   // Use the API endpoint to login
   const response = await page.request.post('/api/auth/login', {
     data: {
       email: testUserEmail,
-      password: testUserPassword
-    }
+      password: testUserPassword,
+    },
   });
 
   if (!response.ok()) {
@@ -40,7 +42,7 @@ async function loginWithTestUser(page: any) {
         access_token: sessionData.access_token,
         refresh_token: sessionData.refresh_token,
         expires_at: sessionData.expires_at,
-        user: sessionData.user
+        user: sessionData.user,
       };
 
       localStorage.setItem('sb-127-auth-token', JSON.stringify(session));
@@ -73,7 +75,7 @@ test.describe('Add Chore Flow', () => {
     id: process.env.TEST_USER_ID!,
     email: process.env.TEST_USER_EMAIL!,
     password: process.env.TEST_USER_PASSWORD!,
-    name: process.env.TEST_USER_NAME!
+    name: process.env.TEST_USER_NAME!,
   };
 
   test.beforeEach(async ({ page }) => {
@@ -91,7 +93,9 @@ test.describe('Add Chore Flow', () => {
     try {
       // Use API to clean up today's chores more efficiently
       const today = new Date().toISOString().split('T')[0];
-      const response = await page.request.delete(`/api/v1/daily-chores?date=${encodeURIComponent(today)}`);
+      const response = await page.request.delete(
+        `/api/v1/daily-chores?date=${encodeURIComponent(today)}`
+      );
 
       if (!response.ok()) {
         // Fallback to UI cleanup if API fails
@@ -152,7 +156,7 @@ test.describe('Add Chore Flow', () => {
     const addedChore = await addChoreFlow.addRandomChore({
       uniqueSuffix,
       userId: undefined, // Explicitly unassigned
-      userName: undefined
+      userName: undefined,
     });
 
     // Basic verification that the flow worked
@@ -186,7 +190,7 @@ test.describe('Add Chore Flow', () => {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
 
     await addChoreFlow.choreConfigurator.verifyCurrentDate(today);

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Zod schemas for authentication forms validation
@@ -6,53 +6,60 @@ import { z } from "zod";
 
 // Login form schema
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 // Registration form schema
 export const registerSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters").max(50, "Name cannot exceed 50 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    name: z
+      .string()
+      .min(2, 'Name must be at least 2 characters')
+      .max(50, 'Name cannot exceed 50 characters'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
-    role: z.enum(["admin", "member"]),
+    role: z.enum(['admin', 'member']),
     householdName: z.string().optional(),
     pin: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
   })
   .refine(
     (data) => {
-      if (data.role === "admin") {
-        return data.householdName && data.householdName.trim().length >= 2 && data.householdName.trim().length <= 100;
+      if (data.role === 'admin') {
+        return (
+          data.householdName &&
+          data.householdName.trim().length >= 2 &&
+          data.householdName.trim().length <= 100
+        );
       }
       return true;
     },
     {
-      message: "Household name must be between 2 and 100 characters",
-      path: ["householdName"],
+      message: 'Household name must be between 2 and 100 characters',
+      path: ['householdName'],
     }
   )
   .refine(
     (data) => {
-      if (data.role === "member") {
+      if (data.role === 'member') {
         return data.pin && data.pin.length === 6 && /^\d{6}$/.test(data.pin);
       }
       return true;
     },
     {
-      message: "PIN must be 6 digits",
-      path: ["pin"],
+      message: 'PIN must be 6 digits',
+      path: ['pin'],
     }
   );
 
 // Password reset form schema
 export const resetPasswordSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email('Invalid email address'),
 });
 
 // Auth mode types

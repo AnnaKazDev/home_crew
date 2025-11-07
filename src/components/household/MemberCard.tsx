@@ -1,8 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { memo } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent } from '@/components/ui/card';
+import { memo } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,14 +13,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Trash2, Shield, User } from "lucide-react";
-import { toast } from "sonner";
-import type { MemberDTO } from "@/types";
+} from '@/components/ui/alert-dialog';
+import { Trash2, Shield, User } from 'lucide-react';
+import { toast } from 'sonner';
+import type { MemberDTO } from '@/types';
 
 interface MemberCardProps {
   member: MemberDTO;
-  currentUserRole: "admin" | "member";
+  currentUserRole: 'admin' | 'member';
   currentUserId: string;
   onRemove: () => Promise<void>;
   isUpdating: boolean;
@@ -29,18 +29,18 @@ interface MemberCardProps {
 const MemberCard: React.FC<MemberCardProps> = memo(
   ({ member, currentUserRole, currentUserId, onRemove, isUpdating }) => {
     const isCurrentUser = member.user_id === currentUserId;
-    const canModify = currentUserRole === "admin" && !isCurrentUser;
+    const canModify = currentUserRole === 'admin' && !isCurrentUser;
 
     const handleRemove = async () => {
       // Client-side validation: only admins can remove members
-      if (currentUserRole !== "admin") {
-        toast.error("Only administrators can remove members");
+      if (currentUserRole !== 'admin') {
+        toast.error('Only administrators can remove members');
         return;
       }
 
       // Client-side validation: cannot remove self
       if (isCurrentUser) {
-        toast.error("You cannot remove yourself from the household");
+        toast.error('You cannot remove yourself from the household');
         return;
       }
 
@@ -53,18 +53,18 @@ const MemberCard: React.FC<MemberCardProps> = memo(
 
     const getInitials = (name: string) => {
       return name
-        .split(" ")
+        .split(' ')
         .map((word) => word.charAt(0))
-        .join("")
+        .join('')
         .toUpperCase()
         .slice(0, 2);
     };
 
     const formatJoinedDate = (dateString: string) => {
-      return new Date(dateString).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
       });
     };
 
@@ -90,8 +90,11 @@ const MemberCard: React.FC<MemberCardProps> = memo(
                   )}
                 </div>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant={member.role === "admin" ? "default" : "secondary"} className="text-xs">
-                    {member.role === "admin" ? (
+                  <Badge
+                    variant={member.role === 'admin' ? 'default' : 'secondary'}
+                    className="text-xs"
+                  >
+                    {member.role === 'admin' ? (
                       <>
                         <Shield className="h-3 w-3 mr-1" />
                         Admin
@@ -129,7 +132,8 @@ const MemberCard: React.FC<MemberCardProps> = memo(
                     <AlertDialogHeader>
                       <AlertDialogTitle className="dark:text-white">Remove Member</AlertDialogTitle>
                       <AlertDialogDescription className="dark:text-gray-300">
-                        Are you sure you want to remove {member.name} from the household? This action cannot be undone.
+                        Are you sure you want to remove {member.name} from the household? This
+                        action cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -151,5 +155,7 @@ const MemberCard: React.FC<MemberCardProps> = memo(
     );
   }
 );
+
+MemberCard.displayName = 'MemberCard';
 
 export default MemberCard;

@@ -37,8 +37,8 @@ if (!supabaseUrl || !supabaseServiceKey || !testUserEmail || !testUserPassword |
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
 async function createTestUser() {
@@ -53,7 +53,7 @@ async function createTestUser() {
       return;
     }
 
-    const existingUser = existingUsers.users.find(user => user.email === testUserEmail);
+    const existingUser = existingUsers.users.find((user) => user.email === testUserEmail);
 
     if (existingUser) {
       console.log('Test user already exists:', existingUser.email);
@@ -66,7 +66,7 @@ async function createTestUser() {
       user_id: testUserId,
       email: testUserEmail,
       password: testUserPassword,
-      email_confirm: true
+      email_confirm: true,
     });
 
     if (error) {

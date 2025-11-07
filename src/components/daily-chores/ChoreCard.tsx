@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useDrag } from "react-dnd";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { XIcon } from "lucide-react";
-import { DeleteChoreModal } from "./DeleteChoreModal";
-import type { ChoreViewModel } from "@/types/daily-view.types";
-import type { MemberDTO } from "@/types";
+import React, { useState } from 'react';
+import { useDrag } from 'react-dnd';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { XIcon } from 'lucide-react';
+import { DeleteChoreModal } from './DeleteChoreModal';
+import type { ChoreViewModel } from '@/types/daily-view.types';
+import type { MemberDTO } from '@/types';
 
 interface ChoreCardProps {
   chore: ChoreViewModel;
@@ -20,7 +20,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [{ isDragging }, drag] = useDrag({
-    type: "chore",
+    type: 'chore',
     item: { id: chore.id },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -40,16 +40,16 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
   // Helper function to get time of day text
   const getTimeOfDayText = (timeOfDay: string) => {
     switch (timeOfDay) {
-      case "morning":
-        return "morning";
-      case "afternoon":
-        return "afternoon";
-      case "evening":
-        return "evening";
-      case "night":
-        return "night";
+      case 'morning':
+        return 'morning';
+      case 'afternoon':
+        return 'afternoon';
+      case 'evening':
+        return 'evening';
+      case 'night':
+        return 'night';
       default:
-        return "";
+        return '';
     }
   };
 
@@ -58,17 +58,17 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
       ref={drag as any}
       data-test-id={`chore-card-${chore.id}`}
       className={`hover:shadow-md transition-shadow cursor-move border border-border bg-card ${
-        isDragging ? "opacity-50" : ""
+        isDragging ? 'opacity-50' : ''
       }`}
     >
       <CardContent className="p-4">
         <div className="grid grid-cols-[1fr_auto] gap-2">
           <div className="flex items-center space-x-3 min-w-0">
-            <span className="text-4xl flex-shrink-0 mr-4">{chore.catalogEmoji || "📋"}</span>
+            <span className="text-4xl flex-shrink-0 mr-4">{chore.catalogEmoji || '📋'}</span>
             <div className="min-w-0 flex-1">
               <h3 data-test-id="chore-card-title" className="font-medium text-foreground truncate">
                 {chore.catalogTitle}
-                {chore.catalogTimeOfDay !== "any" && (
+                {chore.catalogTimeOfDay !== 'any' && (
                   <span className="text-xs text-muted-foreground ml-1">
                     ({getTimeOfDayText(chore.catalogTimeOfDay)})
                   </span>
@@ -79,7 +79,11 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
                 <Badge variant="secondary" className="text-xs truncate text-black">
                   {chore.catalogCategory}
                 </Badge>
-                <Badge variant="outline" className="text-xs flex-shrink-0" data-test-id="chore-card-points">
+                <Badge
+                  variant="outline"
+                  className="text-xs flex-shrink-0"
+                  data-test-id="chore-card-points"
+                >
                   {chore.points} pts
                 </Badge>
               </div>
@@ -100,7 +104,10 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
             )}
           </div>
         </div>
-        <div data-test-id="chore-card-footer" className="flex items-center justify-between pt-3 border-t border-border mt-3">
+        <div
+          data-test-id="chore-card-footer"
+          className="flex items-center justify-between pt-3 border-t border-border mt-3"
+        >
           <div className="flex items-center space-x-2">
             {chore.assigneeName && (
               <>
@@ -126,7 +133,16 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
                 className="p-1 ml-2 text-muted-foreground hover:text-primary hover:bg-primary/10"
                 title="Assign chore"
               >
-                <img src="/user_plus.svg" alt="Assign user" className="h-5 w-5" style={{ filter: 'brightness(0) saturate(100%) invert(40%) sepia(93%) saturate(1352%) hue-rotate(1deg) brightness(119%) contrast(97%)' }} data-testid="user-plus-icon" />
+                <img
+                  src="/user_plus.svg"
+                  alt="Assign user"
+                  className="h-5 w-5"
+                  style={{
+                    filter:
+                      'brightness(0) saturate(100%) invert(40%) sepia(93%) saturate(1352%) hue-rotate(1deg) brightness(119%) contrast(97%)',
+                  }}
+                  data-testid="user-plus-icon"
+                />
               </Button>
             )}
           </div>

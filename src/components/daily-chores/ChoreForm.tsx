@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import EmojiPicker, { Theme } from "emoji-picker-react";
-import type { CatalogItemDTO } from "@/types";
+import React, { useState } from 'react';
+import EmojiPicker, { Theme } from 'emoji-picker-react';
+import type { CatalogItemDTO } from '@/types';
 
 interface ChoreFormProps {
   onSubmit: (data: Partial<CatalogItemDTO>) => void;
@@ -9,11 +9,11 @@ interface ChoreFormProps {
 
 export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
   const [formData, setFormData] = useState({
-    title: "",
-    category: "",
+    title: '',
+    category: '',
     points: 5,
-    time_of_day: "any" as const,
-    emoji: "",
+    time_of_day: 'any' as const,
+    emoji: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -23,21 +23,21 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
     const newErrors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = "Title is required";
+      newErrors.title = 'Title is required';
     } else if (formData.title.length > 50) {
-      newErrors.title = "Title must be 50 characters or less";
+      newErrors.title = 'Title must be 50 characters or less';
     }
 
     if (!formData.category.trim()) {
-      newErrors.category = "Category is required";
+      newErrors.category = 'Category is required';
     }
 
     if (formData.points < 0 || formData.points > 100) {
-      newErrors.points = "Points must be between 0 and 100";
+      newErrors.points = 'Points must be between 0 and 100';
     }
 
     if (formData.points % 5 !== 0) {
-      newErrors.points = "Points must be divisible by 5";
+      newErrors.points = 'Points must be divisible by 5';
     }
 
     if (formData.emoji) {
@@ -45,7 +45,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
       // Some emojis are composed of multiple Unicode codepoints but are one visual character
       const graphemeCount = Array.from(formData.emoji).length;
       if (graphemeCount > 2) {
-        newErrors.emoji = "Emoji must be a single character";
+        newErrors.emoji = 'Emoji must be a single character';
       }
     }
 
@@ -71,35 +71,35 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
   const handleEmojiClick = (emojiData: any) => {
-    handleChange("emoji", emojiData.emoji);
+    handleChange('emoji', emojiData.emoji);
     setShowEmojiPicker(false);
   };
 
   const commonCategories = [
-    "Kitchen",
-    "Bathroom",
-    "Living Room",
-    "Bedroom",
-    "Laundry",
-    "Yard Work",
-    "Pets",
-    "Shopping",
-    "Cleaning",
-    "Maintenance",
-    "Other",
+    'Kitchen',
+    'Bathroom',
+    'Living Room',
+    'Bedroom',
+    'Laundry',
+    'Yard Work',
+    'Pets',
+    'Shopping',
+    'Cleaning',
+    'Maintenance',
+    'Other',
   ];
 
   const timeOptions = [
-    { value: "morning", label: "🌅 Morning" },
-    { value: "afternoon", label: "☀️ Afternoon" },
-    { value: "evening", label: "🌆 Evening" },
-    { value: "night", label: "🌙 Night" },
-    { value: "any", label: "🕐 Anytime" },
+    { value: 'morning', label: '🌅 Morning' },
+    { value: 'afternoon', label: '☀️ Afternoon' },
+    { value: 'evening', label: '🌆 Evening' },
+    { value: 'night', label: '🌙 Night' },
+    { value: 'any', label: '🕐 Anytime' },
   ];
 
   return (
@@ -119,9 +119,9 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             type="text"
             id="title"
             value={formData.title}
-            onChange={(e) => handleChange("title", e.target.value)}
+            onChange={(e) => handleChange('title', e.target.value)}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              errors.title ? "border-destructive" : "border-border"
+              errors.title ? 'border-destructive' : 'border-border'
             }`}
             placeholder="e.g., Wash dishes"
             maxLength={50}
@@ -137,9 +137,9 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
           <select
             id="category"
             value={formData.category}
-            onChange={(e) => handleChange("category", e.target.value)}
+            onChange={(e) => handleChange('category', e.target.value)}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground ${
-              errors.category ? "border-destructive" : "border-border"
+              errors.category ? 'border-destructive' : 'border-border'
             }`}
           >
             <option value="">Select a category</option>
@@ -161,12 +161,12 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             type="number"
             id="points"
             value={formData.points}
-            onChange={(e) => handleChange("points", parseInt(e.target.value) || 0)}
+            onChange={(e) => handleChange('points', parseInt(e.target.value) || 0)}
             min={0}
             max={100}
             step={5}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              errors.points ? "border-destructive" : "border-border"
+              errors.points ? 'border-destructive' : 'border-border'
             }`}
           />
           {errors.points && <p className="mt-1 text-sm text-destructive">{errors.points}</p>}
@@ -183,7 +183,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
                   name="time_of_day"
                   value={option.value}
                   checked={formData.time_of_day === option.value}
-                  onChange={(e) => handleChange("time_of_day", e.target.value)}
+                  onChange={(e) => handleChange('time_of_day', e.target.value)}
                   className="text-primary focus:ring-ring"
                 />
                 <span className="text-xl text-foreground">{option.label}</span>
@@ -200,9 +200,9 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
               type="text"
               id="emoji"
               value={formData.emoji}
-              onChange={(e) => handleChange("emoji", e.target.value)}
+              onChange={(e) => handleChange('emoji', e.target.value)}
               className={`flex-1 px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-                errors.emoji ? "border-destructive" : "border-border"
+                errors.emoji ? 'border-destructive' : 'border-border'
               }`}
               placeholder="e.g., 🧽"
               maxLength={2}

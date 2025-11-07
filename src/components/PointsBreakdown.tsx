@@ -1,7 +1,7 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, TrendingUp, Trophy } from "lucide-react";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, TrendingUp, Trophy } from 'lucide-react';
 
 interface DailyPoints {
   date: string;
@@ -14,35 +14,39 @@ interface PointsBreakdownProps {
   error?: string | null;
 }
 
-const PointsBreakdown: React.FC<PointsBreakdownProps> = ({ dailyPoints, loading = false, error = null }) => {
+const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
+  dailyPoints,
+  loading = false,
+  error = null,
+}) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const baseDateFormat = date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
+    const baseDateFormat = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
     });
 
-    if (dateStr === today.toISOString().split("T")[0]) {
-      return `${date.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
+    if (dateStr === today.toISOString().split('T')[0]) {
+      return `${date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
       })} (Today)`;
-    } else if (dateStr === yesterday.toISOString().split("T")[0]) {
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
+    } else if (dateStr === yesterday.toISOString().split('T')[0]) {
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
       });
     } else {
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
       });
     }
   };
@@ -62,7 +66,7 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({ dailyPoints, loading 
           if (sortedDates.length === 0) return null;
           const firstDate = new Date(sortedDates[0]);
           const lastDate = new Date(sortedDates[sortedDates.length - 1]);
-          return `${firstDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${lastDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+          return `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
         })()
       : null;
 
@@ -78,7 +82,10 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({ dailyPoints, loading 
         <CardContent className="px-0 py-0">
           <div className="space-y-3">
             {Array.from({ length: 7 }).map((_, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 animate-pulse">
+              <div
+                key={i}
+                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 animate-pulse"
+              >
                 <div className="h-4 w-20 bg-muted rounded"></div>
                 <div className="h-6 w-12 bg-muted rounded"></div>
               </div>
@@ -148,8 +155,8 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({ dailyPoints, loading 
                   </div>
                 </div>
                 <Badge
-                  variant={day.points > 0 ? "default" : "secondary"}
-                  className={`min-w-[50px] justify-center ${day.points === 0 ? "dark:text-black" : ""}`}
+                  variant={day.points > 0 ? 'default' : 'secondary'}
+                  className={`min-w-[50px] justify-center ${day.points === 0 ? 'dark:text-black' : ''}`}
                 >
                   {day.points > 0 ? `+${day.points}` : day.points}
                 </Badge>

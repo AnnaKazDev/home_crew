@@ -7,8 +7,7 @@ import type { MemberDTO } from '@/types';
 
 // Mock components
 vi.mock('@/components/ui/dialog', () => ({
-  Dialog: ({ children, open }: any) =>
-    open ? <div data-testid="dialog">{children}</div> : null,
+  Dialog: ({ children, open }: any) => (open ? <div data-testid="dialog">{children}</div> : null),
   DialogContent: ({ children }: any) => <div data-testid="dialog-content">{children}</div>,
   DialogHeader: ({ children }: any) => <div data-testid="dialog-header">{children}</div>,
   DialogTitle: ({ children }: any) => <div data-testid="dialog-title">{children}</div>,
@@ -16,11 +15,7 @@ vi.mock('@/components/ui/dialog', () => ({
 
 vi.mock('@/components/ui/button', () => ({
   Button: ({ children, onClick, disabled, variant }: any) => (
-    <button
-      data-testid={`button-${variant || 'default'}`}
-      onClick={onClick}
-      disabled={disabled}
-    >
+    <button data-testid={`button-${variant || 'default'}`} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   ),
@@ -325,7 +320,7 @@ describe('AssignChoreModal', () => {
     it('shows loading state during submission', async () => {
       const user = userEvent.setup();
 
-      mockOnSubmit.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
+      mockOnSubmit.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
 
       render(
         <AssignChoreModal
@@ -533,11 +528,10 @@ describe('AssignChoreModal', () => {
       const radios = screen.getAllByRole('radio');
       expect(radios.length).toBeGreaterThan(1);
 
-      radios.forEach(radio => {
+      radios.forEach((radio) => {
         expect(radio).toHaveAttribute('name', 'assignee');
       });
     });
-
 
     it('has proper ARIA labels and descriptions', () => {
       render(

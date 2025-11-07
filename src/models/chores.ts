@@ -3,7 +3,7 @@ export interface PredefinedChore {
   title: string;
   emoji: string;
   category: string;
-  timeOfDay?: "morning" | "afternoon" | "evening";
+  timeOfDay?: 'morning' | 'afternoon' | 'evening';
   /**
    * Difficulty / effort score (0–100).
    * Placeholder values; will be tuned later.

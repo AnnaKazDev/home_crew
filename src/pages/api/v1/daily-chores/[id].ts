@@ -1,7 +1,15 @@
-import type { APIRoute } from "astro";
-import { UpdateDailyChoreCmdSchema, updateDailyChore, deleteDailyChore } from "@/lib/dailyChores.service";
-import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
-import type { Database } from "@/db/database.types";
+import type { APIRoute } from 'astro';
+import {
+  UpdateDailyChoreCmdSchema,
+  updateDailyChore,
+  deleteDailyChore,
+} from '@/lib/dailyChores.service';
+import {
+  getSupabaseServiceClient,
+  DEFAULT_USER_ID,
+  type SupabaseClient,
+} from '@/db/supabase.client';
+import type { Database } from '@/db/database.types';
 
 export const prerender = false;
 
@@ -20,10 +28,10 @@ export const PATCH: APIRoute = async (context) => {
     if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
       return new Response(
         JSON.stringify({
-          error: "Invalid chore ID",
-          details: "ID must be a valid UUID",
+          error: 'Invalid chore ID',
+          details: 'ID must be a valid UUID',
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -32,9 +40,9 @@ export const PATCH: APIRoute = async (context) => {
     try {
       requestData = await context.request.json();
     } catch {
-      return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
+      return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -42,27 +50,27 @@ export const PATCH: APIRoute = async (context) => {
     const validationResult = UpdateDailyChoreCmdSchema.safeParse(requestData);
     if (!validationResult.success) {
       const details = validationResult.error.errors.map((err) => ({
-        path: err.path.join("."),
+        path: err.path.join('.'),
         message: err.message,
       }));
-      return new Response(JSON.stringify({ error: "Validation error", details }), {
+      return new Response(JSON.stringify({ error: 'Validation error', details }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
     // Get household for the current user (use service client to bypass RLS)
     const supabase = getSupabaseServiceClient() as SupabaseClient;
     const { data: householdMember, error: householdError } = await supabase
-      .from("household_members")
-      .select("household_id")
-      .eq("user_id", DEFAULT_USER_ID)
+      .from('household_members')
+      .select('household_id')
+      .eq('user_id', DEFAULT_USER_ID)
       .single();
 
     if (householdError || !householdMember) {
-      return new Response(JSON.stringify({ error: "User not in any household" }), {
+      return new Response(JSON.stringify({ error: 'User not in any household' }), {
         status: 404,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -80,43 +88,49 @@ export const PATCH: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(updatedChore), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (serviceError) {
-      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+      const errorMessage = serviceError instanceof Error ? serviceError.message : 'Unknown error';
 
-      if (errorMessage === "NOT_FOUND") {
-        return new Response(JSON.stringify({ error: "Daily chore not found" }), {
+      if (errorMessage === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: 'Daily chore not found' }), {
           status: 404,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      if (errorMessage === "UNAUTHORIZED") {
-        return new Response(JSON.stringify({ error: "Only the assignee or household admin can update this chore" }), {
-          status: 403,
-          headers: { "Content-Type": "application/json" },
-        });
+      if (errorMessage === 'UNAUTHORIZED') {
+        return new Response(
+          JSON.stringify({ error: 'Only the assignee or household admin can update this chore' }),
+          {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
       }
 
-      if (errorMessage === "ASSIGNEE_NOT_IN_HOUSEHOLD") {
-        return new Response(JSON.stringify({ error: "New assignee does not belong to this household" }), {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        });
+      if (errorMessage === 'ASSIGNEE_NOT_IN_HOUSEHOLD') {
+        return new Response(
+          JSON.stringify({ error: 'New assignee does not belong to this household' }),
+          {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
       }
 
-      console.error("Service error updating daily chore:", serviceError);
-      return new Response(JSON.stringify({ error: "Internal server error" }), {
+      console.error('Service error updating daily chore:', serviceError);
+      return new Response(JSON.stringify({ error: 'Internal server error' }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
   } catch (error) {
-    console.error("Unexpected error in PATCH /v1/daily-chores/:id:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
+    console.error('Unexpected error in PATCH /v1/daily-chores/:id:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };
@@ -135,26 +149,26 @@ export const DELETE: APIRoute = async (context) => {
     if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
       return new Response(
         JSON.stringify({
-          error: "Invalid chore ID",
-          details: "ID must be a valid UUID",
+          error: 'Invalid chore ID',
+          details: 'ID must be a valid UUID',
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     // Get household for the current user
     const supabase = getSupabaseServiceClient() as SupabaseClient;
     const { data: householdMember, error: householdError } = await supabase
-      .from("household_members")
-      .select("household_id")
-      .eq("user_id", DEFAULT_USER_ID)
+      .from('household_members')
+      .select('household_id')
+      .eq('user_id', DEFAULT_USER_ID)
       .single();
 
     if (householdError || !householdMember) {
-      console.error("Household lookup error:", householdError);
-      return new Response(JSON.stringify({ error: "Household not found" }), {
+      console.error('Household lookup error:', householdError);
+      return new Response(JSON.stringify({ error: 'Household not found' }), {
         status: 404,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -166,36 +180,39 @@ export const DELETE: APIRoute = async (context) => {
 
       return new Response(null, {
         status: 204,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (serviceError) {
-      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+      const errorMessage = serviceError instanceof Error ? serviceError.message : 'Unknown error';
 
-      if (errorMessage === "NOT_FOUND") {
-        return new Response(JSON.stringify({ error: "Daily chore not found" }), {
+      if (errorMessage === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: 'Daily chore not found' }), {
           status: 404,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      if (errorMessage === "UNAUTHORIZED") {
-        return new Response(JSON.stringify({ error: "Only the assignee or household admin can delete this chore" }), {
-          status: 403,
-          headers: { "Content-Type": "application/json" },
-        });
+      if (errorMessage === 'UNAUTHORIZED') {
+        return new Response(
+          JSON.stringify({ error: 'Only the assignee or household admin can delete this chore' }),
+          {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
       }
 
-      console.error("Service error deleting daily chore:", serviceError);
-      return new Response(JSON.stringify({ error: "Internal server error" }), {
+      console.error('Service error deleting daily chore:', serviceError);
+      return new Response(JSON.stringify({ error: 'Internal server error' }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
   } catch (error) {
-    console.error("Unexpected error in DELETE /v1/daily-chores/:id:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
+    console.error('Unexpected error in DELETE /v1/daily-chores/:id:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };

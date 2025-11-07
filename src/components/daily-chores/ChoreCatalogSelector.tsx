@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Badge } from "@/components/ui/badge";
-import type { CatalogItemDTO } from "@/types";
+import React, { useState, useEffect, useMemo } from 'react';
+import { Badge } from '@/components/ui/badge';
+import type { CatalogItemDTO } from '@/types';
 
 interface ChoreCatalogSelectorProps {
   onItemSelect: (item: CatalogItemDTO) => void;
@@ -11,22 +11,22 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
   const [catalogItems, setCatalogItems] = useState<CatalogItemDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Helper function to get time of day text
   const getTimeOfDayText = (timeOfDay: string) => {
     switch (timeOfDay) {
-      case "morning":
-        return "morning";
-      case "afternoon":
-        return "afternoon";
-      case "evening":
-        return "evening";
-      case "night":
-        return "night";
+      case 'morning':
+        return 'morning';
+      case 'afternoon':
+        return 'afternoon';
+      case 'evening':
+        return 'evening';
+      case 'night':
+        return 'night';
       default:
-        return "";
+        return '';
     }
   };
 
@@ -40,15 +40,15 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
       setIsLoading(true);
       setError(null);
       const controller = new AbortController();
-      const res = await fetch("/api/v1/catalog?type=all", { signal: controller.signal });
+      const res = await fetch('/api/v1/catalog?type=all', { signal: controller.signal });
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(text || "Failed to load catalog");
+        throw new Error(text || 'Failed to load catalog');
       }
       const items = (await res.json()) as CatalogItemDTO[];
       setCatalogItems(items);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load catalog");
+      setError(err instanceof Error ? err.message : 'Failed to load catalog');
     } finally {
       setIsLoading(false);
     }
@@ -62,12 +62,13 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
         item.category.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory =
-        selectedCategory === "all" || item.category.toLowerCase() === selectedCategory.toLowerCase();
+        selectedCategory === 'all' ||
+        item.category.toLowerCase() === selectedCategory.toLowerCase();
 
       return matchesSearch && matchesCategory;
     });
 
-    console.log("Filtering:", {
+    console.log('Filtering:', {
       selectedCategory,
       searchQuery,
       totalItems: catalogItems.length,
@@ -78,14 +79,14 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
   }, [catalogItems, searchQuery, selectedCategory]);
 
   // Get unique categories
-  const categories = ["all", ...Array.from(new Set(catalogItems.map((item) => item.category)))];
+  const categories = ['all', ...Array.from(new Set(catalogItems.map((item) => item.category)))];
 
   console.log(
-    "ChoreCatalogSelector rendering, items:",
+    'ChoreCatalogSelector rendering, items:',
     catalogItems.length,
-    "loading:",
+    'loading:',
     isLoading,
-    "categories:",
+    'categories:',
     categories
   );
 
@@ -102,7 +103,12 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
     return (
       <div className="text-center py-8">
         <div className="text-destructive mb-4">
-          <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-12 h-12 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -142,7 +148,7 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
           className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground border-border"
         />
 
-        <div className="flex flex-wrap gap-2" style={{ zIndex: 10, position: "relative" }}>
+        <div className="flex flex-wrap gap-2" style={{ zIndex: 10, position: 'relative' }}>
           {categories.map((category) => (
             <button
               key={category}
@@ -150,17 +156,17 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("Category clicked:", category, "current selected:", selectedCategory);
+                console.log('Category clicked:', category, 'current selected:', selectedCategory);
                 setSelectedCategory(category);
-                console.log("Category set to:", category);
+                console.log('Category set to:', category);
               }}
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 selectedCategory === category
-                  ? "bg-primary/10 text-primary border-[4px] border-primary/20"
-                  : "bg-primary/10 text-primary border border-primary/20"
+                  ? 'bg-primary/10 text-primary border-[4px] border-primary/20'
+                  : 'bg-primary/10 text-primary border border-primary/20'
               }`}
             >
-              {category === "all" ? "All" : category}
+              {category === 'all' ? 'All' : category}
             </button>
           ))}
         </div>
@@ -176,11 +182,11 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
             className="group p-4 border border-border rounded-lg hover:border-accent hover:bg-accent/50 transition-colors text-left"
           >
             <div className="flex items-start space-x-3">
-              <span className="text-4xl flex-shrink-0 mr-4">{item.emoji || "📋"}</span>
+              <span className="text-4xl flex-shrink-0 mr-4">{item.emoji || '📋'}</span>
               <div className="flex-1">
                 <h4 className="font-medium text-foreground text-sm group-hover:text-black">
                   {item.title}
-                  {item.time_of_day !== "any" && (
+                  {item.time_of_day !== 'any' && (
                     <span className="text-xs text-gray-500 ml-1 group-hover:text-black">
                       ({getTimeOfDayText(item.time_of_day)})
                     </span>
@@ -209,7 +215,9 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
 
       {/* Add Custom Button */}
       <div className="border-t border-border pt-6">
-        <span className="text-primary text-2xl font-bold text-center my-4 block">or maybe You would like to..</span>
+        <span className="text-primary text-2xl font-bold text-center my-4 block">
+          or maybe You would like to..
+        </span>
         <button
           onClick={onCreateCustom}
           className="w-full px-4 py-3 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium"
