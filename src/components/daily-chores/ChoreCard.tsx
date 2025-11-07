@@ -62,7 +62,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
       <CardContent className="p-4">
         <div className="grid grid-cols-[1fr_auto] gap-2">
           <div className="flex items-center space-x-3 min-w-0">
-            <span className="text-2xl flex-shrink-0">{chore.catalogEmoji || "📋"}</span>
+            <span className="text-4xl flex-shrink-0 mr-4">{chore.catalogEmoji || "📋"}</span>
             <div className="min-w-0 flex-1">
               <h3 data-test-id="chore-card-title" className="font-medium text-foreground truncate">
                 {chore.catalogTitle}
@@ -89,10 +89,10 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
                 variant="ghost"
                 size="sm"
                 onClick={onAssign}
-                className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                className="p-1 text-muted-foreground hover:text-primary hover:bg-primary/10"
                 title="Assign chore"
               >
-                👤
+                <img src="/user_plus.svg" alt="Assign user" className="h-6 w-6 dark:filter dark:invert dark:brightness-0" data-testid="user-plus-icon" />
               </Button>
             )}
             {onDelete && (
@@ -101,10 +101,10 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
                 variant="ghost"
                 size="sm"
                 onClick={handleDeleteClick}
-                className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                className="p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 title="Delete chore"
               >
-                🗑️
+                <img src="/garbage.svg" alt="Delete chore" className="h-6 w-6 dark:filter dark:invert dark:brightness-0" data-testid="trash-icon" />
               </Button>
             )}
           </div>

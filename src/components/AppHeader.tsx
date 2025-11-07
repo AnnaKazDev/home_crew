@@ -111,11 +111,16 @@ export default function AppHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background dark:bg-black border-b border-border">
-      <div className="w-full relative flex h-14 items-center px-4">
+      <div className="w-full relative flex h-[5.5rem] items-center px-4">
         {/* Logo/Brand and Hamburger Menu */}
         <div className="flex items-center space-x-2">
           <HamburgerMenu menuItems={menuItems} />
-          <h1 className="text-lg font-semibold text-foreground dark:text-white">Home Crew</h1>
+          <img
+            src="/home3.png"
+            alt="Home icon"
+            className="w-32"
+          />
+          {/* <h1 className="text-lg font-semibold text-foreground dark:text-white">Home Crew</h1> */}
         </div>
 
         {/* Desktop controls - hidden on mobile, visible on desktop */}

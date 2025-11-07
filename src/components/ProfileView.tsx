@@ -33,7 +33,7 @@ const ProfileView: React.FC = () => {
   // No profile yet - show loading
   if (!profile) {
     return (
-      <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
+      <div className="min-h-screen bg-background pt-[5rem] md:pt-[6rem] px-4 md:px-8">
         <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto animate-fade-in">
           <div className="text-center py-8 text-muted-foreground">
             <p className="text-lg">Loading profile...</p>
