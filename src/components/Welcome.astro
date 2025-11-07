@@ -1,5 +1,5 @@
 <div
-  class="relative w-full mx-auto min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50/80 to-purple-50 p-4 sm:p-8 overflow-hidden"
+  class="relative w-full mx-auto min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50/80 to-purple-50 dark:from-black dark:via-teal-950 dark:to-purple-950 p-4 sm:p-8 overflow-hidden"
 >
   {/* Animated background elements */}
   <div class="absolute inset-0 overflow-hidden">
@@ -20,182 +20,62 @@
   </div>
 
   <div
-    class="relative max-w-5xl mx-auto backdrop-blur-xl bg-white/90 rounded-3xl shadow-2xl p-8 sm:p-12 text-gray-900 border border-white/20 animate-float"
+    class="relative max-w-5xl mx-auto backdrop-blur-xl bg-white dark:bg-black rounded-3xl shadow-2xl p-8 sm:p-12 text-gray-900 dark:text-white border border-white/20 dark:border-gray-700"
   >
-    <div class="space-y-12">
-      <div class="text-center space-y-6">
-        <div
-          class="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-100/60 to-indigo-100/60 rounded-full backdrop-blur-sm border border-blue-200/30"
-        >
-          <span class="text-2xl animate-bounce">🚀</span>
-          <span class="text-sm font-medium gradient-text">Next-Gen Development</span>
+    <div class="flex flex-col items-center justify-center min-h-[400px] space-y-6">
+      <img
+        src="/logo_img.png"
+        alt="Home Crew Logo"
+        class="w-[25rem] h-auto"
+      />
+
+      <div class="text-center max-w-3xl space-y-6">
+        <div class="space-y-3">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">
+            Transform Household Chores into Family Adventures!
+          </h2>
+          <p class="text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+            Discover the ultimate way to manage household tasks with excitement and rewards.
+            Create personalized chore schedules, earn points for completed tasks, and watch
+            your family bond through collaborative achievements.
+          </p>
         </div>
 
-        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 gradient-text leading-tight">
-          Witaj w 10xDevs
-          <span class="block text-4xl sm:text-5xl lg:text-6xl mt-2 opacity-90">Astro Starter</span>
-        </h1>
-
-        <p class="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light">
-          Projekt zbudowany z wykorzystaniem najnowocześniejszego stacku technologicznego dla
-          <span class="font-semibold gradient-text"> niesamowitych aplikacji webowych</span>
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {/* Core Technologies */}
-        <div class="card-elevated p-8 hover:scale-105 transition-all duration-300 group">
-          <div class="flex items-center space-x-3 mb-6">
-            <div
-              class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300"
-            >
-              <span class="text-2xl">⚡</span>
-            </div>
-            <h2 class="text-2xl font-bold gradient-text">Core Stack</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+          <div class="bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/30 dark:border-gray-600">
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-1">Earn Rewards</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Collect points and unlock achievements</p>
           </div>
-          <div class="space-y-4">
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-lg font-semibold"
-                  >Astro v5</span
-                >
-                <span class="text-gray-600 text-sm">Metaframework</span>
-              </div>
-              <span class="text-blue-500">🚀</span>
-            </div>
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-green-100 text-green-800 px-3 py-1 rounded-lg font-semibold"
-                  >React v19</span
-                >
-                <span class="text-gray-600 text-sm">UI Components</span>
-              </div>
-              <span class="text-green-500">⚛️</span>
-            </div>
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl border border-sky-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-sky-100 text-sky-800 px-3 py-1 rounded-lg font-semibold"
-                  >TypeScript</span
-                >
-                <span class="text-gray-600 text-sm">Type Safety</span>
-              </div>
-              <span class="text-sky-500">🔷</span>
-            </div>
+          <div class="bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/30 dark:border-gray-600">
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-1">Family Bonding</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Strengthen relationships through teamwork</p>
+          </div>
+          <div class="bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/30 dark:border-gray-600">
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-1">Smart Scheduling</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Organize tasks efficiently and fairly</p>
+          </div>
+          <div class="bg-white/50 dark:bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/30 dark:border-gray-600">
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-1">Build Habits</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Teach responsibility and independence</p>
           </div>
         </div>
 
-        {/* Styling */}
-        <div class="card-elevated p-8 hover:scale-105 transition-all duration-300 group">
-          <div class="flex items-center space-x-3 mb-6">
-            <div
-              class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300"
-            >
-              <span class="text-2xl">🎨</span>
-            </div>
-            <h2 class="text-2xl font-bold gradient-text">Styling</h2>
-          </div>
-          <div class="space-y-4">
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-purple-100 text-purple-800 px-3 py-1 rounded-lg font-semibold"
-                  >Tailwind v4</span
-                >
-                <span class="text-gray-600 text-sm">Utility Framework</span>
-              </div>
-              <span class="text-purple-500">💎</span>
-            </div>
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl border border-indigo-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-indigo-100 text-indigo-800 px-3 py-1 rounded-lg font-semibold"
-                  >Glassmorphism</span
-                >
-                <span class="text-gray-600 text-sm">Modern Effects</span>
-              </div>
-              <span class="text-indigo-500">✨</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quality Assurance */}
-        <div class="card-elevated p-8 hover:scale-105 transition-all duration-300 group">
-          <div class="flex items-center space-x-3 mb-6">
-            <div
-              class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300"
-            >
-              <span class="text-2xl">🛡️</span>
-            </div>
-            <h2 class="text-2xl font-bold gradient-text">Quality</h2>
-          </div>
-          <div class="space-y-4">
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-amber-100 text-amber-800 px-3 py-1 rounded-lg font-semibold"
-                  >ESLint v9</span
-                >
-                <span class="text-gray-600 text-sm">Code Linting</span>
-              </div>
-              <span class="text-amber-500">🔍</span>
-            </div>
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl border border-rose-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-rose-100 text-rose-800 px-3 py-1 rounded-lg font-semibold"
-                  >Prettier</span
-                >
-                <span class="text-gray-600 text-sm">Code Formatting</span>
-              </div>
-              <span class="text-rose-500">🎯</span>
-            </div>
-            <div
-              class="flex items-center justify-between p-3 bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl border border-teal-100/50"
-            >
-              <div class="flex items-center space-x-3">
-                <span class="font-mono text-sm bg-teal-100 text-teal-800 px-3 py-1 rounded-lg font-semibold">Husky</span
-                >
-                <span class="text-gray-600 text-sm">Git Hooks</span>
-              </div>
-              <span class="text-teal-500">🔒</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-16 space-y-6">
-        <div
-          class="inline-flex items-center space-x-4 px-8 py-4 bg-gradient-to-r from-blue-50/80 via-indigo-50/80 to-purple-50/80 rounded-full backdrop-blur-sm border border-blue-200/30"
-        >
-          <span class="text-3xl animate-pulse">✨</span>
-          <span class="text-lg font-medium gradient-text">Ready to build something amazing?</span>
-          <span class="text-3xl animate-pulse">🚀</span>
-        </div>
-
-        <p class="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-          Ten starter zawiera <span class="font-semibold gradient-text">wszystko</span>, czego potrzebujesz do
-          rozpoczęcia tworzenia
-          <span class="font-semibold gradient-text"> nowoczesnych aplikacji webowych</span> z niesamowitą wydajnością i doświadczeniem
-          użytkownika.
+        <p class="text-base text-gray-600 dark:text-gray-400 italic">
+          Join thousands of families who have transformed their daily routines into
+          meaningful, rewarding experiences!
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
-          <a href="/daily_chores" class="btn-primary group">
-            <span>Explore Chores</span>
-            <span class="ml-2 group-hover:translate-x-1 transition-transform duration-200">→</span>
+        <div class="pt-4">
+          <a
+            href="/daily_chores"
+            class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          >
+            Get Started!
           </a>
         </div>
       </div>
     </div>
+
+ 
   </div>
 </div>
