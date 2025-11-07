@@ -20,16 +20,14 @@ export default function AppHeader() {
       href: "/daily_chores",
     },
     {
-      label: "Household",
+      label: "Household Management",
       href: "/household",
     },
     {
-      label: "Profile",
+      label: "Your Profile",
       href: "/profile",
     },
-    // Separator
     { separator: true },
-    // Mobile-only menu items
     ...(user
       ? [
           {
