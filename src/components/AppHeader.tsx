@@ -117,11 +117,13 @@ export default function AppHeader() {
           <div style={{ marginRight: '32px' }}>
             <HamburgerMenu menuItems={menuItems} />
           </div>
-          <img
-            src="/home3.png"
-            alt="Home icon"
-            className="w-32"
-          />
+          <a href="/">
+            <img
+              src="/logotype.png"
+              alt="Home icon"
+              className="w-32 cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          </a>
           {/* <h1 className="text-lg font-semibold text-foreground dark:text-white">Home Crew</h1> */}
         </div>
 
