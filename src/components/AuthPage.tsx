@@ -74,11 +74,11 @@ const AuthPage: React.FC = () => {
       >
         {!showSuccess && (
           <div className="text-center space-y-6 mb-8">
-            <h1 className={`text-3xl sm:text-4xl font-bold leading-tight ${
-              isDark ? "text-white" : "gradient-text"
-            }`}>
-              Welcome to <br /> Home Crew!
-            </h1>
+            <img
+              src="/logotype.png"
+              alt="Home Crew Logo"
+              className="w-[17rem] md:w-[25rem] h-auto mx-auto"
+            />
 
             <p className={`text-lg max-w-sm mx-auto leading-relaxed ${
               isDark ? "text-gray-300" : "text-gray-600"
