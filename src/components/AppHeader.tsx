@@ -130,8 +130,8 @@ export default function AppHeader() {
         {/* Desktop controls - hidden on mobile, visible on desktop */}
         <div className="hidden md:flex items-center space-x-4 ml-auto">
           {user && (
-            <span className="text-sm font-medium text-foreground dark:text-white">
-              Hi, {profile?.name || user?.email?.split('@')[0] || 'Loading...'}
+            <span className="text-lg font-medium text-foreground dark:text-white">
+              Hi, <span className="font-bold text-primary">{profile?.name || user?.email?.split('@')[0] || 'Loading...'}</span>
             </span>
           )}
           <Button
