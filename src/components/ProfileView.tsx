@@ -51,8 +51,8 @@ const ProfileView: React.FC = () => {
   return (
     <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
       <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto animate-fade-in">
-        <h1 className="text-3xl font-bold text-foreground mb-8" id="profile-title">
-          User Profile
+        <h1 className="text-3xl font-bold text-primary font-bold text-foreground mb-8" id="profile-title">
+          Your Profile
         </h1>
 
         <ProfileForm profile={profile} onUpdate={updateProfile} />

@@ -112,7 +112,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="title" className="block text-xl font-medium text-foreground mb-1">
             Title *
           </label>
           <input
@@ -131,7 +131,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
         {/* Category */}
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="category" className="block text-xl font-medium text-foreground mb-1">
             Category *
           </label>
           <select
@@ -154,7 +154,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
         {/* Points */}
         <div>
-          <label htmlFor="points" className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="points" className="block text-xl font-medium text-foreground mb-1">
             Points (0-100, divisible by 5) *
           </label>
           <input
@@ -174,7 +174,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
         {/* Time of Day */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">Time of Day</label>
+          <label className="block text-xl font-medium text-foreground mb-2">Time of Day</label>
           <div className="grid grid-cols-2 gap-2">
             {timeOptions.map((option) => (
               <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
@@ -186,7 +186,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
                   onChange={(e) => handleChange("time_of_day", e.target.value)}
                   className="text-primary focus:ring-ring"
                 />
-                <span className="text-sm text-foreground">{option.label}</span>
+                <span className="text-xl text-foreground">{option.label}</span>
               </label>
             ))}
           </div>
@@ -194,7 +194,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
         {/* Emoji */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Emoji (optional)</label>
+          <label className="block text-xl font-medium text-foreground mb-1">Emoji (optional)</label>
           <div className="flex gap-2">
             <input
               type="text"

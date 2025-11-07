@@ -5,19 +5,30 @@ import { Badge } from "@/components/ui/badge";
 import type { AssignChoreModalProps, ChoreViewModel } from "@/types/daily-view.types";
 import type { MemberDTO } from "@/types";
 
-export function AssignChoreModal({ isOpen, chore, members, onClose, onSubmit }: AssignChoreModalProps) {
+export function AssignChoreModal({ isOpen, chore, members, currentUserId, onClose, onSubmit }: AssignChoreModalProps) {
   const [selectedAssigneeId, setSelectedAssigneeId] = useState<string | null>(chore?.assignee_id || null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Sort members so current user appears first
+  const sortedMembers = React.useMemo(() => {
+    if (!currentUserId) return members;
+    return [...members].sort((a, b) => {
+      if (a.user_id === currentUserId) return -1;
+      if (b.user_id === currentUserId) return 1;
+      return 0;
+    });
+  }, [members, currentUserId]);
+
   // Reset state when modal opens
   React.useEffect(() => {
     if (isOpen && chore) {
-      setSelectedAssigneeId(chore.assignee_id || null);
+      // Default to current user if no assignee, or keep current assignee
+      setSelectedAssigneeId(chore.assignee_id || currentUserId || null);
       setIsLoading(false);
       setError(null);
     }
-  }, [isOpen, chore]);
+  }, [isOpen, chore, currentUserId]);
 
   // Clear error when selection changes
   React.useEffect(() => {
@@ -87,6 +98,50 @@ export function AssignChoreModal({ isOpen, chore, members, onClose, onSubmit }: 
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-foreground">Assign to:</h3>
 
+            {/* Member options */}
+            {sortedMembers.map((member) => (
+              <label
+                key={member.id}
+                className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent border-2 border-border"
+              >
+                <input
+                  type="radio"
+                  name="assignee"
+                  value={member.user_id}
+                  checked={selectedAssigneeId === member.user_id}
+                  onChange={(e) => setSelectedAssigneeId(e.target.value)}
+                  className="text-primary focus:ring-ring"
+                />
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
+                    {member.avatar_url ? (
+                      <img src={member.avatar_url} alt={member.name} className="w-10 h-10 rounded-full object-cover" />
+                    ) : (
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {member.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground flex items-center gap-2">
+                      {member.name}
+                      {member.user_id === currentUserId && (
+                        <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-medium">
+                          you
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {member.role === "admin" ? "Admin" : "Member"}
+                      {chore?.assignee_id === member.user_id && (
+                        <span className="ml-2 text-primary font-medium">(Currently assigned)</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </label>
+            ))}
+
             {/* Unassigned option */}
             <label className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent border-2 border-border">
               <input
@@ -114,43 +169,6 @@ export function AssignChoreModal({ isOpen, chore, members, onClose, onSubmit }: 
                 </div>
               </div>
             </label>
-
-            {/* Member options */}
-            {members.map((member) => (
-              <label
-                key={member.id}
-                className="flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent border-2 border-border"
-              >
-                <input
-                  type="radio"
-                  name="assignee"
-                  value={member.user_id}
-                  checked={selectedAssigneeId === member.user_id}
-                  onChange={(e) => setSelectedAssigneeId(e.target.value)}
-                  className="text-primary focus:ring-ring"
-                />
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
-                    {member.avatar_url ? (
-                      <img src={member.avatar_url} alt={member.name} className="w-10 h-10 rounded-full object-cover" />
-                    ) : (
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {member.name.charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-medium text-foreground">{member.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {member.role === "admin" ? "Admin" : "Member"}
-                      {chore?.assignee_id === member.user_id && (
-                        <span className="ml-2 text-primary font-medium">(Currently assigned)</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </label>
-            ))}
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

@@ -184,7 +184,7 @@ const HouseholdManagementView: React.FC = memo(() => {
       <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-8" id="household-title">
+          <h1 className="text-3xl text-primary font-bold text-foreground mb-8" id="household-title">
             Household Management
           </h1>
           <p className="text-muted-foreground dark:text-gray-300 mt-2 text-sm sm:text-base">

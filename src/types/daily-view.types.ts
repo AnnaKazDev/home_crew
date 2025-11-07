@@ -99,6 +99,7 @@ export interface AssignChoreModalProps {
   isOpen: boolean;
   chore: ChoreViewModel | null;
   members: MemberDTO[];
+  currentUserId?: string;
   onClose: () => void;
   onSubmit: (assigneeId: string | null) => void;
 }

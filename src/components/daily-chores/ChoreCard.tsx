@@ -3,6 +3,7 @@ import { useDrag } from "react-dnd";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { XIcon } from "lucide-react";
 import { DeleteChoreModal } from "./DeleteChoreModal";
 import type { ChoreViewModel } from "@/types/daily-view.types";
 import type { MemberDTO } from "@/types";
@@ -12,9 +13,10 @@ interface ChoreCardProps {
   members: MemberDTO[];
   onAssign?: () => void;
   onDelete?: () => void;
+  onMarkDone?: () => void;
 }
 
-export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps) {
+export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: ChoreCardProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [{ isDragging }, drag] = useDrag({
@@ -84,17 +86,6 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
             </div>
           </div>
           <div className="flex space-x-1 flex-shrink-0">
-            {onAssign && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onAssign}
-                className="p-1 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                title="Assign chore"
-              >
-                <img src="/user_plus.svg" alt="Assign user" className="h-6 w-6 dark:filter dark:invert dark:brightness-0" data-testid="user-plus-icon" />
-              </Button>
-            )}
             {onDelete && (
               <Button
                 data-test-id="chore-card-delete"
@@ -104,27 +95,53 @@ export function ChoreCard({ chore, members, onAssign, onDelete }: ChoreCardProps
                 className="p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 title="Delete chore"
               >
-                <img src="/garbage.svg" alt="Delete chore" className="h-6 w-6 dark:filter dark:invert dark:brightness-0" data-testid="trash-icon" />
+                <XIcon className="h-6 w-6" data-testid="delete-icon" />
               </Button>
             )}
           </div>
         </div>
-        {chore.assigneeName && (
-          <div data-test-id="chore-card-assignee" className="flex items-center space-x-2 pt-3 border-t border-border mt-3">
-            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-xs font-medium text-primary-foreground">
-              {chore.assigneeName.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-sm text-muted-foreground">{chore.assigneeName}</span>
+        <div data-test-id="chore-card-footer" className="flex items-center justify-between pt-3 border-t border-border mt-3">
+          <div className="flex items-center space-x-2">
+            {chore.assigneeName && (
+              <>
+                <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-xs font-medium text-primary-foreground">
+                  {chore.assigneeName.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-sm text-muted-foreground">{chore.assigneeName}</span>
+              </>
+            )}
+            {!chore.assigneeName && (
+              <>
+                <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center">
+                  <span className="text-xs font-medium text-muted-foreground">?</span>
+                </div>
+                <span className="text-sm text-muted-foreground">Unassigned</span>
+              </>
+            )}
+            {onAssign && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onAssign}
+                className="p-1 ml-2 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                title="Assign chore"
+              >
+                <img src="/user_plus.svg" alt="Assign user" className="h-5 w-5" style={{ filter: 'brightness(0) saturate(100%) invert(40%) sepia(93%) saturate(1352%) hue-rotate(1deg) brightness(119%) contrast(97%)' }} data-testid="user-plus-icon" />
+              </Button>
+            )}
           </div>
-        )}
-        {!chore.assigneeName && (
-          <div data-test-id="chore-card-assignee" className="flex items-center space-x-2 pt-3 border-t border-border mt-3">
-            <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium text-muted-foreground">?</span>
-            </div>
-            <span className="text-sm text-muted-foreground">Unassigned</span>
-          </div>
-        )}
+          {onMarkDone && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={onMarkDone}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 h-7 text-xs font-medium"
+              title="Mark as done"
+            >
+              Mark as done
+            </Button>
+          )}
+        </div>
       </CardContent>
 
       <DeleteChoreModal

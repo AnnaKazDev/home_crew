@@ -12,6 +12,7 @@ interface ChoreConfiguratorProps {
   customData: Partial<CatalogItemDTO> | null;
   members: MemberDTO[];
   currentDate: string;
+  currentUserId?: string;
   onSubmit: (config: { date: string; assignee_id?: string | null }) => void;
   onCancel: () => void;
   isLoading: boolean;
@@ -22,13 +23,14 @@ export function ChoreConfigurator({
   customData,
   members,
   currentDate,
+  currentUserId,
   onSubmit,
   onCancel,
   isLoading,
 }: ChoreConfiguratorProps) {
   const [config, setConfig] = useState({
     date: currentDate,
-    assignee_id: null as string | null,
+    assignee_id: currentUserId || null,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -84,6 +86,16 @@ export function ChoreConfigurator({
 
   const currentItem = selectedItem || customData;
 
+  // Sort members so current user appears first
+  const sortedMembers = React.useMemo(() => {
+    if (!currentUserId) return members;
+    return [...members].sort((a, b) => {
+      if (a.user_id === currentUserId) return -1;
+      if (b.user_id === currentUserId) return 1;
+      return 0;
+    });
+  }, [members, currentUserId]);
+
   // Helper function to get time of day text
   const getTimeOfDayText = (timeOfDay: string) => {
     switch (timeOfDay) {
@@ -108,7 +120,7 @@ export function ChoreConfigurator({
         <Card className="border border-border bg-card">
           <CardContent className="p-4">
             <div className="flex items-center space-x-3 min-w-0">
-              <span className="text-2xl flex-shrink-0">{currentItem?.emoji || "📋"}</span>
+              <span className="text-4xl flex-shrink-0 mr-4">{currentItem?.emoji || "📋"}</span>
               <div className="min-w-0 flex-1">
                 <h3 className="font-medium text-foreground truncate">
                   {currentItem?.title || "Custom Chore"}
@@ -186,8 +198,49 @@ export function ChoreConfigurator({
 
         {/* Assignee */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-3">Assign to (optional)</label>
+          <label className="block text-sm font-medium text-foreground mb-3">Assign to</label>
           <div className="space-y-2">
+            {sortedMembers.map((member) => (
+              <label
+                key={member.id}
+                className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border"
+              >
+                <input
+                  type="radio"
+                  name="assignee"
+                  value={member.user_id}
+                  data-test-id={`assignee-option-${member.user_id}`}
+                  checked={config.assignee_id === member.user_id}
+                  onChange={(e) => handleChange("assignee_id", e.target.value)}
+                  className="text-primary focus:ring-ring"
+                />
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                    {member.avatar_url ? (
+                      <img src={member.avatar_url} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
+                    ) : (
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {member.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground group-hover:text-black flex items-center gap-2">
+                      {member.name}
+                      {member.user_id === currentUserId && (
+                        <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-medium">
+                          you
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground group-hover:text-black">
+                      {member.role === "admin" ? "Admin" : "Member"}
+                    </div>
+                  </div>
+                </div>
+              </label>
+            ))}
+
             <label className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border">
               <input
                 type="radio"
@@ -217,40 +270,6 @@ export function ChoreConfigurator({
                 </div>
               </div>
             </label>
-
-            {members.map((member) => (
-              <label
-                key={member.id}
-                className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border"
-              >
-                <input
-                  type="radio"
-                  name="assignee"
-                  value={member.user_id}
-                  data-test-id={`assignee-option-${member.user_id}`}
-                  checked={config.assignee_id === member.user_id}
-                  onChange={(e) => handleChange("assignee_id", e.target.value)}
-                  className="text-primary focus:ring-ring"
-                />
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                    {member.avatar_url ? (
-                      <img src={member.avatar_url} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
-                    ) : (
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {member.name.charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-medium text-foreground group-hover:text-black">{member.name}</div>
-                    <div className="text-sm text-muted-foreground group-hover:text-black">
-                      {member.role === "admin" ? "Admin" : "Member"}
-                    </div>
-                  </div>
-                </div>
-              </label>
-            ))}
           </div>
         </div>
 

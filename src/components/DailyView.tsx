@@ -81,6 +81,11 @@ export default function DailyView() {
     });
   };
 
+  // Handle mark chore as done (button click)
+  const handleMarkDone = (choreId: string) => {
+    handleChoreDrop(choreId, "done");
+  };
+
   // Handle add chore click with limit check
   const handleAddChoreClick = () => {
     // Check daily limit (50 chores) before opening modal
@@ -119,6 +124,7 @@ export default function DailyView() {
             onChoreDrop={handleChoreDrop}
             onChoreAssign={openAssignModal}
             onChoreDelete={handleChoreDelete}
+            onChoreMarkDone={handleMarkDone}
             onAddChoreClick={handleAddChoreClick}
           />
 
@@ -136,6 +142,7 @@ export default function DailyView() {
           onSubmit={handleChoreCreate}
           members={members}
           currentDate={currentDate}
+          currentUserId={currentUserId}
         />
 
         {/* Assign Chore Modal */}
@@ -143,6 +150,7 @@ export default function DailyView() {
           isOpen={isAssignModalOpen}
           chore={selectedChore}
           members={members}
+          currentUserId={currentUserId}
           onClose={closeAssignModal}
           onSubmit={handleAssignChore}
         />

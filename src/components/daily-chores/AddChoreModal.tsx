@@ -13,9 +13,10 @@ interface AddChoreModalProps {
   onSubmit: (cmd: CreateDailyChoreCmd) => void;
   members: MemberDTO[];
   currentDate: string;
+  currentUserId?: string;
 }
 
-export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate }: AddChoreModalProps) {
+export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate, currentUserId }: AddChoreModalProps) {
   const [currentStep, setCurrentStep] = useState<ModalStep>("catalog");
   const [selectedItem, setSelectedItem] = useState<CatalogItemDTO | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -126,7 +127,7 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate 
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent data-test-id="add-chore-modal" className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{getDialogTitle()}</DialogTitle>
+          <DialogTitle className="text-2xl">{getDialogTitle()}</DialogTitle>
         </DialogHeader>
 
         <div className="py-4">
@@ -159,6 +160,7 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate 
                 customData={null}
                 members={members}
                 currentDate={currentDate}
+                currentUserId={currentUserId}
                 onSubmit={handleConfigSubmit}
                 onCancel={handleConfigCancel}
                 isLoading={isLoading}

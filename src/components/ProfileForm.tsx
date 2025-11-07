@@ -92,12 +92,12 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Email: {profile.email}</label>
+          <label className="block text-lg font-medium text-foreground mb-1">Your email: <span className="font-bold">{profile.email}</span></label>
         </div>
 
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="name" className="block text-lg font-large text-foreground mb-1">
             Name *
           </label>
           <input
