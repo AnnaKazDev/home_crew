@@ -54,9 +54,15 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
   return (
     <>
       {/* Hamburger Button */}
-      <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)} title="Menu">
+      <button
+        className="p-0 w-8 h-8 bg-transparent border-none cursor-pointer flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+        onClick={() => setIsOpen(true)}
+        title="Menu"
+      >
         <svg
-          className="w-5 h-5 text-black dark:text-white"
+          width="32"
+          height="32"
+          className="text-black dark:text-white"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -64,7 +70,7 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
-      </Button>
+      </button>
 
       {/* Portal the overlay and menu to document body to escape stacking contexts */}
       {mounted &&
@@ -106,8 +112,7 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
                       <button
                         key={index}
                         className="flex items-center gap-3 text-base font-medium text-foreground hover:text-primary transition-colors duration-200 px-4 py-2 rounded-md hover:bg-primary/5 text-left w-full"
-                        onClick={() => handleItemClick(item)}
-                      >
+                        onClick={() => handleItemClick(item)}    >
                         {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
                         <span className="flex-1">{item.label}</span>
                       </button>

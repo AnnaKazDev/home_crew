@@ -113,8 +113,10 @@ export default function AppHeader() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background dark:bg-black border-b border-border">
       <div className="w-full relative flex h-[5.5rem] items-center px-4">
         {/* Logo/Brand and Hamburger Menu */}
-        <div className="flex items-center space-x-2">
-          <HamburgerMenu menuItems={menuItems} />
+        <div className="flex items-center">
+          <div style={{ marginRight: '32px' }}>
+            <HamburgerMenu menuItems={menuItems} />
+          </div>
           <img
             src="/home3.png"
             alt="Home icon"
