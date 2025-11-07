@@ -113,7 +113,7 @@ export function ChoreConfigurator({
   };
 
   return (
-    <div data-testid="chore-configurator" className="space-y-6">
+    <div data-test-id="chore-configurator" className="space-y-6">
       {/* Preview */}
       <div>
         <h3 className="text-lg font-semibold text-foreground mb-3">Chore Preview</h3>
@@ -153,7 +153,7 @@ export function ChoreConfigurator({
             <PopoverTrigger asChild>
               <button
                 type="button"
-                data-testid="date-picker-button"
+                data-test-id="date-picker-button"
                 className={cn(
                   "group flex items-center justify-center w-full px-4 py-3 text-left font-normal border rounded-md bg-background hover:bg-accent hover:text-black focus:ring-2 focus:ring-ring focus:ring-offset-2",
                   errors.date ? "border-destructive" : "border-border"
@@ -209,7 +209,7 @@ export function ChoreConfigurator({
                   type="radio"
                   name="assignee"
                   value={member.user_id}
-                  data-testid={`assignee-option-${member.user_id}`}
+                  data-test-id={`assignee-option-${member.user_id}`}
                   checked={config.assignee_id === member.user_id}
                   onChange={(e) => handleChange("assignee_id", e.target.value)}
                   className="text-primary focus:ring-ring"
@@ -246,7 +246,7 @@ export function ChoreConfigurator({
                 type="radio"
                 name="assignee"
                 value=""
-                data-testid="assignee-option-unassigned"
+                data-test-id="assignee-option-unassigned"
                 checked={config.assignee_id === null}
                 onChange={() => handleChange("assignee_id", null)}
                 className="text-primary focus:ring-ring"
@@ -285,7 +285,7 @@ export function ChoreConfigurator({
           </button>
           <button
             type="submit"
-            data-testid="add-chore-submit-button"
+            data-test-id="add-chore-submit-button"
             disabled={isLoading}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center space-x-2"
           >
