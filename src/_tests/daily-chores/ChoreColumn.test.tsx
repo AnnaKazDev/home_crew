@@ -472,7 +472,7 @@ describe('ChoreColumn', () => {
       );
 
       const header = screen.getByText('To Do (2)');
-      expect(header).toHaveClass('text-lg', 'font-semibold');
+      expect(header).toHaveClass('text-xl', 'font-semibold');
     });
 
     it('applies correct empty state styling', () => {

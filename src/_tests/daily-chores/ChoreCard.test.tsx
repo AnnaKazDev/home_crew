@@ -240,7 +240,7 @@ describe('ChoreCard', () => {
 
       const assignButton = screen.getByTitle('Assign chore');
       expect(assignButton).toBeInTheDocument();
-      expect(assignButton).toHaveTextContent('👤');
+      expect(assignButton).toContainElement(screen.getByTestId('user-plus-icon'));
     });
 
     it('renders delete button when onDelete is provided and user can delete', () => {
@@ -255,7 +255,7 @@ describe('ChoreCard', () => {
 
       const deleteButton = screen.getByTitle('Delete chore');
       expect(deleteButton).toBeInTheDocument();
-      expect(deleteButton).toContainElement(screen.getByTestId('trash-icon'));
+      expect(deleteButton).toContainElement(screen.getByTestId('delete-icon'));
     });
 
     it('does not render assign button when onAssign is not provided', () => {

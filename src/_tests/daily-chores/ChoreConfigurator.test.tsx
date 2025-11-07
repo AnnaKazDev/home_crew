@@ -669,7 +669,7 @@ describe('ChoreConfigurator', () => {
 
       // Should have proper labels and form structure
       expect(screen.getByText('Date *')).toBeInTheDocument();
-      expect(screen.getByText('Assign to (optional)')).toBeInTheDocument();
+      expect(screen.getByText('Assign to')).toBeInTheDocument();
 
       // Radio buttons should be properly grouped
       const radios = screen.getAllByRole('radio');
@@ -693,10 +693,10 @@ describe('ChoreConfigurator', () => {
 
       // Tab through elements
       await user.tab(); // Date button
-      await user.tab(); // First radio button
+      await user.tab(); // First radio button (unassigned is checked by default)
 
-      const firstRadio = screen.getAllByRole('radio')[0];
-      expect(firstRadio).toHaveFocus();
+      const unassignedRadio = screen.getByTestId('assignee-option-unassigned');
+      expect(unassignedRadio).toHaveFocus();
     });
   });
 
