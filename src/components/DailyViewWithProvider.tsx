@@ -2,6 +2,7 @@
 
 import React from "react";
 import { QueryProvider } from "./QueryProvider";
+import { ThemeProvider } from "./ThemeProvider";
 import DailyView from "./DailyView";
 
 export default function DailyViewWithProvider() {
@@ -10,9 +11,11 @@ export default function DailyViewWithProvider() {
   // Client-only component with React hooks
   try {
     return (
-      <QueryProvider>
-        <DailyView />
-      </QueryProvider>
+      <ThemeProvider>
+        <QueryProvider>
+          <DailyView />
+        </QueryProvider>
+      </ThemeProvider>
     );
   } catch (error) {
     console.error('Error in DailyViewWithProvider:', error);

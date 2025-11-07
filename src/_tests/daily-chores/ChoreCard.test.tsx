@@ -240,7 +240,7 @@ describe('ChoreCard', () => {
 
       const assignButton = screen.getByTitle('Assign chore');
       expect(assignButton).toBeInTheDocument();
-      expect(assignButton).toContainElement(screen.getByTestId('user-plus-icon'));
+      expect(assignButton).toHaveTextContent('👤');
     });
 
     it('renders delete button when onDelete is provided and user can delete', () => {
