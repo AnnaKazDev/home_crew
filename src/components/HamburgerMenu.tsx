@@ -91,7 +91,7 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
               }`}
               style={{ top: "0" }} // Start from top to include header area
             >
-              <div className="p-6">
+              <div className="flex flex-col h-full p-6">
                 {/* Logo */}
                 <div className="flex mb-6">
                   <img
@@ -113,7 +113,8 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
                   <span className="sr-only">Close menu</span>
                 </Button>
 
-                <nav className="flex flex-col space-y-3 pt-12">
+                {/* Navigation - takes up available space */}
+                <nav className="flex flex-col space-y-3 pt-12 flex-1">
                   {menuItems.map((item, index) => (
                     item.separator ? (
                       <div key={index} className="border-t border-border my-2"></div>
@@ -128,6 +129,15 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
                     )
                   ))}
                 </nav>
+
+                {/* Bottom Image - stays at bottom */}
+                <div className="mt-8">
+                  <img
+                    src="/lets_make_it_together.png"
+                    alt="Let's make it together"
+                    className="w-full h-auto"
+                  />
+                </div>
               </div>
             </div>
           </>,
