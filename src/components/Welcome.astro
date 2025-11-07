@@ -1,5 +1,11 @@
+---
+import WelcomeLogo from './WelcomeLogo.astro';
+import WelcomeHero from './WelcomeHero.astro';
+import FeaturesGrid from './FeaturesGrid.astro';
+---
+
 <div
-  class="relative w-full mx-auto min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50/80 to-purple-50 dark:from-black dark:via-teal-950 dark:to-purple-950 p-4 sm:p-8 overflow-hidden"
+  class="relative w-full mx-auto min-h-screen bg-gradient-to-br from-teal-200 via-cyan-200/80 to-purple-200 dark:from-black dark:via-teal-950 dark:to-purple-950 p-4 sm:p-8 overflow-hidden"
 >
   {/* Animated background elements */}
   <div class="absolute inset-0 overflow-hidden">
@@ -20,93 +26,12 @@
   </div>
 
   <div
-    class="relative max-w-5xl mx-auto backdrop-blur-xl bg-white dark:bg-black rounded-3xl shadow-2xl p-8 sm:p-12 text-gray-900 dark:text-white border border-white/20 dark:border-gray-700"
+    class="relative max-w-5xl mx-auto backdrop-blur-xl bg-white dark:bg-black rounded-3xl shadow-2xl p-4 sm:p-12 text-gray-900 dark:text-white border border-white/20 dark:border-gray-700"
   >
     <div class="flex flex-col items-center justify-center min-h-[400px] space-y-6">
-      <img
-        src="/logo_img.png"
-        alt="Home Crew Logo"
-        class="w-[25rem] h-auto"
-      />
+      <WelcomeLogo />
 
-      <div class="text-center max-w-3xl space-y-6">
-        <div class="space-y-3">
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">
-            Transform Household Chores into Family Adventures!
-          </h2>
-          <p class="text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-            Discover the ultimate way to manage household tasks with excitement and rewards.
-            Create personalized chore schedules, earn points for completed tasks, and watch
-            your family bond through collaborative achievements.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-          <div class="group flex items-start space-x-4 p-4 rounded-2xl bg-gradient-to-r from-teal-50/50 to-emerald-50/50 dark:from-teal-950/20 dark:to-emerald-950/20 border border-teal-100 dark:border-teal-800/50 hover:shadow-lg transition-all duration-300">
-            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-1">Earn Rewards</h3>
-              <p class="text-gray-600 dark:text-gray-300">Collect points and unlock achievements for every completed task</p>
-            </div>
-          </div>
-
-          <div class="group flex items-start space-x-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-50/50 to-green-50/50 dark:from-emerald-950/20 dark:to-green-950/20 border border-emerald-100 dark:border-emerald-800/50 hover:shadow-lg transition-all duration-300">
-            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-1">Family Bonding</h3>
-              <p class="text-gray-600 dark:text-gray-300">Strengthen family relationships through collaborative achievements</p>
-            </div>
-          </div>
-
-          <div class="group flex items-start space-x-4 p-4 rounded-2xl bg-gradient-to-r from-cyan-50/50 to-teal-50/50 dark:from-cyan-950/20 dark:to-teal-950/20 border border-cyan-100 dark:border-cyan-800/50 hover:shadow-lg transition-all duration-300">
-            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10m0 0l-2-2m2 2l2-2m4-6v2m4-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2z"></path>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-1">Smart Scheduling</h3>
-              <p class="text-gray-600 dark:text-gray-300">Organize household tasks efficiently and fairly for everyone</p>
-            </div>
-          </div>
-
-          <div class="group flex items-start space-x-4 p-4 rounded-2xl bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-100 dark:border-blue-800/50 hover:shadow-lg transition-all duration-300">
-            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-1">Build Habits</h3>
-              <p class="text-gray-600 dark:text-gray-300">Teach responsibility and independence through consistent routines</p>
-            </div>
-          </div>
-        </div>
-
-        <p class="text-base text-gray-600 dark:text-gray-400 italic">
-          Join thousands of families who have transformed their daily routines into
-          meaningful, rewarding experiences!
-        </p>
-
-        <div class="pt-4">
-          <a
-            href="/daily_chores"
-            class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-          >
-            Get Started!
-          </a>
-        </div>
-      </div>
+      <WelcomeHero />
     </div>
-
- 
   </div>
 </div>
