@@ -39,6 +39,7 @@ vi.mock('@/components/ui/popover', () => ({
 }));
 
 vi.mock('lucide-react', () => ({
+  Calendar: () => <span data-testid="calendar-icon">📅</span>,
   CalendarIcon: () => <span data-testid="calendar-icon">📅</span>,
 }));
 

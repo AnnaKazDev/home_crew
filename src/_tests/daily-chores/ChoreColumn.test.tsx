@@ -488,7 +488,7 @@ describe('ChoreColumn', () => {
       const emptyState = screen.getByText('No completed chores yet').closest('div');
       expect(emptyState).toHaveClass('flex', 'flex-col', 'items-center', 'justify-center');
       expect(emptyState).toHaveClass(
-        'h-[133px]',
+        'h-[139px]',
         'text-muted-foreground',
         'border-2',
         'border-dashed'
