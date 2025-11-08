@@ -54,7 +54,7 @@ const AuthPage: React.FC = () => {
       )}
 
       <div
-        className={`relative max-w-md mx-auto backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-12 border mt-16 ${
+        className={`relative max-w-md mx-auto backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-12 border mt-[88px] ${
           isDark
             ? 'bg-gray-900/90 text-white border-gray-700/50'
             : 'bg-white/90 text-gray-900 border-white/20'

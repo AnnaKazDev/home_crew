@@ -93,7 +93,7 @@ export default function ChoresList() {
     .filter((cat) => cat.chores.length > 0);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50/50 via-indigo-50/30 to-purple-50/40">
+    <div className="min-h-screen flex items-center justify-center mt-[88px] p-4 bg-gradient-to-br from-blue-50/50 via-indigo-50/30 to-purple-50/40">
       <div className="card-elevated max-w-4xl w-full max-h-[85vh] overflow-hidden animate-float">
         {/* Header with search */}
         <div className="p-8 border-b border-gray-200/60 bg-gradient-to-r from-blue-50/50 to-indigo-50/50">

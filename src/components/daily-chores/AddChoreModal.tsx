@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ChoreCatalogSelector } from './ChoreCatalogSelector';
 import { ChoreForm } from './ChoreForm';
@@ -33,6 +33,7 @@ export function AddChoreModal({
   const [isLoading, setIsLoading] = useState(false);
   const [catalogKey, setCatalogKey] = useState(0); // Force re-render of catalog
   const [error, setError] = useState<string | null>(null);
+
 
   const resetModal = () => {
     setCurrentStep('catalog');
@@ -159,7 +160,7 @@ export function AddChoreModal({
 
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose} modal={false}>
       <DialogContent
         data-test-id="add-chore-modal"
         className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
