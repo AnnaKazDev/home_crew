@@ -144,14 +144,28 @@ export const GET: APIRoute = async (context) => {
 
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn('Could not get authenticated user, using DEFAULT_USER_ID:', error);
+    }
+
     // For predefined queries we don't need household context
     let householdId: string | null = null;
 
     if (type !== 'predefined') {
+      // Get household for the current user
       const { data: householdMember } = await supabase
         .from('household_members')
         .select('household_id')
-        .eq('user_id', DEFAULT_USER_ID)
+        .eq('user_id', userId)
         .single();
 
       if (!householdMember) {
@@ -208,9 +222,9 @@ export const POST: APIRoute = async (context) => {
     // Validate using Zod schema
     const validationResult = CreateCatalogItemCmdSchema.safeParse(requestData);
     if (!validationResult.success) {
-      const details = validationResult.error.errors.map((err) => ({
-        path: err.path.join('.'),
-        message: err.message,
+      const details = validationResult.error.issues.map((issue) => ({
+        path: issue.path.join('.'),
+        message: issue.message,
       }));
       return new Response(JSON.stringify({ error: 'Validation error', details }), {
         status: 400,
@@ -220,10 +234,24 @@ export const POST: APIRoute = async (context) => {
 
     // Get household for the current user
     const supabase = getSupabaseServiceClient() as SupabaseClient;
+
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn('Could not get authenticated user, using DEFAULT_USER_ID:', error);
+    }
+
     const { data: householdMember, error: householdError } = await supabase
       .from('household_members')
       .select('household_id')
-      .eq('user_id', DEFAULT_USER_ID)
+      .eq('user_id', userId)
       .single();
 
     if (householdError || !householdMember) {
@@ -240,7 +268,7 @@ export const POST: APIRoute = async (context) => {
       const catalogItem = await createCatalogItem(
         supabase,
         householdId,
-        DEFAULT_USER_ID,
+        userId,
         validationResult.data
       );
 

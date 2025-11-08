@@ -48,6 +48,9 @@ export function useDailyView() {
   // Use authenticated user ID or fallback to development user
   const effectiveUserId = user?.id || 'e9d12995-1f3e-491d-9628-3c4137d266d1';
 
+  // For household determination, always use the effective user ID
+  // This ensures consistency between API calls and client-side queries
+
   // Query for household members
   const membersQuery = useQuery({
     queryKey: dailyViewKeys.members(),
@@ -110,7 +113,7 @@ export function useDailyView() {
     enabled: true, // Remove isAuthenticated check
   });
 
-  // Effective household id (prefer fetched, else dev fallback)
+  // Effective household id (prefer fetched, else dev fallback for development)
   const effectiveHouseholdId = householdQuery.data?.id || devHouseholdId;
 
   // Query for user profile

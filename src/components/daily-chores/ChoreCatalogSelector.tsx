@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { getCatalogItems } from '@/lib/choresCatalog.service';
+import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
 import type { CatalogItemDTO } from '@/types';
 
 interface ChoreCatalogSelectorProps {
   onItemSelect: (item: CatalogItemDTO) => void;
   onCreateCustom: () => void;
+  householdId?: string;
 }
 
-export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCatalogSelectorProps) {
+export function ChoreCatalogSelector({
+  onItemSelect,
+  onCreateCustom,
+  householdId,
+}: ChoreCatalogSelectorProps) {
   const [catalogItems, setCatalogItems] = useState<CatalogItemDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,22 +37,32 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
     }
   };
 
-  // Fetch catalog items on mount
+  // Fetch catalog items on mount and when householdId changes
   useEffect(() => {
     fetchCatalogItems();
-  }, []);
+  }, [householdId]);
 
   const fetchCatalogItems = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const controller = new AbortController();
-      const res = await fetch('/api/v1/catalog?type=all', { signal: controller.signal });
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || 'Failed to load catalog');
+
+      let items: CatalogItemDTO[];
+
+      if (isSupabaseConfigured) {
+        // Use Supabase client directly (same as useDailyView)
+        items = await getCatalogItems(getSupabaseClient(), householdId || null, 'all');
+      } else {
+        // Fallback to API mode
+        const controller = new AbortController();
+        const res = await fetch('/api/v1/catalog?type=all', { signal: controller.signal });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || 'Failed to load catalog');
+        }
+        items = (await res.json()) as CatalogItemDTO[];
       }
-      const items = (await res.json()) as CatalogItemDTO[];
+
       setCatalogItems(items);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load catalog');

@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ChoreCatalogSelector } from './ChoreCatalogSelector';
 import { ChoreForm } from './ChoreForm';
 import { ChoreConfigurator } from './ChoreConfigurator';
+import { createCatalogItem } from '@/lib/choresCatalog.service';
+import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
 import type { CatalogItemDTO, MemberDTO, CreateDailyChoreCmd } from '@/types';
 
 type ModalStep = 'catalog' | 'form' | 'config';
@@ -14,6 +16,7 @@ interface AddChoreModalProps {
   members: MemberDTO[];
   currentDate: string;
   currentUserId?: string;
+  householdId?: string;
 }
 
 export function AddChoreModal({
@@ -23,6 +26,7 @@ export function AddChoreModal({
   members,
   currentDate,
   currentUserId,
+  householdId,
 }: AddChoreModalProps) {
   const [currentStep, setCurrentStep] = useState<ModalStep>('catalog');
   const [selectedItem, setSelectedItem] = useState<CatalogItemDTO | null>(null);
@@ -59,22 +63,45 @@ export function AddChoreModal({
     setError(null); // Clear any previous errors
 
     try {
-      // Create the catalog item immediately
-      const createCatalogResponse = await fetch('/api/v1/catalog', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: data.title,
-          category: data.category,
-          points: data.points,
+      if (!householdId) {
+        throw new Error('Household not configured');
+      }
+
+      if (!currentUserId) {
+        throw new Error('User not authenticated');
+      }
+
+      let newCatalogItem: CatalogItemDTO;
+
+      if (isSupabaseConfigured) {
+        // Use Supabase client directly (same as useDailyView)
+        newCatalogItem = await createCatalogItem(getSupabaseClient(), householdId, currentUserId, {
+          title: data.title!,
+          category: data.category!,
+          points: data.points!,
           time_of_day: data.time_of_day || 'any',
           emoji: data.emoji,
-        }),
-      });
+        });
+      } else {
+        // Fallback to API mode
+        const createCatalogResponse = await fetch('/api/v1/catalog', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: data.title,
+            category: data.category,
+            points: data.points,
+            time_of_day: data.time_of_day || 'any',
+            emoji: data.emoji,
+          }),
+        });
 
-      if (!createCatalogResponse.ok) {
-        const errorData = await createCatalogResponse.json();
-        throw new Error(errorData.error || 'Failed to create catalog item');
+        if (!createCatalogResponse.ok) {
+          const errorData = await createCatalogResponse.json();
+          throw new Error(errorData.error || 'Failed to create catalog item');
+        }
+
+        newCatalogItem = await createCatalogResponse.json();
       }
 
       // Go back to catalog view so user can select the newly created chore
@@ -153,6 +180,7 @@ export function AddChoreModal({
                 key={catalogKey}
                 onItemSelect={handleCatalogSelect}
                 onCreateCustom={handleCreateCustom}
+                householdId={householdId}
               />
             </div>
           )}

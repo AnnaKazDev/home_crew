@@ -146,6 +146,7 @@ export default function DailyView() {
           members={members}
           currentDate={currentDate}
           currentUserId={currentUserId}
+          householdId={household?.id}
         />
 
         {/* Assign Chore Modal */}
