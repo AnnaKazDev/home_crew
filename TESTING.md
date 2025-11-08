@@ -50,36 +50,37 @@ npm run test:coverage
 #### Basic Component Test
 
 ```tsx
-import { render, screen } from '@/test/test-utils'
-import { MyComponent } from '../MyComponent'
+import { render, screen } from '@/test/test-utils';
+import { MyComponent } from '../MyComponent';
 
 describe('MyComponent', () => {
   it('renders correctly', () => {
-    render(<MyComponent />)
+    render(<MyComponent />);
 
-    expect(screen.getByText('Hello World')).toBeInTheDocument()
-  })
+    expect(screen.getByText('Hello World')).toBeInTheDocument();
+  });
 
   it('handles user interactions', async () => {
-    const user = userEvent.setup()
-    render(<MyComponent />)
+    const user = userEvent.setup();
+    render(<MyComponent />);
 
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button'));
 
-    expect(screen.getByText('Clicked!')).toBeInTheDocument()
-  })
-})
+    expect(screen.getByText('Clicked!')).toBeInTheDocument();
+  });
+});
 ```
 
 #### Custom Render with Providers
 
 All tests automatically include:
+
 - React Query Provider
 - Theme Provider (next-themes)
 - Jest-DOM matchers
 
 ```tsx
-import { render, screen } from '@/test/test-utils'
+import { render, screen } from '@/test/test-utils';
 ```
 
 ### Test Configuration
@@ -137,9 +138,11 @@ npm run test:e2e
 ```
 
 **Test users (defined in `.env.test`):**
+
 - **Admin**: `dev@example.com` / `password` (ID: `e9d12995-1f3e-491d-9628-3c4137d266d1`)
 
 **How E2E tests work:**
+
 - Tests load data from `.env.test` file
 - Use the normal `/api/auth/login` endpoint for authentication
 - Set session cookies for the test browser
@@ -162,19 +165,19 @@ npm run test:e2e:debug
 ### Writing E2E Tests
 
 ```ts
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
 
 test.describe('My Feature', () => {
   test('should work end-to-end', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/');
 
     // Interact with your app
-    await page.click('button:has-text("Click me")')
+    await page.click('button:has-text("Click me")');
 
     // Assert results
-    await expect(page.locator('text=Success!')).toBeVisible()
-  })
-})
+    await expect(page.locator('text=Success!')).toBeVisible();
+  });
+});
 ```
 
 ### E2E Configuration

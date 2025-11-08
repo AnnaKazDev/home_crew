@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 80.0000 33.3333% 96.4706%;
+    --background: 80 33.3333% 96.4706%;
     --foreground: 0 0% 0%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
@@ -16,23 +16,23 @@
     --secondary-foreground: 0 0% 100%;
     --muted: 0 0% 94.1176%;
     --muted-foreground: 0 0% 20%;
-    --accent: 37.6923 92.1260% 50.1961%;
+    --accent: 37.6923 92.126% 50.1961%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 84.2365% 60.1961%;
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 0%;
-    --input: 0 0% 45.0980%;
+    --input: 0 0% 45.098%;
     --ring: 22 96% 78%;
     --chart-1: 243.3962 75.3555% 58.6275%;
     --chart-2: 173.4146 80.3922% 40%;
-    --chart-3: 37.6923 92.1260% 50.1961%;
+    --chart-3: 37.6923 92.126% 50.1961%;
     --chart-4: 330.3659 81.1881% 60.3922%;
     --chart-5: 142.0859 70.5628% 45.2941%;
-    --sidebar: 80.0000 33.3333% 96.4706%;
+    --sidebar: 80 33.3333% 96.4706%;
     --sidebar-foreground: 0 0% 0%;
     --sidebar-primary: 243.3962 75.3555% 58.6275%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 37.6923 92.1260% 50.1961%;
+    --sidebar-accent: 37.6923 92.126% 50.1961%;
     --sidebar-accent-foreground: 0 0% 0%;
     --sidebar-border: 0 0% 0%;
     --sidebar-ring: 229.6552 93.5484% 81.7647%;
@@ -48,11 +48,15 @@
     --shadow-color: #1a1a1a;
     --shadow-2xs: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.03);
     --shadow-xs: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.03);
-    --shadow-sm: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-sm:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.05);
     --shadow: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.05);
-    --shadow-md: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.05);
-    --shadow-lg: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.05);
-    --shadow-xl: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-md:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-lg:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-xl:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.05);
     --shadow-2xl: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.13);
     --tracking-normal: normal;
     --spacing: 0.25rem;
@@ -73,7 +77,7 @@
     --muted-foreground: 0 0% 80%;
     --accent: 45.9429 96.6851% 64.5098%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 90.6040% 70.7843%;
+    --destructive: 0 90.604% 70.7843%;
     --destructive-foreground: 0 0% 0%;
     --border: 0 0% 32.9412%;
     --input: 0 0% 100%;
@@ -103,11 +107,15 @@
     --shadow-color: #1a1a1a;
     --shadow-2xs: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.03);
     --shadow-xs: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.03);
-    --shadow-sm: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-sm:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.05);
     --shadow: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 1px 2px -1px hsl(0 0% 10.1961% / 0.05);
-    --shadow-md: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.05);
-    --shadow-lg: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.05);
-    --shadow-xl: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-md:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 2px 4px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-lg:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.05);
+    --shadow-xl:
+      0px 0px 0px 0px hsl(0 0% 10.1961% / 0.05), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.05);
     --shadow-2xl: 0px 0px 0px 0px hsl(0 0% 10.1961% / 0.13);
   }
 }
@@ -118,21 +126,26 @@
   }
 
   body {
-    background: linear-gradient(to bottom right, rgb(248 250 252), rgb(239 246 255 / 0.3), rgb(238 242 255 / 0.4));
+    background: linear-gradient(
+      to bottom right,
+      rgb(248 250 252),
+      rgb(239 246 255 / 0.3),
+      rgb(238 242 255 / 0.4)
+    );
     min-height: 100vh;
     font-family:
       ui-sans-serif,
       system-ui,
       -apple-system,
       BlinkMacSystemFont,
-      "Segoe UI",
+      'Segoe UI',
       Roboto,
-      "Helvetica Neue",
+      'Helvetica Neue',
       Arial,
-      "Noto Sans",
+      'Noto Sans',
       sans-serif;
     color: rgb(15 23 42);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
