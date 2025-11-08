@@ -1,0 +1,103 @@
+name: Test & Build Master
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+
+  # Trigger on push to master branch
+  push:
+    branches: master
+
+  # Trigger on pull requests targeting master
+  pull_request:
+    branches: master
+
+jobs:
+  # Job 1: Lint and format check
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js and Dependencies
+        uses: ./.github/actions/setup-node
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npx prettier --check .
+
+  # Job 2: Unit tests
+  test-unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js and Dependencies
+        uses: ./.github/actions/setup-node
+
+      - name: Run unit tests
+        run: npm run test:run
+
+  # Job 3: Build production bundle
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js and Dependencies
+        uses: ./.github/actions/setup-node
+
+      - name: Build for production
+        run: npm run build
+
+      # Optional: Upload build artifacts for deployment
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  # Job 4: End-to-end tests (optional, can be skipped for faster CI)
+  test-e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    # Skip E2E tests for pull requests to speed up CI
+    if: github.event_name != 'pull_request'
+    env:
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js and Dependencies
+        uses: ./.github/actions/setup-node
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+      # Optional: Upload test results and screenshots
+      - name: Upload test results
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
