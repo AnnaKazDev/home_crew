@@ -20,13 +20,16 @@ export const POST: APIRoute = async ({ request }) => {
     // Validate input data
     const validationResult = registerSchema.safeParse(formData);
     if (!validationResult.success) {
-      return new Response(JSON.stringify({
-        error: 'Validation failed',
-        details: validationResult.error.format()
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Validation failed',
+          details: validationResult.error.format(),
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     const { name, email, password, role, householdName, pin } = validationResult.data;
@@ -42,8 +45,8 @@ export const POST: APIRoute = async ({ request }) => {
         options: {
           data: {
             full_name: name,
-          }
-        }
+          },
+        },
       });
 
       if (authError) {
@@ -64,13 +67,11 @@ export const POST: APIRoute = async ({ request }) => {
       const householdPIN = generatePIN();
 
       // Create profile (without role column)
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          name,
-          total_points: 0
-        });
+      const { error: profileError } = await supabase.from('profiles').insert({
+        id: authData.user.id,
+        name,
+        total_points: 0,
+      });
 
       if (profileError) {
         console.error('Profile creation error:', profileError);
@@ -83,7 +84,7 @@ export const POST: APIRoute = async ({ request }) => {
         .insert({
           name: householdName!.trim(),
           pin_hash: hashPIN(householdPIN),
-          current_pin: householdPIN
+          current_pin: householdPIN,
         })
         .select()
         .single();
@@ -97,33 +98,34 @@ export const POST: APIRoute = async ({ request }) => {
       }
 
       // Add admin to household members with role
-      const { error: memberError } = await supabase
-        .from('household_members')
-        .insert({
-          household_id: householdData.id,
-          user_id: authData.user.id,
-          role: 'admin'
-        });
+      const { error: memberError } = await supabase.from('household_members').insert({
+        household_id: householdData.id,
+        user_id: authData.user.id,
+        role: 'admin',
+      });
 
       if (memberError) {
         console.error('Member creation error:', memberError);
         // Continue anyway
       }
 
-      return new Response(JSON.stringify({
-        user: authData.user,
-        profile: {
-          id: authData.user.id,
-          name,
-          role: 'admin'
-        },
-        household: householdData,
-        pin: householdPIN,
-        message: 'Registration successful. Please check your email for confirmation.'
-      }), {
-        status: 201,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          user: authData.user,
+          profile: {
+            id: authData.user.id,
+            name,
+            role: 'admin',
+          },
+          household: householdData,
+          pin: householdPIN,
+          message: 'Registration successful. Please check your email for confirmation.',
+        }),
+        {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Handle member registration
@@ -149,8 +151,8 @@ export const POST: APIRoute = async ({ request }) => {
         options: {
           data: {
             full_name: name,
-          }
-        }
+          },
+        },
       });
 
       if (authError) {
@@ -168,13 +170,11 @@ export const POST: APIRoute = async ({ request }) => {
       }
 
       // Create profile (without role column)
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          name,
-          total_points: 0
-        });
+      const { error: profileError } = await supabase.from('profiles').insert({
+        id: authData.user.id,
+        name,
+        total_points: 0,
+      });
 
       if (profileError) {
         console.error('Profile creation error:', profileError);
@@ -182,13 +182,11 @@ export const POST: APIRoute = async ({ request }) => {
       }
 
       // Add member to household with role
-      const { error: memberError } = await supabase
-        .from('household_members')
-        .insert({
-          household_id: householdData.id,
-          user_id: authData.user.id,
-          role: 'member'
-        });
+      const { error: memberError } = await supabase.from('household_members').insert({
+        household_id: householdData.id,
+        user_id: authData.user.id,
+        role: 'member',
+      });
 
       if (memberError) {
         console.error('Member creation error:', memberError);
@@ -198,26 +196,28 @@ export const POST: APIRoute = async ({ request }) => {
         });
       }
 
-      return new Response(JSON.stringify({
-        user: authData.user,
-        profile: {
-          id: authData.user.id,
-          name,
-          role: 'member'
-        },
-        household: householdData,
-        message: 'Registration successful. Please check your email for confirmation.'
-      }), {
-        status: 201,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          user: authData.user,
+          profile: {
+            id: authData.user.id,
+            name,
+            role: 'member',
+          },
+          household: householdData,
+          message: 'Registration successful. Please check your email for confirmation.',
+        }),
+        {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     return new Response(JSON.stringify({ error: 'Invalid registration data' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
-
   } catch (error) {
     console.error('Registration error:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { resetPasswordSchema, type ResetPasswordFormData } from "@/lib/validation/auth.schemas";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { resetPasswordSchema, type ResetPasswordFormData } from '@/lib/validation/auth.schemas';
 
 interface ResetPasswordFormProps {
   onError: (error: string) => void;
@@ -24,19 +24,19 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onError, onLoadin
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
       onLoading(true);
-      onError("");
+      onError('');
 
       // TODO: Implement actual password reset logic with Supabase Auth
       // For now, just simulate a delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log("Password reset attempt:", data);
+      console.log('Password reset attempt:', data);
 
       // Simulate success for demo purposes
       // In real implementation, this would send reset email
-      alert("Password reset functionality will be implemented with Supabase Auth");
+      alert('Password reset functionality will be implemented with Supabase Auth');
     } catch (error) {
-      onError(error instanceof Error ? error.message : "Failed to send reset link");
+      onError(error instanceof Error ? error.message : 'Failed to send reset link');
     } finally {
       onLoading(false);
     }
@@ -61,17 +61,22 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onError, onLoadin
             id="email"
             placeholder="your@email.com"
             autoComplete="email"
-            {...register("email")}
+            {...register('email')}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              errors.email ? "border-destructive" : "border-border"
+              errors.email ? 'border-destructive' : 'border-border'
             }`}
             disabled={loading}
           />
           {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>}
         </div>
 
-        <Button type="submit" size="lg" className="w-full whitespace-normal" disabled={isSubmitting || loading}>
-          {isSubmitting || loading ? "Sending..." : "Send reset link"}
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full whitespace-normal"
+          disabled={isSubmitting || loading}
+        >
+          {isSubmitting || loading ? 'Sending...' : 'Send reset link'}
         </Button>
       </form>
     </div>

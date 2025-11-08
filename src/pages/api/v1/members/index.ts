@@ -1,6 +1,10 @@
-import type { APIRoute } from "astro";
-import { getHouseholdMembers } from "@/lib/household-members.service";
-import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import type { APIRoute } from 'astro';
+import { getHouseholdMembers } from '@/lib/household-members.service';
+import {
+  getSupabaseServiceClient,
+  DEFAULT_USER_ID,
+  type SupabaseClient,
+} from '@/db/supabase.client';
 
 export const prerender = false;
 
@@ -17,12 +21,14 @@ export const GET: APIRoute = async (context) => {
     // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
     let userId = DEFAULT_USER_ID;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.user?.id) {
         userId = session.user.id;
       }
     } catch (error) {
-      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+      console.warn('Could not get authenticated user, using DEFAULT_USER_ID:', error);
     }
 
     // Get household members for current user
@@ -31,29 +37,35 @@ export const GET: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(members), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (serviceError) {
-      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+      const errorMessage = serviceError instanceof Error ? serviceError.message : 'Unknown error';
 
-      if (errorMessage === "USER_NOT_IN_HOUSEHOLD") {
-        return new Response(JSON.stringify({ error: "User not in household" }), {
+      if (errorMessage === 'USER_NOT_IN_HOUSEHOLD') {
+        return new Response(JSON.stringify({ error: 'User not in household' }), {
           status: 404,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      console.error("Service error getting household members:", serviceError);
-      return new Response(JSON.stringify({ error: "Internal server error", details: errorMessage }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      console.error('Service error getting household members:', serviceError);
+      return new Response(
+        JSON.stringify({ error: 'Internal server error', details: errorMessage }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
   } catch (error) {
-    console.error("Unexpected error in GET /v1/members:", error);
-    return new Response(JSON.stringify({ error: "Internal server error", details: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error('Unexpected error in GET /v1/members:', error);
+    return new Response(
+      JSON.stringify({ error: 'Internal server error', details: error.message }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 };

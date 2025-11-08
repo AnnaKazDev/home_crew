@@ -1,12 +1,18 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { registerSchema, type RegisterFormData } from "@/lib/validation/auth.schemas";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { registerSchema, type RegisterFormData } from '@/lib/validation/auth.schemas';
 
 interface RegisterFormProps {
   onError: (error: string) => void;
@@ -32,11 +38,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      role: "admin", // Default to admin
+      role: 'admin', // Default to admin
     },
   });
 
-  const selectedRole = watch("role");
+  const selectedRole = watch('role');
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -55,7 +61,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
   const onSubmit = async (data: RegisterFormData) => {
     try {
       onLoading(true);
-      onError("");
+      onError('');
       onSuccess?.(false); // Hide toggle when starting submission
 
       const response = await fetch('/api/auth/register', {
@@ -76,7 +82,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
       if (data.role === 'admin') {
         setSuccessData({
           pin: result.pin,
-          householdName: result.household.name
+          householdName: result.household.name,
         });
         onSuccess?.(true); // Hide toggle when showing success screen
       } else {
@@ -84,7 +90,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
         window.location.href = '/daily_chores';
       }
     } catch (error) {
-      onError(error instanceof Error ? error.message : "Registration failed");
+      onError(error instanceof Error ? error.message : 'Registration failed');
     } finally {
       onLoading(false);
     }
@@ -97,7 +103,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
         <CardHeader className="text-center">
           <CardTitle className="text-green-800 flex items-center justify-center gap-2">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             Registration Successful!
           </CardTitle>
@@ -128,7 +138,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
                 aria-label="Copy PIN to clipboard"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
                 </svg>
               </Button>
             </div>
@@ -137,7 +152,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             <Button
               type="button"
               className="flex-1 bg-purple-600 hover:bg-purple-700 text-white dark:text-black dark:hover:text-black"
-              onClick={() => window.location.href = '/daily_chores'}
+              onClick={() => (window.location.href = '/daily_chores')}
             >
               Continue to App
             </Button>
@@ -158,9 +173,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           id="name"
           placeholder="John Doe"
           autoComplete="name"
-          {...register("name")}
+          {...register('name')}
           className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-            errors.name ? "border-destructive" : "border-border"
+            errors.name ? 'border-destructive' : 'border-border'
           }`}
           disabled={loading}
           maxLength={100}
@@ -177,9 +192,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           id="email"
           placeholder="your@email.com"
           autoComplete="email"
-          {...register("email")}
+          {...register('email')}
           className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-            errors.email ? "border-destructive" : "border-border"
+            errors.email ? 'border-destructive' : 'border-border'
           }`}
           disabled={loading}
         />
@@ -195,13 +210,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           id="password"
           placeholder="Minimum 8 characters"
           autoComplete="new-password"
-          {...register("password")}
+          {...register('password')}
           className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-            errors.password ? "border-destructive" : "border-border"
+            errors.password ? 'border-destructive' : 'border-border'
           }`}
           disabled={loading}
         />
-        {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
+        {errors.password && (
+          <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -213,13 +230,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           id="confirmPassword"
           placeholder="Repeat your password"
           autoComplete="new-password"
-          {...register("confirmPassword")}
+          {...register('confirmPassword')}
           className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-            errors.confirmPassword ? "border-destructive" : "border-border"
+            errors.confirmPassword ? 'border-destructive' : 'border-border'
           }`}
           disabled={loading}
         />
-        {errors.confirmPassword && <p className="mt-1 text-sm text-destructive">{errors.confirmPassword.message}</p>}
+        {errors.confirmPassword && (
+          <p className="mt-1 text-sm text-destructive">{errors.confirmPassword.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -228,31 +247,43 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
         </label>
         <Select
           value={selectedRole}
-          onValueChange={(value: "admin" | "member") => setValue("role", value)}
+          onValueChange={(value: 'admin' | 'member') => setValue('role', value)}
           disabled={loading}
         >
-          <SelectTrigger className={`w-full focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground ${
-            errors.role ? "border-destructive" : "border-border"
-          }`}>
+          <SelectTrigger
+            className={`w-full focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground ${
+              errors.role ? 'border-destructive' : 'border-border'
+            }`}
+          >
             <SelectValue placeholder="">
-              {selectedRole === "admin" && "Administrator"}
-              {selectedRole === "member" && "Family member"}
+              {selectedRole === 'admin' && 'Administrator'}
+              {selectedRole === 'member' && 'Family member'}
             </SelectValue>
             {!selectedRole && (
               <span className="text-muted-foreground whitespace-normal">Select role</span>
             )}
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="admin" className="whitespace-normal [&:hover_.description-text]:text-black">
+            <SelectItem
+              value="admin"
+              className="whitespace-normal [&:hover_.description-text]:text-black"
+            >
               <div>
                 <div className="font-medium">Administrator</div>
-                <div className="description-text text-xs text-muted-foreground">creating new household</div>
+                <div className="description-text text-xs text-muted-foreground">
+                  creating new household
+                </div>
               </div>
             </SelectItem>
-            <SelectItem value="member" className="whitespace-normal [&:hover_.description-text]:text-black">
+            <SelectItem
+              value="member"
+              className="whitespace-normal [&:hover_.description-text]:text-black"
+            >
               <div>
                 <div className="font-medium">Family member</div>
-                <div className="description-text text-xs text-muted-foreground">joining existing household</div>
+                <div className="description-text text-xs text-muted-foreground">
+                  joining existing household
+                </div>
               </div>
             </SelectItem>
           </SelectContent>
@@ -260,7 +291,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
         {errors.role && <p className="mt-1 text-sm text-destructive">{errors.role.message}</p>}
       </div>
 
-      {selectedRole === "admin" && (
+      {selectedRole === 'admin' && (
         <div className="space-y-2">
           <label htmlFor="householdName" className="block text-sm font-medium text-foreground mb-1">
             Household name *
@@ -269,18 +300,20 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             type="text"
             id="householdName"
             placeholder="e.g., Smith Family"
-            {...register("householdName")}
+            {...register('householdName')}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              errors.householdName ? "border-destructive" : "border-border"
+              errors.householdName ? 'border-destructive' : 'border-border'
             }`}
             disabled={loading}
             maxLength={100}
           />
-          {errors.householdName && <p className="mt-1 text-sm text-destructive">{errors.householdName.message}</p>}
+          {errors.householdName && (
+            <p className="mt-1 text-sm text-destructive">{errors.householdName.message}</p>
+          )}
         </div>
       )}
 
-      {selectedRole === "member" && (
+      {selectedRole === 'member' && (
         <div className="space-y-2">
           <label htmlFor="pin" className="block text-sm font-medium text-foreground mb-1">
             Household PIN *
@@ -289,21 +322,28 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             type="text"
             id="pin"
             placeholder="6-digit PIN code"
-            {...register("pin")}
+            {...register('pin')}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              errors.pin ? "border-destructive" : "border-border"
+              errors.pin ? 'border-destructive' : 'border-border'
             }`}
             disabled={loading}
             maxLength={6}
             suppressHydrationWarning
           />
-          <p className="text-xs text-muted-foreground">Ask the household administrator for the 6-digit PIN code</p>
+          <p className="text-xs text-muted-foreground">
+            Ask the household administrator for the 6-digit PIN code
+          </p>
           {errors.pin && <p className="mt-1 text-sm text-destructive">{errors.pin.message}</p>}
         </div>
       )}
 
-      <Button type="submit" size="lg" className="w-full whitespace-normal !mt-[40px]" disabled={isSubmitting || loading}>
-        {isSubmitting || loading ? "Registering..." : "Sign up"}
+      <Button
+        type="submit"
+        size="lg"
+        className="w-full whitespace-normal !mt-[40px]"
+        disabled={isSubmitting || loading}
+      >
+        {isSubmitting || loading ? 'Registering...' : 'Sign up'}
       </Button>
     </form>
   );

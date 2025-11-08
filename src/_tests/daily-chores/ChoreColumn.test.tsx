@@ -270,10 +270,7 @@ describe('ChoreColumn', () => {
       mockUseDrop.mockReturnValue([{ isOver: false }, mockDropRef]);
 
       // Mock the drop function to call onDrop
-      mockUseDrop.mockImplementation(() => [
-        { isOver: false },
-        mockDropRef,
-      ]);
+      mockUseDrop.mockImplementation(() => [{ isOver: false }, mockDropRef]);
 
       // Manually trigger the drop logic
       render(
@@ -490,7 +487,12 @@ describe('ChoreColumn', () => {
 
       const emptyState = screen.getByText('No completed chores yet').closest('div');
       expect(emptyState).toHaveClass('flex', 'flex-col', 'items-center', 'justify-center');
-      expect(emptyState).toHaveClass('h-[133px]', 'text-muted-foreground', 'border-2', 'border-dashed');
+      expect(emptyState).toHaveClass(
+        'h-[133px]',
+        'text-muted-foreground',
+        'border-2',
+        'border-dashed'
+      );
     });
   });
 

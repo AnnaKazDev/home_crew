@@ -95,9 +95,7 @@ describe('DateNavigator', () => {
 
     // Find desktop pick date button (the one without <span> wrapper)
     const pickDateButtons = screen.getAllByRole('button', { name: /pick a date/i });
-    const desktopButton = pickDateButtons.find(button =>
-      !button.querySelector('span')
-    );
+    const desktopButton = pickDateButtons.find((button) => !button.querySelector('span'));
 
     expect(desktopButton).toBeInTheDocument();
     await user.click(desktopButton!);
@@ -114,7 +112,9 @@ describe('DateNavigator', () => {
     ];
 
     testCases.forEach(({ input, expected }) => {
-      const { rerender } = render(<DateNavigator currentDate={input} onDateChange={mockOnDateChange} />);
+      const { rerender } = render(
+        <DateNavigator currentDate={input} onDateChange={mockOnDateChange} />
+      );
       // Date appears in both desktop and mobile layouts
       expect(screen.getAllByText(expected)).toHaveLength(2);
       rerender(<DateNavigator currentDate={input} onDateChange={mockOnDateChange} />);

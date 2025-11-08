@@ -45,7 +45,9 @@ export class DailyChoresPage {
   async waitForLoad(): Promise<void> {
     // The most reliable selector - wait for the data-test-id
     try {
-      await this.page.locator('[data-test-id="daily-view"]').waitFor({ state: 'visible', timeout: 15000 });
+      await this.page
+        .locator('[data-test-id="daily-view"]')
+        .waitFor({ state: 'visible', timeout: 15000 });
       return;
     } catch (error) {
       // Continue to fallback selectors
@@ -67,7 +69,9 @@ export class DailyChoresPage {
       }
     }
 
-    throw new Error('Daily view did not load within timeout - authentication or component rendering issue');
+    throw new Error(
+      'Daily view did not load within timeout - authentication or component rendering issue'
+    );
   }
 
   async clearAllChores(): Promise<void> {

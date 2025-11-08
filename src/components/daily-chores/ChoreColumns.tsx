@@ -1,14 +1,14 @@
-import React from "react";
-import { ChoreColumn } from "./ChoreColumn";
-import type { ChoreViewModel } from "@/types/daily-view.types";
-import type { MemberDTO } from "@/types";
+import React from 'react';
+import { ChoreColumn } from './ChoreColumn';
+import type { ChoreViewModel } from '@/types/daily-view.types';
+import type { MemberDTO } from '@/types';
 
 interface ChoreColumnsProps {
   todoChores: ChoreViewModel[];
   doneChores: ChoreViewModel[];
   members: MemberDTO[];
   isLoading?: boolean;
-  onChoreDrop: (choreId: string, targetStatus: "todo" | "done") => void;
+  onChoreDrop: (choreId: string, targetStatus: 'todo' | 'done') => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
   onChoreMarkDone?: (choreId: string) => void;
@@ -27,11 +27,11 @@ export function ChoreColumns({
   onAddChoreClick,
 }: ChoreColumnsProps) {
   const handleTodoDrop = (choreId: string) => {
-    onChoreDrop(choreId, "todo");
+    onChoreDrop(choreId, 'todo');
   };
 
   const handleDoneDrop = (choreId: string) => {
-    onChoreDrop(choreId, "done");
+    onChoreDrop(choreId, 'done');
   };
 
   return (

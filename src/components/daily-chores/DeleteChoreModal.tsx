@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Dialog,
   DialogContent,
@@ -6,9 +6,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import type { ChoreViewModel } from "@/types/daily-view.types";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import type { ChoreViewModel } from '@/types/daily-view.types';
 
 interface DeleteChoreModalProps {
   isOpen: boolean;
@@ -29,7 +29,8 @@ export function DeleteChoreModal({ isOpen, chore, onClose, onConfirm }: DeleteCh
         <DialogHeader>
           <DialogTitle>Delete Task</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the task "{chore?.catalogTitle}"? This action cannot be undone.
+            Are you sure you want to delete the task "{chore?.catalogTitle}"? This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

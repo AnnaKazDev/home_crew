@@ -18,63 +18,74 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     const sessionToken = cookies.get('sb-127-auth-token')?.value;
 
     if (!sessionToken) {
-      return new Response(JSON.stringify({
-        session: null,
-        user: null,
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          session: null,
+          user: null,
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Create a simple client to decode the JWT token
-    const supabase = createServerClient<Database>(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          getAll() {
-            return [{ name: 'sb-127-auth-token', value: sessionToken }];
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookies.set(name, value, options);
-            });
-          },
+    const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        getAll() {
+          return [{ name: 'sb-127-auth-token', value: sessionToken }];
         },
-      }
-    );
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookies.set(name, value, options);
+          });
+        },
+      },
+    });
 
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
 
     if (error) {
       console.error('Session error:', error);
-      return new Response(JSON.stringify({
-        session: null,
-        user: null,
-        error: error.message
-      }), {
-        status: 200, // Return 200 even on error to avoid client-side issues
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          session: null,
+          user: null,
+          error: error.message,
+        }),
+        {
+          status: 200, // Return 200 even on error to avoid client-side issues
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
-    return new Response(JSON.stringify({
-      session: session,
-      user: session?.user || null,
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        session: session,
+        user: session?.user || null,
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error) {
     console.error('Session error:', error);
-    return new Response(JSON.stringify({
-      session: null,
-      user: null,
-      error: 'Internal server error'
-    }), {
-      status: 200, // Return 200 to avoid client-side issues
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        session: null,
+        user: null,
+        error: 'Internal server error',
+      }),
+      {
+        status: 200, // Return 200 to avoid client-side issues
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 };

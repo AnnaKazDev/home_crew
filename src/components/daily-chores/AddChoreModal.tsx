@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ChoreCatalogSelector } from "./ChoreCatalogSelector";
-import { ChoreForm } from "./ChoreForm";
-import { ChoreConfigurator } from "./ChoreConfigurator";
-import type { CatalogItemDTO, MemberDTO, CreateDailyChoreCmd } from "@/types";
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ChoreCatalogSelector } from './ChoreCatalogSelector';
+import { ChoreForm } from './ChoreForm';
+import { ChoreConfigurator } from './ChoreConfigurator';
+import { createCatalogItem } from '@/lib/choresCatalog.service';
+import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
+import type { CatalogItemDTO, MemberDTO, CreateDailyChoreCmd } from '@/types';
 
-type ModalStep = "catalog" | "form" | "config";
+type ModalStep = 'catalog' | 'form' | 'config';
 
 interface AddChoreModalProps {
   isOpen: boolean;
@@ -14,17 +16,26 @@ interface AddChoreModalProps {
   members: MemberDTO[];
   currentDate: string;
   currentUserId?: string;
+  householdId?: string;
 }
 
-export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate, currentUserId }: AddChoreModalProps) {
-  const [currentStep, setCurrentStep] = useState<ModalStep>("catalog");
+export function AddChoreModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  members,
+  currentDate,
+  currentUserId,
+  householdId,
+}: AddChoreModalProps) {
+  const [currentStep, setCurrentStep] = useState<ModalStep>('catalog');
   const [selectedItem, setSelectedItem] = useState<CatalogItemDTO | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [catalogKey, setCatalogKey] = useState(0); // Force re-render of catalog
   const [error, setError] = useState<string | null>(null);
 
   const resetModal = () => {
-    setCurrentStep("catalog");
+    setCurrentStep('catalog');
     setSelectedItem(null);
     setIsLoading(false);
     setError(null);
@@ -39,11 +50,11 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate,
   const handleCatalogSelect = (item: CatalogItemDTO) => {
     setSelectedItem(item);
     setError(null); // Clear any previous errors
-    setCurrentStep("config");
+    setCurrentStep('config');
   };
 
   const handleCreateCustom = () => {
-    setCurrentStep("form");
+    setCurrentStep('form');
     setError(null); // Clear any previous errors
   };
 
@@ -52,39 +63,62 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate,
     setError(null); // Clear any previous errors
 
     try {
-      // Create the catalog item immediately
-      const createCatalogResponse = await fetch("/api/v1/catalog", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: data.title,
-          category: data.category,
-          points: data.points,
-          time_of_day: data.time_of_day || "any",
-          emoji: data.emoji,
-        }),
-      });
+      if (!householdId) {
+        throw new Error('Household not configured');
+      }
 
-      if (!createCatalogResponse.ok) {
-        const errorData = await createCatalogResponse.json();
-        throw new Error(errorData.error || "Failed to create catalog item");
+      if (!currentUserId) {
+        throw new Error('User not authenticated');
+      }
+
+      let newCatalogItem: CatalogItemDTO;
+
+      if (isSupabaseConfigured) {
+        // Use Supabase client directly (same as useDailyView)
+        newCatalogItem = await createCatalogItem(getSupabaseClient(), householdId, currentUserId, {
+          title: data.title!,
+          category: data.category!,
+          points: data.points!,
+          time_of_day: data.time_of_day || 'any',
+          emoji: data.emoji,
+        });
+      } else {
+        // Fallback to API mode
+        const createCatalogResponse = await fetch('/api/v1/catalog', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: data.title,
+            category: data.category,
+            points: data.points,
+            time_of_day: data.time_of_day || 'any',
+            emoji: data.emoji,
+          }),
+        });
+
+        if (!createCatalogResponse.ok) {
+          const errorData = await createCatalogResponse.json();
+          throw new Error(errorData.error || 'Failed to create catalog item');
+        }
+
+        newCatalogItem = await createCatalogResponse.json();
       }
 
       // Go back to catalog view so user can select the newly created chore
-      setCurrentStep("catalog");
+      setCurrentStep('catalog');
       setCatalogKey((prev) => prev + 1); // Force catalog refresh
     } catch (error) {
-      console.error("Failed to create catalog item:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to create catalog item";
+      console.error('Failed to create catalog item:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create catalog item';
       setError(errorMessage);
-      setCurrentStep("catalog"); // Go back to catalog to show error
+      setCurrentStep('catalog'); // Go back to catalog to show error
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleFormCancel = () => {
-    setCurrentStep("catalog");
+    setCurrentStep('catalog');
   };
 
   const handleConfigSubmit = async (config: { date: string; assignee_id?: string | null }) => {
@@ -100,32 +134,35 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate,
       await onSubmit(cmd);
       handleClose();
     } catch (error) {
-      console.error("Failed to add chore:", error);
+      console.error('Failed to add chore:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleConfigCancel = () => {
-    setCurrentStep("catalog");
+    setCurrentStep('catalog');
   };
 
   const getDialogTitle = () => {
     switch (currentStep) {
-      case "catalog":
-        return "Choose a Chore";
-      case "form":
-        return "Create Custom Chore";
-      case "config":
-        return "Configure Chore";
+      case 'catalog':
+        return 'Choose a Chore';
+      case 'form':
+        return 'Create Custom Chore';
+      case 'config':
+        return 'Configure Chore';
       default:
-        return "Choose a Chore";
+        return 'Choose a Chore';
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent data-test-id="add-chore-modal" className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        data-test-id="add-chore-modal"
+        className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
         <DialogHeader>
           <DialogTitle className="text-2xl">{getDialogTitle()}</DialogTitle>
         </DialogHeader>
@@ -137,23 +174,24 @@ export function AddChoreModal({ isOpen, onClose, onSubmit, members, currentDate,
             </div>
           )}
 
-          {currentStep === "catalog" && (
+          {currentStep === 'catalog' && (
             <div data-test-id="add-chore-modal-catalog-step">
               <ChoreCatalogSelector
                 key={catalogKey}
                 onItemSelect={handleCatalogSelect}
                 onCreateCustom={handleCreateCustom}
+                householdId={householdId}
               />
             </div>
           )}
 
-          {currentStep === "form" && (
+          {currentStep === 'form' && (
             <div data-test-id="add-chore-modal-form-step">
               <ChoreForm onSubmit={handleFormSubmit} onCancel={handleFormCancel} />
             </div>
           )}
 
-          {currentStep === "config" && (
+          {currentStep === 'config' && (
             <div data-test-id="add-chore-modal-config-step">
               <ChoreConfigurator
                 selectedItem={selectedItem}

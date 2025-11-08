@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { QueryProvider } from "./QueryProvider";
-import { ThemeProvider } from "./ThemeProvider";
-import DailyView from "./DailyView";
+import React from 'react';
+import { QueryProvider } from './QueryProvider';
+import { ThemeProvider } from './ThemeProvider';
+import DailyView from './DailyView';
 
 export default function DailyViewWithProvider() {
   console.log('DailyViewWithProvider rendering...');

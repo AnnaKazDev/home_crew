@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useCallback, useState } from "react";
-import { toast } from "sonner";
-import { useAuthRedirect } from "@/hooks/useAuthRedirect";
-import { useAuthStore } from "@/stores/auth.store";
-import { useDailyPoints } from "@/hooks/useDailyPoints";
-import ProfileForm from "./ProfileForm";
-import PointsDisplay from "./PointsDisplay";
-import PointsBreakdown from "./PointsBreakdown";
+import React, { useCallback, useState } from 'react';
+import { toast } from 'sonner';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
+import { useAuthStore } from '@/stores/auth.store';
+import { useDailyPoints } from '@/hooks/useDailyPoints';
+import ProfileForm from './ProfileForm';
+import PointsDisplay from './PointsDisplay';
+import PointsBreakdown from './PointsBreakdown';
 
 const ProfileView: React.FC = () => {
   const { isAuthenticated, loading } = useAuthRedirect();
@@ -20,13 +20,13 @@ const ProfileView: React.FC = () => {
   const pointsDateRange = React.useMemo(() => {
     if (!dailyPoints.length) return { firstDate: null, lastDate: null };
 
-    const datesWithPoints = dailyPoints.filter(day => day.points > 0);
+    const datesWithPoints = dailyPoints.filter((day) => day.points > 0);
     if (!datesWithPoints.length) return { firstDate: null, lastDate: null };
 
-    const sortedDates = datesWithPoints.map(day => day.date).sort();
+    const sortedDates = datesWithPoints.map((day) => day.date).sort();
     return {
       firstDate: sortedDates[0],
-      lastDate: sortedDates[sortedDates.length - 1]
+      lastDate: sortedDates[sortedDates.length - 1],
     };
   }, [dailyPoints]);
 
@@ -51,7 +51,10 @@ const ProfileView: React.FC = () => {
   return (
     <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
       <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto animate-fade-in">
-        <h1 className="text-3xl font-bold text-primary font-bold text-foreground mb-8" id="profile-title">
+        <h1
+          className="text-3xl font-bold text-primary font-bold text-foreground mb-8"
+          id="profile-title"
+        >
           Your Profile
         </h1>
 
@@ -64,6 +67,5 @@ const ProfileView: React.FC = () => {
     </div>
   );
 };
-
 
 export default ProfileView;

@@ -1,10 +1,10 @@
-import { Badge } from "@/components/ui/badge";
-import MemberCard from "./MemberCard";
-import type { MemberDTO } from "@/types";
+import { Badge } from '@/components/ui/badge';
+import MemberCard from './MemberCard';
+import type { MemberDTO } from '@/types';
 
 interface MembersListProps {
   members: MemberDTO[];
-  currentUserRole: "admin" | "member";
+  currentUserRole: 'admin' | 'member';
   currentUserId: string;
   onRemoveMember: (memberId: string) => Promise<void>;
   isUpdating: boolean;
@@ -17,9 +17,11 @@ const MembersList: React.FC<MembersListProps> = ({
   currentUserId,
   onRemoveMember,
   isUpdating,
-  className = "",
+  className = '',
 }) => {
-  const sortedMembers = [...members].sort((a, b) => new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime());
+  const sortedMembers = [...members].sort(
+    (a, b) => new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime()
+  );
 
   return (
     <div className={className}>
@@ -30,7 +32,9 @@ const MembersList: React.FC<MembersListProps> = ({
         </span>
       </div>
       {sortedMembers.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground dark:text-gray-400">No members found</div>
+        <div className="text-center py-8 text-muted-foreground dark:text-gray-400">
+          No members found
+        </div>
       ) : (
         <div className="space-y-6">
           {sortedMembers.map((member) => (

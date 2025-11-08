@@ -58,9 +58,9 @@ export class AddChoreModal {
     const selectedItem = items[randomIndex];
 
     // Extract title and points from the text content
-    const title = await selectedItem.locator('h4').first().textContent() || '';
+    const title = (await selectedItem.locator('h4').first().textContent()) || '';
     // Find text containing "pts" in the item
-    const itemText = await selectedItem.textContent() || '';
+    const itemText = (await selectedItem.textContent()) || '';
     const pointsMatch = itemText.match(/(\d+)\s*pts/);
     const points = pointsMatch ? parseInt(pointsMatch[1]) : 0;
 

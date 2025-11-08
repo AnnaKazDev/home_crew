@@ -15,7 +15,8 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
     // Use the same environment variables as the client
     const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || import.meta.env.SUPABASE_URL;
-    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;
+    const supabaseAnonKey =
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseAnonKey) {
       return new Response(JSON.stringify({ error: 'Server configuration error' }), {
@@ -24,24 +25,20 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       });
     }
 
-    const supabase = createServerClient<Database>(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          getAll() {
-            return []; // Return empty array since we don't need to read existing cookies for login
-          },
-          setAll(cookiesToSet) {
-            console.log('Setting cookies:', cookiesToSet);
-            cookiesToSet.forEach(({ name, value, options }) => {
-              console.log(`Setting cookie ${name}=${value}`);
-              cookies.set(name, value, options);
-            });
-          },
+    const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        getAll() {
+          return []; // Return empty array since we don't need to read existing cookies for login
         },
-      }
-    );
+        setAll(cookiesToSet) {
+          console.log('Setting cookies:', cookiesToSet);
+          cookiesToSet.forEach(({ name, value, options }) => {
+            console.log(`Setting cookie ${name}=${value}`);
+            cookies.set(name, value, options);
+          });
+        },
+      },
+    });
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -55,14 +52,17 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       });
     }
 
-    return new Response(JSON.stringify({
-      user: data.user,
-      session: data.session,
-      message: 'Login successful'
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        user: data.user,
+        session: data.session,
+        message: 'Login successful',
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error) {
     console.error('Login error:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {

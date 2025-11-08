@@ -1,24 +1,29 @@
-import { useState, useCallback } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSupabaseClient, isSupabaseConfigured } from "@/db/supabase.client";
-import { getDailyChores, createDailyChore, updateDailyChore, deleteDailyChore } from "@/lib/dailyChores.service";
-import { getCatalogItems } from "@/lib/choresCatalog.service";
-import { getHouseholdMembers } from "@/lib/household-members.service";
-import { getHouseholdForUser } from "@/lib/households.service";
-import { getProfile } from "@/lib/profiles.service";
-import { useAuthStore } from "@/stores/auth.store";
-import type { ChoreViewModel, DailyViewState } from "@/types/daily-view.types";
-import type { MemberDTO, DailyChoreDTO, CreateDailyChoreCmd, UpdateDailyChoreCmd } from "@/types";
+import { useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
+import {
+  getDailyChores,
+  createDailyChore,
+  updateDailyChore,
+  deleteDailyChore,
+} from '@/lib/dailyChores.service';
+import { getCatalogItems } from '@/lib/choresCatalog.service';
+import { getHouseholdMembers } from '@/lib/household-members.service';
+import { getHouseholdForUser } from '@/lib/households.service';
+import { getProfile } from '@/lib/profiles.service';
+import { useAuthStore } from '@/stores/auth.store';
+import type { ChoreViewModel, DailyViewState } from '@/types/daily-view.types';
+import type { MemberDTO, DailyChoreDTO, CreateDailyChoreCmd, UpdateDailyChoreCmd } from '@/types';
 
 // Query keys for React Query
 export const dailyViewKeys = {
-  all: ["dailyView"] as const,
-  chores: (date: string) => [...dailyViewKeys.all, "chores", date] as const,
-  members: () => [...dailyViewKeys.all, "members"] as const,
-  household: () => [...dailyViewKeys.all, "household"] as const,
-  profile: () => [...dailyViewKeys.all, "profile"] as const,
-  points: () => ["points"] as const,
-  userPoints: (userId: string) => [...dailyViewKeys.points(), "user", userId] as const,
+  all: ['dailyView'] as const,
+  chores: (date: string) => [...dailyViewKeys.all, 'chores', date] as const,
+  members: () => [...dailyViewKeys.all, 'members'] as const,
+  household: () => [...dailyViewKeys.all, 'household'] as const,
+  profile: () => [...dailyViewKeys.all, 'profile'] as const,
+  points: () => ['points'] as const,
+  userPoints: (userId: string) => [...dailyViewKeys.points(), 'user', userId] as const,
 };
 
 /**
@@ -27,12 +32,12 @@ export const dailyViewKeys = {
 export function useDailyView() {
   const queryClient = useQueryClient();
   const { user, isAuthenticated } = useAuthStore();
-  const devHouseholdId = "11111111-aaaa-bbbb-cccc-222222222222";
+  const devHouseholdId = '11111111-aaaa-bbbb-cccc-222222222222';
   const useApi = !isSupabaseConfigured;
 
   // Initialize with today's date
   const [currentDate, setCurrentDate] = useState(() => {
-    return new Date().toISOString().split("T")[0];
+    return new Date().toISOString().split('T')[0];
   });
 
   // Modal states
@@ -41,7 +46,10 @@ export function useDailyView() {
   const [selectedChore, setSelectedChore] = useState<ChoreViewModel | null>(null);
 
   // Use authenticated user ID or fallback to development user
-  const effectiveUserId = user?.id || "e9d12995-1f3e-491d-9628-3c4137d266d1";
+  const effectiveUserId = user?.id || 'e9d12995-1f3e-491d-9628-3c4137d266d1';
+
+  // For household determination, always use the effective user ID
+  // This ensures consistency between API calls and client-side queries
 
   // Query for household members
   const membersQuery = useQuery({
@@ -50,19 +58,19 @@ export function useDailyView() {
       if (useApi) {
         // First ensure household exists (this will create one if needed)
         try {
-          await fetch("/api/v1/households/dev-ensure", { method: "POST" });
+          await fetch('/api/v1/households/dev-ensure', { method: 'POST' });
         } catch (error) {
-          console.warn("Failed to ensure household exists:", error);
+          console.warn('Failed to ensure household exists:', error);
         }
 
         // Now fetch members
-        const res = await fetch("/api/v1/members");
+        const res = await fetch('/api/v1/members');
         if (!res.ok) {
           if (res.status === 404) {
             // If still 404 after ensuring household, return empty array
             return [];
           }
-          throw new Error("Failed to load members");
+          throw new Error('Failed to load members');
         }
         return (await res.json()) as MemberDTO[];
       }
@@ -70,7 +78,7 @@ export function useDailyView() {
         return await getHouseholdMembers(getSupabaseClient(), effectiveUserId);
       } catch (error) {
         // If user not in household, return empty array instead of throwing
-        console.warn("Failed to load household members:", error);
+        console.warn('Failed to load household members:', error);
         return [];
       }
     },
@@ -85,19 +93,19 @@ export function useDailyView() {
       if (useApi) {
         // Ensure household exists before fetching
         try {
-          await fetch("/api/v1/households/dev-ensure", { method: "POST" });
+          await fetch('/api/v1/households/dev-ensure', { method: 'POST' });
         } catch (error) {
-          console.warn("Failed to ensure household exists:", error);
+          console.warn('Failed to ensure household exists:', error);
         }
 
-        const res = await fetch("/api/v1/households/current");
-        if (!res.ok) throw new Error("Failed to load household");
+        const res = await fetch('/api/v1/households/current');
+        if (!res.ok) throw new Error('Failed to load household');
         return (await res.json()) as any;
       }
       try {
         return await getHouseholdForUser(getSupabaseClient(), effectiveUserId);
       } catch (error) {
-        console.warn("Failed to load household:", error);
+        console.warn('Failed to load household:', error);
         return null;
       }
     },
@@ -105,7 +113,7 @@ export function useDailyView() {
     enabled: true, // Remove isAuthenticated check
   });
 
-  // Effective household id (prefer fetched, else dev fallback)
+  // Effective household id (prefer fetched, else dev fallback for development)
   const effectiveHouseholdId = householdQuery.data?.id || devHouseholdId;
 
   // Query for user profile
@@ -113,14 +121,14 @@ export function useDailyView() {
     queryKey: dailyViewKeys.profile(),
     queryFn: async () => {
       if (useApi) {
-        const res = await fetch("/api/v1/profiles/me");
-        if (!res.ok) throw new Error("Failed to load profile");
+        const res = await fetch('/api/v1/profiles/me');
+        if (!res.ok) throw new Error('Failed to load profile');
         return await res.json();
       }
       try {
         return await getProfile(getSupabaseClient(), effectiveUserId);
       } catch (error) {
-        console.warn("Failed to load profile:", error);
+        console.warn('Failed to load profile:', error);
         return null;
       }
     },
@@ -130,31 +138,35 @@ export function useDailyView() {
 
   // Catalog items: predefined + custom for this household
   const catalogQuery = useQuery({
-    queryKey: [...dailyViewKeys.all, "catalog", "all"] as const,
+    queryKey: [...dailyViewKeys.all, 'catalog', 'all'] as const,
     queryFn: async () => {
       console.log(
-        "Fetching catalog data... useApi:",
+        'Fetching catalog data... useApi:',
         useApi,
-        "isSupabaseConfigured:",
+        'isSupabaseConfigured:',
         isSupabaseConfigured,
-        "effectiveHouseholdId:",
+        'effectiveHouseholdId:',
         effectiveHouseholdId
       );
       try {
         if (useApi) {
-          const res = await fetch("/api/v1/catalog?type=all");
+          const res = await fetch('/api/v1/catalog?type=all');
           if (!res.ok) {
-            console.error("Catalog API failed with status:", res.status);
-            throw new Error("Failed to load catalog");
+            console.error('Catalog API failed with status:', res.status);
+            throw new Error('Failed to load catalog');
           }
           const data = await res.json();
-          console.log("Catalog data fetched:", data.length, "items");
+          console.log('Catalog data fetched:', data.length, 'items');
           return data;
         }
-        const result = await getCatalogItems(getSupabaseClient(), effectiveHouseholdId || null, "all");
+        const result = await getCatalogItems(
+          getSupabaseClient(),
+          effectiveHouseholdId || null,
+          'all'
+        );
         return result;
       } catch (error) {
-        console.error("Catalog query error:", error);
+        console.error('Catalog query error:', error);
         throw error;
       }
     },
@@ -167,22 +179,29 @@ export function useDailyView() {
   const choresQuery = useQuery({
     queryKey: dailyViewKeys.chores(currentDate),
     queryFn: async () => {
-      console.log('Chores query starting for date:', currentDate, 'householdId:', effectiveHouseholdId);
+      console.log(
+        'Chores query starting for date:',
+        currentDate,
+        'householdId:',
+        effectiveHouseholdId
+      );
       let chores: DailyChoreDTO[];
       if (useApi) {
         // Ensure household exists before fetching chores
         try {
-          await fetch("/api/v1/households/dev-ensure", { method: "POST" });
+          await fetch('/api/v1/households/dev-ensure', { method: 'POST' });
         } catch (error) {
-          console.warn("Failed to ensure household exists before fetching chores:", error);
+          console.warn('Failed to ensure household exists before fetching chores:', error);
         }
 
         const res = await fetch(`/api/v1/daily-chores?date=${encodeURIComponent(currentDate)}`);
-        if (!res.ok) throw new Error("Failed to load chores");
+        if (!res.ok) throw new Error('Failed to load chores');
         chores = await res.json();
       } else {
         // Use effectiveHouseholdId - should be the user's actual household now
-        chores = await getDailyChores(getSupabaseClient(), effectiveHouseholdId, { date: currentDate });
+        chores = await getDailyChores(getSupabaseClient(), effectiveHouseholdId, {
+          date: currentDate,
+        });
       }
 
       // Transform to ChoreViewModel with catalog enrichment
@@ -197,23 +216,23 @@ export function useDailyView() {
         predefined: boolean;
       }[] = [];
 
-      console.log("Fetching catalog data for chores enrichment...");
+      console.log('Fetching catalog data for chores enrichment...');
       try {
         if (useApi) {
-          const res = await fetch("/api/v1/catalog?type=all");
+          const res = await fetch('/api/v1/catalog?type=all');
           if (res.ok) {
             catalog = await res.json();
-            console.log("Fetched catalog for enrichment (API):", catalog.length, "items");
+            console.log('Fetched catalog for enrichment (API):', catalog.length, 'items');
           } else {
-            console.error("Failed to fetch catalog for enrichment, status:", res.status);
+            console.error('Failed to fetch catalog for enrichment, status:', res.status);
           }
         } else {
           // Fetch catalog fresh for Supabase mode too for reliability
-          catalog = await getCatalogItems(getSupabaseClient(), effectiveHouseholdId || null, "all");
-          console.log("Fetched catalog for enrichment (Supabase):", catalog.length, "items");
+          catalog = await getCatalogItems(getSupabaseClient(), effectiveHouseholdId || null, 'all');
+          console.log('Fetched catalog for enrichment (Supabase):', catalog.length, 'items');
         }
       } catch (error) {
-        console.error("Error fetching catalog for enrichment:", error);
+        console.error('Error fetching catalog for enrichment:', error);
       }
 
       const viewModels: ChoreViewModel[] = chores.map((chore) => {
@@ -222,15 +241,15 @@ export function useDailyView() {
 
         if (!catalogItem) {
           console.warn(
-            "No catalog item found for chore:",
+            'No catalog item found for chore:',
             chore.chore_catalog_id,
-            "Available IDs:",
+            'Available IDs:',
             catalog.map((c) => c.id).slice(0, 5)
           );
         }
 
-        const catalogEmoji = catalogItem?.emoji ?? "📋";
-        const catalogCategory = catalogItem?.category ?? "General";
+        const catalogEmoji = catalogItem?.emoji ?? '📋';
+        const catalogCategory = catalogItem?.category ?? 'General';
 
         // Find assignee from members
         const assignee = chore.assignee_id
@@ -246,8 +265,8 @@ export function useDailyView() {
           catalogPredefined: catalogItem?.predefined ?? true,
           assigneeName: assignee?.name,
           assigneeAvatar: assignee?.avatar_url || undefined,
-          canEdit: chore.assignee_id === effectiveUserId || profileQuery.data?.name === "Admin", // TODO: proper permission check
-          canDelete: chore.assignee_id === effectiveUserId || profileQuery.data?.name === "Admin", // TODO: proper permission check
+          canEdit: chore.assignee_id === effectiveUserId || profileQuery.data?.name === 'Admin', // TODO: proper permission check
+          canDelete: chore.assignee_id === effectiveUserId || profileQuery.data?.name === 'Admin', // TODO: proper permission check
         };
       });
 
@@ -268,9 +287,9 @@ export function useDailyView() {
     try {
       if (!householdQuery.data) {
         // Dev helper: ensure a household exists, then refetch
-        const res = await fetch("/api/v1/households/dev-ensure", { method: "POST" });
+        const res = await fetch('/api/v1/households/dev-ensure', { method: 'POST' });
         if (!res.ok) {
-          throw new Error("Failed to ensure household");
+          throw new Error('Failed to ensure household');
         }
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: dailyViewKeys.household() }),
@@ -278,7 +297,7 @@ export function useDailyView() {
         ]);
       }
     } catch (e) {
-      console.error("Unable to ensure household:", e);
+      console.error('Unable to ensure household:', e);
       return;
     }
     setIsAddModalOpen(true);
@@ -302,15 +321,15 @@ export function useDailyView() {
   const createChoreMutation = useMutation({
     mutationFn: async (cmd: CreateDailyChoreCmd) => {
       if (useApi) {
-        const res = await fetch("/api/v1/daily-chores", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const res = await fetch('/api/v1/daily-chores', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(cmd),
         });
-        if (!res.ok) throw new Error("Failed to create chore");
+        if (!res.ok) throw new Error('Failed to create chore');
         return await res.json();
       }
-      if (!effectiveHouseholdId) throw new Error("Household not configured");
+      if (!effectiveHouseholdId) throw new Error('Household not configured');
       return createDailyChore(getSupabaseClient(), effectiveHouseholdId, cmd);
     },
     onSuccess: () => {
@@ -319,11 +338,11 @@ export function useDailyView() {
       // Invalidate points data to refresh profile view
       queryClient.invalidateQueries({ queryKey: dailyViewKeys.userPoints(effectiveUserId) });
       // Notify other components to refresh points data
-      window.dispatchEvent(new CustomEvent("pointsDataChanged"));
+      window.dispatchEvent(new CustomEvent('pointsDataChanged'));
       closeAddModal();
     },
     onError: (error) => {
-      console.error("Failed to create chore:", error);
+      console.error('Failed to create chore:', error);
       // TODO: Show error toast
     },
   });
@@ -333,15 +352,21 @@ export function useDailyView() {
     mutationFn: async ({ id, updates }: { id: string; updates: UpdateDailyChoreCmd }) => {
       if (useApi) {
         const res = await fetch(`/api/v1/daily-chores/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updates),
         });
-        if (!res.ok) throw new Error("Failed to update chore");
+        if (!res.ok) throw new Error('Failed to update chore');
         return await res.json();
       }
-      if (!effectiveHouseholdId) throw new Error("Household not configured");
-      return updateDailyChore(getSupabaseClient(), effectiveHouseholdId, id, effectiveUserId, updates);
+      if (!effectiveHouseholdId) throw new Error('Household not configured');
+      return updateDailyChore(
+        getSupabaseClient(),
+        effectiveHouseholdId,
+        id,
+        effectiveUserId,
+        updates
+      );
     },
     onSuccess: () => {
       // Invalidate and refetch chores for current date
@@ -349,11 +374,11 @@ export function useDailyView() {
       // Invalidate points data to refresh profile view
       queryClient.invalidateQueries({ queryKey: dailyViewKeys.userPoints(effectiveUserId) });
       // Notify other components to refresh points data
-      window.dispatchEvent(new CustomEvent("pointsDataChanged"));
+      window.dispatchEvent(new CustomEvent('pointsDataChanged'));
       closeAssignModal();
     },
     onError: (error) => {
-      console.error("Failed to update chore:", error);
+      console.error('Failed to update chore:', error);
       // TODO: Show error toast
     },
   });
@@ -362,11 +387,11 @@ export function useDailyView() {
   const deleteChoreMutation = useMutation({
     mutationFn: async (id: string) => {
       if (useApi) {
-        const res = await fetch(`/api/v1/daily-chores/${id}`, { method: "DELETE" });
-        if (!res.ok) throw new Error("Failed to delete chore");
+        const res = await fetch(`/api/v1/daily-chores/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to delete chore');
         return true;
       }
-      if (!effectiveHouseholdId) throw new Error("Household not configured");
+      if (!effectiveHouseholdId) throw new Error('Household not configured');
       return deleteDailyChore(getSupabaseClient(), effectiveHouseholdId, id, effectiveUserId);
     },
     onSuccess: () => {
@@ -375,10 +400,10 @@ export function useDailyView() {
       // Invalidate points data to refresh profile view
       queryClient.invalidateQueries({ queryKey: dailyViewKeys.userPoints(effectiveUserId) });
       // Notify other components to refresh points data
-      window.dispatchEvent(new CustomEvent("pointsDataChanged"));
+      window.dispatchEvent(new CustomEvent('pointsDataChanged'));
     },
     onError: (error) => {
-      console.error("Failed to delete chore:", error);
+      console.error('Failed to delete chore:', error);
       // TODO: Show error toast
     },
   });
@@ -414,7 +439,8 @@ export function useDailyView() {
 
     // Mutations
     handleChoreCreate: createChoreMutation.mutate,
-    handleChoreUpdate: (id: string, updates: UpdateDailyChoreCmd) => updateChoreMutation.mutate({ id, updates }),
+    handleChoreUpdate: (id: string, updates: UpdateDailyChoreCmd) =>
+      updateChoreMutation.mutate({ id, updates }),
     handleChoreDelete: deleteChoreMutation.mutate,
 
     // Mutation states

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,8 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import type { ProfileDTO } from "@/types";
+} from '@/components/ui/alert-dialog';
+import type { ProfileDTO } from '@/types';
 
 interface ProfileFormData {
   name: string;
@@ -30,7 +30,7 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
   const form = useForm<ProfileFormData>({
     defaultValues: {
       name: profile.name,
-      avatar_url: profile.avatar_url || "",
+      avatar_url: profile.avatar_url || '',
       email: profile.email,
     },
   });
@@ -50,29 +50,29 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
 
   const onSubmit = async (data: ProfileFormData) => {
     // Manual validation for name
-    if (!data.name || data.name.trim() === "") {
-      form.setError("name", { message: "Name is required" });
+    if (!data.name || data.name.trim() === '') {
+      form.setError('name', { message: 'Name is required' });
       return;
     }
     if (data.name.length > 100) {
-      form.setError("name", { message: "Name can have a maximum of 100 characters" });
+      form.setError('name', { message: 'Name can have a maximum of 100 characters' });
       return;
     }
 
     // Manual validation for avatar_url
-    if (data.avatar_url && data.avatar_url.trim() !== "") {
+    if (data.avatar_url && data.avatar_url.trim() !== '') {
       if (data.avatar_url.length > 500) {
-        form.setError("avatar_url", { message: "URL can have a maximum of 500 characters" });
+        form.setError('avatar_url', { message: 'URL can have a maximum of 500 characters' });
         return;
       }
       try {
         const url = new URL(data.avatar_url);
-        if (url.protocol !== "https:") {
-          form.setError("avatar_url", { message: "URL must start with https://" });
+        if (url.protocol !== 'https:') {
+          form.setError('avatar_url', { message: 'URL must start with https://' });
           return;
         }
       } catch {
-        form.setError("avatar_url", { message: "Invalid URL format" });
+        form.setError('avatar_url', { message: 'Invalid URL format' });
         return;
       }
     }
@@ -81,7 +81,7 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
     const processedData = {
       ...data,
       name: data.name.trim(),
-      avatar_url: data.avatar_url && data.avatar_url.trim() !== "" ? data.avatar_url : undefined,
+      avatar_url: data.avatar_url && data.avatar_url.trim() !== '' ? data.avatar_url : undefined,
     };
 
     await onUpdate(processedData);
@@ -92,7 +92,9 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Email */}
         <div>
-          <label className="block text-lg font-medium text-foreground mb-1">Your email: <span className="font-bold">{profile.email}</span></label>
+          <label className="block text-lg font-medium text-foreground mb-1">
+            Your email: <span className="font-bold">{profile.email}</span>
+          </label>
         </div>
 
         {/* Name */}
@@ -103,10 +105,10 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
           <input
             type="text"
             id="name"
-            value={form.watch("name") || ""}
-            onChange={(e) => form.setValue("name", e.target.value)}
+            value={form.watch('name') || ''}
+            onChange={(e) => form.setValue('name', e.target.value)}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              form.formState.errors.name ? "border-destructive" : "border-border"
+              form.formState.errors.name ? 'border-destructive' : 'border-border'
             }`}
             placeholder="Enter your name"
             maxLength={100}
@@ -124,16 +126,18 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
           <input
             type="url"
             id="avatar_url"
-            value={form.watch("avatar_url") || ""}
-            onChange={(e) => form.setValue("avatar_url", e.target.value)}
+            value={form.watch('avatar_url') || ''}
+            onChange={(e) => form.setValue('avatar_url', e.target.value)}
             className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              form.formState.errors.avatar_url ? "border-destructive" : "border-border"
+              form.formState.errors.avatar_url ? 'border-destructive' : 'border-border'
             }`}
             placeholder="https://example.com/avatar.jpg"
             maxLength={500}
           />
           {form.formState.errors.avatar_url && (
-            <p className="mt-1 text-sm text-destructive">{form.formState.errors.avatar_url.message}</p>
+            <p className="mt-1 text-sm text-destructive">
+              {form.formState.errors.avatar_url.message}
+            </p>
           )}
         </div>
 
@@ -151,10 +155,10 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
             type="submit"
             disabled={form.formState.isSubmitting}
             className={`px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-              form.formState.isSubmitting ? "animate-shimmer" : ""
+              form.formState.isSubmitting ? 'animate-shimmer' : ''
             }`}
           >
-            {form.formState.isSubmitting ? "Updating..." : "Save Profile"}
+            {form.formState.isSubmitting ? 'Updating...' : 'Save Profile'}
           </button>
         </div>
 
@@ -177,6 +181,6 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
   );
 });
 
-ProfileForm.displayName = "ProfileForm";
+ProfileForm.displayName = 'ProfileForm';
 
 export default ProfileForm;

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { XIcon, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { XIcon, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MenuItem {
   label?: string | React.ReactNode;
@@ -40,14 +40,14 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
     if (!mounted) return;
 
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     }
 
     // Cleanup on unmount
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen, mounted]);
 
@@ -68,7 +68,12 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
       </button>
 
@@ -87,18 +92,14 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
             {/* Side Menu */}
             <div
               className={`fixed top-0 left-0 z-[2147483647] h-full w-80 bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-xl transform transition-transform duration-300 ease-in-out ${
-                isOpen ? "translate-x-0" : "-translate-x-full"
+                isOpen ? 'translate-x-0' : '-translate-x-full'
               }`}
-              style={{ top: "0" }} // Start from top to include header area
+              style={{ top: '0' }} // Start from top to include header area
             >
               <div className="flex flex-col h-full p-6">
                 {/* Logo */}
                 <div className="flex mb-6">
-                  <img
-                    src="/logotype.png"
-                    alt="Logo"
-                    className="h-12 w-auto"
-                  />
+                  <img src="/logotype.png" alt="Logo" className="h-12 w-auto" />
                 </div>
 
                 {/* Close Button - same styling as modal close buttons */}
@@ -116,28 +117,31 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
                 {/* Navigation - takes up available space */}
                 <nav className="flex flex-col space-y-3 pt-12 flex-1">
                   {menuItems
-                    .filter(item => item.label !== "Sign out")
-                    .map((item, index) => (
-                    item.separator ? (
-                      <div key={index} className="border-t border-border my-2"></div>
-                    ) : (
-                      <button
-                        key={index}
-                        className="flex items-center gap-3 text-base font-medium text-foreground hover:text-primary transition-colors duration-200 px-4 py-2 rounded-md hover:bg-primary/5 text-left w-full"
-                        onClick={() => handleItemClick(item)}    >
-                        {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
-                        <span className="flex-1">{item.label}</span>
-                      </button>
-                    )
-                  ))}
+                    .filter((item) => item.label !== 'Sign out')
+                    .map((item, index) =>
+                      item.separator ? (
+                        <div key={index} className="border-t border-border my-2"></div>
+                      ) : (
+                        <button
+                          key={index}
+                          className="flex items-center gap-3 text-base font-medium text-foreground hover:text-primary transition-colors duration-200 px-4 py-2 rounded-md hover:bg-primary/5 text-left w-full"
+                          onClick={() => handleItemClick(item)}
+                        >
+                          {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
+                          <span className="flex-1">{item.label}</span>
+                        </button>
+                      )
+                    )}
                 </nav>
 
                 {/* Sign out button above the image */}
-                {menuItems.find(item => item.label === "Sign out") && (
+                {menuItems.find((item) => item.label === 'Sign out') && (
                   <div className="mt-4">
                     <button
                       className="flex items-center gap-3 text-base font-medium text-foreground hover:text-primary transition-colors duration-200 px-4 py-2 rounded-md hover:bg-primary/5 text-left w-full"
-                      onClick={() => handleItemClick(menuItems.find(item => item.label === "Sign out")!)}
+                      onClick={() =>
+                        handleItemClick(menuItems.find((item) => item.label === 'Sign out')!)
+                      }
                     >
                       <LogOut className="w-4 h-4 flex-shrink-0" />
                       <span className="flex-1">Sign out</span>

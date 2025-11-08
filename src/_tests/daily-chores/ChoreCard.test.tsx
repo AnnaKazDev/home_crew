@@ -17,11 +17,14 @@ vi.mock('react-dnd-html5-backend', () => ({
 
 // Mock UI components used by DeleteChoreModal
 vi.mock('@/components/ui/dialog', () => ({
-  Dialog: ({ children, open }: any) => open ? <div data-testid="delete-modal">{children}</div> : null,
+  Dialog: ({ children, open }: any) =>
+    open ? <div data-testid="delete-modal">{children}</div> : null,
   DialogContent: ({ children }: any) => <div data-testid="delete-modal-content">{children}</div>,
   DialogHeader: ({ children }: any) => <div data-testid="delete-modal-header">{children}</div>,
   DialogTitle: ({ children }: any) => <h2 data-testid="delete-modal-title">{children}</h2>,
-  DialogDescription: ({ children }: any) => <p data-testid="delete-modal-description">{children}</p>,
+  DialogDescription: ({ children }: any) => (
+    <p data-testid="delete-modal-description">{children}</p>
+  ),
   DialogFooter: ({ children }: any) => <div data-testid="delete-modal-footer">{children}</div>,
 }));
 

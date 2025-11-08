@@ -1,5 +1,5 @@
-import React from "react";
-import { Badge } from "@/components/ui/badge";
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
 
 interface PointsDisplayProps {
   points: number;
@@ -13,15 +13,15 @@ const PointsDisplay: React.FC<PointsDisplayProps> = React.memo(({ points, points
       ? (() => {
           const firstDate = new Date(pointsDateRange.firstDate!);
           const lastDate = new Date(pointsDateRange.lastDate!);
-          const firstFormatted = firstDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
+          const firstFormatted = firstDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
           });
-          const lastFormatted = lastDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
+          const lastFormatted = lastDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
           });
           return `${firstFormatted} - ${lastFormatted}`;
         })()
@@ -29,7 +29,9 @@ const PointsDisplay: React.FC<PointsDisplayProps> = React.memo(({ points, points
 
   return (
     <div className="mt-8 bg-card rounded-lg border p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-foreground mb-4">Points earned between {dateRangeText} </h2>
+      <h2 className="text-lg font-semibold text-foreground mb-4">
+        Points earned between {dateRangeText}{' '}
+      </h2>
       <Badge variant="secondary" className="text-lg dark:text-black">
         {points} points
       </Badge>
@@ -37,6 +39,6 @@ const PointsDisplay: React.FC<PointsDisplayProps> = React.memo(({ points, points
   );
 });
 
-PointsDisplay.displayName = "PointsDisplay";
+PointsDisplay.displayName = 'PointsDisplay';
 
 export default PointsDisplay;

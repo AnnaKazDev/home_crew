@@ -1,7 +1,7 @@
-import type { APIRoute } from "astro";
-import { getUserPointsEvents } from "@/lib/pointsEvents.service";
-import { GetPointsEventsQuerySchema } from "@/lib/validation.schemas";
-import { getSupabaseServiceClient, type SupabaseClient } from "@/db/supabase.client";
+import type { APIRoute } from 'astro';
+import { getUserPointsEvents } from '@/lib/pointsEvents.service';
+import { GetPointsEventsQuerySchema } from '@/lib/validation.schemas';
+import { getSupabaseServiceClient, type SupabaseClient } from '@/db/supabase.client';
 
 export const prerender = false;
 
@@ -31,19 +31,19 @@ export const GET: APIRoute = async (context) => {
     const validationResult = GetPointsEventsQuerySchema.safeParse(queryParams);
     if (!validationResult.success) {
       const details = validationResult.error.errors.map((err) => ({
-        field: err.path.join("."),
+        field: err.path.join('.'),
         message: err.message,
       }));
 
       return new Response(
         JSON.stringify({
-          error: "Validation failed",
-          code: "INVALID_PAGINATION_PARAMS",
+          error: 'Validation failed',
+          code: 'INVALID_PAGINATION_PARAMS',
           details,
         }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
@@ -56,12 +56,12 @@ export const GET: APIRoute = async (context) => {
     ) {
       return new Response(
         JSON.stringify({
-          error: "Invalid date range: from_date cannot be after to_date",
-          code: "INVALID_DATE_RANGE",
+          error: 'Invalid date range: from_date cannot be after to_date',
+          code: 'INVALID_DATE_RANGE',
         }),
         {
           status: 422,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
@@ -74,33 +74,33 @@ export const GET: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(result), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (serviceError) {
-      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+      const errorMessage = serviceError instanceof Error ? serviceError.message : 'Unknown error';
 
-      console.error("Error in getUserPointsEvents service:", serviceError);
+      console.error('Error in getUserPointsEvents service:', serviceError);
       return new Response(
         JSON.stringify({
-          error: "Internal server error",
-          code: "INTERNAL_ERROR",
+          error: 'Internal server error',
+          code: 'INTERNAL_ERROR',
         }),
         {
           status: 500,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
   } catch (error) {
-    console.error("Unexpected error in GET /v1/points-events:", error);
+    console.error('Unexpected error in GET /v1/points-events:', error);
     return new Response(
       JSON.stringify({
-        error: "Internal server error",
-        code: "INTERNAL_ERROR",
+        error: 'Internal server error',
+        code: 'INTERNAL_ERROR',
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }

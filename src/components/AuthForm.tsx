@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import AuthModeToggle from "./AuthModeToggle";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
-import ResetPasswordForm from "./ResetPasswordForm";
-import AuthErrorDisplay from "./AuthErrorDisplay";
+import React, { useState } from 'react';
+import AuthModeToggle from './AuthModeToggle';
+import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
+import ResetPasswordForm from './ResetPasswordForm';
+import AuthErrorDisplay from './AuthErrorDisplay';
 
-export type AuthMode = "login" | "register" | "reset-password";
+export type AuthMode = 'login' | 'register' | 'reset-password';
 
 interface AuthFormProps {
   onSuccessChange?: (showSuccess: boolean) => void;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ onSuccessChange }) => {
-  const [mode, setMode] = useState<AuthMode>("login");
+  const [mode, setMode] = useState<AuthMode>('login');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -40,12 +40,28 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccessChange }) => {
 
   const renderForm = () => {
     switch (mode) {
-      case "login":
-        return <LoginForm onError={handleError} onLoading={handleLoading} loading={loading} onModeChange={handleModeChange} />;
-      case "register":
-        return <RegisterForm onError={handleError} onLoading={handleLoading} loading={loading} onSuccess={handleSuccess} />;
-      case "reset-password":
-        return <ResetPasswordForm onError={handleError} onLoading={handleLoading} loading={loading} />;
+      case 'login':
+        return (
+          <LoginForm
+            onError={handleError}
+            onLoading={handleLoading}
+            loading={loading}
+            onModeChange={handleModeChange}
+          />
+        );
+      case 'register':
+        return (
+          <RegisterForm
+            onError={handleError}
+            onLoading={handleLoading}
+            loading={loading}
+            onSuccess={handleSuccess}
+          />
+        );
+      case 'reset-password':
+        return (
+          <ResetPasswordForm onError={handleError} onLoading={handleLoading} loading={loading} />
+        );
       default:
         return null;
     }

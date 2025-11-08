@@ -6,8 +6,12 @@ import type { MemberDTO } from '@/types';
 
 // Mock components
 vi.mock('@/components/ui/dialog', () => ({
-  Dialog: ({ children, open }: any) => open ? <div data-testid="dialog">{children}</div> : null,
-  DialogContent: ({ children, className }: any) => <div data-testid="dialog-content" className={className}>{children}</div>,
+  Dialog: ({ children, open }: any) => (open ? <div data-testid="dialog">{children}</div> : null),
+  DialogContent: ({ children, className }: any) => (
+    <div data-testid="dialog-content" className={className}>
+      {children}
+    </div>
+  ),
   DialogHeader: ({ children }: any) => <div data-testid="dialog-header">{children}</div>,
   DialogTitle: ({ children }: any) => <div data-testid="dialog-title">{children}</div>,
 }));
@@ -15,7 +19,10 @@ vi.mock('@/components/ui/dialog', () => ({
 vi.mock('@/components/daily-chores/ChoreCatalogSelector', () => ({
   ChoreCatalogSelector: ({ onItemSelect, onCreateCustom }: any) => (
     <div data-testid="catalog-selector">
-      <button data-testid="select-item" onClick={() => onItemSelect({ id: 'catalog-1', title: 'Test Chore' })}>
+      <button
+        data-testid="select-item"
+        onClick={() => onItemSelect({ id: 'catalog-1', title: 'Test Chore' })}
+      >
         Select Item
       </button>
       <button data-testid="create-custom" onClick={onCreateCustom}>
@@ -28,7 +35,10 @@ vi.mock('@/components/daily-chores/ChoreCatalogSelector', () => ({
 vi.mock('@/components/daily-chores/ChoreForm', () => ({
   ChoreForm: ({ onSubmit, onCancel }: any) => (
     <div data-testid="chore-form">
-      <button data-testid="form-submit" onClick={() => onSubmit({ title: 'Custom Chore', category: 'Test' })}>
+      <button
+        data-testid="form-submit"
+        onClick={() => onSubmit({ title: 'Custom Chore', category: 'Test' })}
+      >
         Submit Form
       </button>
       <button data-testid="form-cancel" onClick={onCancel}>
@@ -240,13 +250,11 @@ describe('AddChoreModal', () => {
       const formSubmitButton = screen.getByTestId('form-submit');
       await user.click(formSubmitButton);
 
-
       // Should return to catalog
       await waitFor(() => {
         expect(screen.getByTestId('catalog-selector')).toBeInTheDocument();
       });
     });
-
   });
 
   describe('Chore Configuration and Submission', () => {
@@ -311,7 +319,6 @@ describe('AddChoreModal', () => {
       expect(mockOnClose).not.toHaveBeenCalled();
       expect(screen.getByTestId('chore-configurator')).toBeInTheDocument();
     });
-
   });
 
   describe('Navigation and Cancellation', () => {
@@ -472,7 +479,7 @@ describe('AddChoreModal', () => {
     });
   });
 
- describe('Accessibility and UX', () => {
+  describe('Accessibility and UX', () => {
     it('has proper dialog structure', () => {
       render(
         <AddChoreModal

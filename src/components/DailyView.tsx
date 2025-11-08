@@ -1,14 +1,14 @@
-import React from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { useDailyView } from "@/hooks/useDailyView";
-import { useAuthRedirect } from "@/hooks/useAuthRedirect";
-import { DailyViewHeader } from "./daily-chores/DailyViewHeader";
-import { ChoreColumns } from "./daily-chores/ChoreColumns";
-import { AddChoreModal } from "./daily-chores/AddChoreModal";
-import { AssignChoreModal } from "./daily-chores/AssignChoreModal";
-import type { CreateDailyChoreCmd } from "@/types";
-import type { ChoreViewModel } from "@/types/daily-view.types";
+import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDailyView } from '@/hooks/useDailyView';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
+import { DailyViewHeader } from './daily-chores/DailyViewHeader';
+import { ChoreColumns } from './daily-chores/ChoreColumns';
+import { AddChoreModal } from './daily-chores/AddChoreModal';
+import { AssignChoreModal } from './daily-chores/AssignChoreModal';
+import type { CreateDailyChoreCmd } from '@/types';
+import type { ChoreViewModel } from '@/types/daily-view.types';
 
 // Use ChoreViewModel from types
 
@@ -52,8 +52,8 @@ export default function DailyView() {
   } = useDailyView();
 
   // Separate chores by status
-  const todoChores = chores.filter((chore: ChoreViewModel) => chore.status === "todo");
-  const doneChores = chores.filter((chore: ChoreViewModel) => chore.status === "done");
+  const todoChores = chores.filter((chore: ChoreViewModel) => chore.status === 'todo');
+  const doneChores = chores.filter((chore: ChoreViewModel) => chore.status === 'done');
 
   // Calculate total points from completed chores assigned to current user
   const totalPoints = doneChores
@@ -70,7 +70,7 @@ export default function DailyView() {
   };
 
   // Handle chore drop (drag and drop)
-  const handleChoreDrop = (choreId: string, targetStatus: "todo" | "done") => {
+  const handleChoreDrop = (choreId: string, targetStatus: 'todo' | 'done') => {
     const chore = chores.find((c: ChoreViewModel) => c.id === choreId);
     if (!chore || chore.status === targetStatus) {
       return; // No change needed
@@ -83,14 +83,14 @@ export default function DailyView() {
 
   // Handle mark chore as done (button click)
   const handleMarkDone = (choreId: string) => {
-    handleChoreDrop(choreId, "done");
+    handleChoreDrop(choreId, 'done');
   };
 
   // Handle add chore click with limit check
   const handleAddChoreClick = () => {
     // Check daily limit (50 chores) before opening modal
     if (chores.length >= 50) {
-      console.warn("Daily chore limit reached (50)");
+      console.warn('Daily chore limit reached (50)');
       return;
     }
     openAddModal();
@@ -105,7 +105,10 @@ export default function DailyView() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div data-test-id="daily-view" className="min-h-screen bg-background pt-[2rem] md:pt-[2.5rem] px-4 md:px-8">
+      <div
+        data-test-id="daily-view"
+        className="min-h-screen bg-background pt-[2rem] md:pt-[2.5rem] px-4 md:px-8"
+      >
         <div className="max-w-4xl mx-auto">
           {/* Header with Shadcn components */}
           <DailyViewHeader
@@ -143,6 +146,7 @@ export default function DailyView() {
           members={members}
           currentDate={currentDate}
           currentUserId={currentUserId}
+          householdId={household?.id}
         />
 
         {/* Assign Chore Modal */}

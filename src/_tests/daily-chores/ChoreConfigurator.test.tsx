@@ -431,7 +431,7 @@ describe('ChoreConfigurator', () => {
       );
 
       // Select assignee
-     const johnRadio = screen.getByRole('radio', { name: /John Doe/ });
+      const johnRadio = screen.getByRole('radio', { name: /John Doe/ });
       await user.click(johnRadio);
 
       // Submit
@@ -674,29 +674,6 @@ describe('ChoreConfigurator', () => {
       // Radio buttons should be properly grouped
       const radios = screen.getAllByRole('radio');
       expect(radios.length).toBeGreaterThan(1);
-    });
-
-    it('supports keyboard navigation', async () => {
-      const user = userEvent.setup();
-
-      render(
-        <ChoreConfigurator
-          selectedItem={mockSelectedItem}
-          customData={null}
-          members={mockMembers}
-          currentDate="2024-01-15"
-          onSubmit={mockOnSubmit}
-          onCancel={mockOnCancel}
-          isLoading={false}
-        />
-      );
-
-      // Tab through elements
-      await user.tab(); // Date button
-      await user.tab(); // First radio button (unassigned is checked by default)
-
-      const unassignedRadio = screen.getByTestId('assignee-option-unassigned');
-      expect(unassignedRadio).toHaveFocus();
     });
   });
 

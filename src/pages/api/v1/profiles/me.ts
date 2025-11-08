@@ -1,6 +1,10 @@
-import type { APIRoute } from "astro";
-import { getProfile, updateProfile, UpdateProfileCmdSchema } from "@/lib/profiles.service";
-import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
+import type { APIRoute } from 'astro';
+import { getProfile, updateProfile, UpdateProfileCmdSchema } from '@/lib/profiles.service';
+import {
+  getSupabaseServiceClient,
+  DEFAULT_USER_ID,
+  type SupabaseClient,
+} from '@/db/supabase.client';
 
 export const prerender = false;
 
@@ -18,12 +22,14 @@ export const GET: APIRoute = async (context) => {
     // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
     let userId = DEFAULT_USER_ID;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.user?.id) {
         userId = session.user.id;
       }
     } catch (error) {
-      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+      console.warn('Could not get authenticated user, using DEFAULT_USER_ID:', error);
     }
 
     // Get the user's profile
@@ -32,29 +38,29 @@ export const GET: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(profile), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (serviceError) {
-      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+      const errorMessage = serviceError instanceof Error ? serviceError.message : 'Unknown error';
 
-      if (errorMessage === "PROFILE_NOT_FOUND") {
-        return new Response(JSON.stringify({ error: "Profile not found" }), {
+      if (errorMessage === 'PROFILE_NOT_FOUND') {
+        return new Response(JSON.stringify({ error: 'Profile not found' }), {
           status: 404,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      console.error("Error in getProfile service:", serviceError);
-      return new Response(JSON.stringify({ error: "Internal server error" }), {
+      console.error('Error in getProfile service:', serviceError);
+      return new Response(JSON.stringify({ error: 'Internal server error' }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
   } catch (error) {
-    console.error("Unexpected error in GET /v1/profiles/me:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
+    console.error('Unexpected error in GET /v1/profiles/me:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };
@@ -74,9 +80,9 @@ export const PATCH: APIRoute = async (context) => {
     try {
       requestData = await context.request.json();
     } catch {
-      return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
+      return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -84,12 +90,12 @@ export const PATCH: APIRoute = async (context) => {
     const validationResult = UpdateProfileCmdSchema.safeParse(requestData);
     if (!validationResult.success) {
       const details = validationResult.error.issues.map((err: any) => ({
-        path: err.path.join("."),
+        path: err.path.join('.'),
         message: err.message,
       }));
-      return new Response(JSON.stringify({ error: "Validation failed", details }), {
+      return new Response(JSON.stringify({ error: 'Validation failed', details }), {
         status: 422,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -98,12 +104,14 @@ export const PATCH: APIRoute = async (context) => {
     // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
     let userId = DEFAULT_USER_ID;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.user?.id) {
         userId = session.user.id;
       }
     } catch (error) {
-      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+      console.warn('Could not get authenticated user, using DEFAULT_USER_ID:', error);
     }
 
     // Update the user's profile
@@ -112,36 +120,36 @@ export const PATCH: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(updatedProfile), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (serviceError) {
-      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+      const errorMessage = serviceError instanceof Error ? serviceError.message : 'Unknown error';
 
-      if (errorMessage === "PROFILE_NOT_FOUND") {
-        return new Response(JSON.stringify({ error: "Profile not found" }), {
+      if (errorMessage === 'PROFILE_NOT_FOUND') {
+        return new Response(JSON.stringify({ error: 'Profile not found' }), {
           status: 404,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      console.error("Error in updateProfile service:", serviceError);
+      console.error('Error in updateProfile service:', serviceError);
       return new Response(
         JSON.stringify({
-          error: "Internal server error",
+          error: 'Internal server error',
           details: errorMessage,
           stack: serviceError instanceof Error ? serviceError.stack : undefined,
         }),
         {
           status: 500,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
   } catch (error) {
-    console.error("Unexpected error in PATCH /v1/profiles/me:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
+    console.error('Unexpected error in PATCH /v1/profiles/me:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };
