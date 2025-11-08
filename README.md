@@ -1,6 +1,6 @@
 # Home Crew – Household Chores Planner
 
-![build](https://img.shields.io/github/actions/workflow/status/your-org/home-crew/ci.yml?branch=main)  
+![build](https://img.shields.io/github/actions/workflow/status/your-org/home-crew/ci-cd.yaml?branch=master)  
 ![license](https://img.shields.io/github/license/your-org/home-crew)  
 ![node](https://img.shields.io/badge/node-22.14.0-blue)
 
