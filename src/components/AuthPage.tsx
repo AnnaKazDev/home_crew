@@ -87,11 +87,11 @@ const AuthPage: React.FC = () => {
       </div>
 
       {/* Welcome image - bottom right corner, desktop only */}
-      <div className="hidden lg:block absolute bottom-4 right-4">
+      <div className="hidden lg:block fixed bottom-4 right-4 z-10">
         <img
           src="/welcome_to_home_crew.png"
           alt="Welcome to Home Crew"
-          className="w-48 h-auto opacity-80 hover:opacity-100 transition-opacity duration-300"
+          className="w-[23rem] h-auto opacity-80 hover:opacity-100 transition-opacity duration-300"
         />
       </div>
     </div>
