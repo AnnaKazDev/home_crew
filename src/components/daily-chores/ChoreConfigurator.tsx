@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarDaysIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CatalogItemDTO, MemberDTO } from '@/types';
 
@@ -169,7 +169,7 @@ export function ChoreConfigurator({
                       })
                     : 'Pick a date'}
                 </span>
-                <CalendarIcon className="h-4 w-4 text-muted-foreground ml-2 group-hover:text-black" />
+                <CalendarDaysIcon className="h-4 w-4 text-muted-foreground ml-2 group-hover:text-black" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 z-[100]" align="start">

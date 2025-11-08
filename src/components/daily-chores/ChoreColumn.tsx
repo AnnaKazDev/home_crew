@@ -83,7 +83,7 @@ export function ChoreColumn({
 
             {chores.length === 0 && (
               <div
-                className={`flex flex-col items-center justify-center h-[133px] text-muted-foreground border-2 border-dashed rounded-lg ${
+                className={`flex flex-col items-center justify-center h-[139px] text-muted-foreground border-2 border-dashed rounded-lg ${
                   isOver ? 'border-accent bg-accent/50' : 'border-border'
                 }`}
               >
