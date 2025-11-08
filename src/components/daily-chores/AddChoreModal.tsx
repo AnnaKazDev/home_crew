@@ -157,17 +157,19 @@ export function AddChoreModal({
     }
   };
 
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent
         data-test-id="add-chore-modal"
         className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+        aria-describedby="add-chore-content"
       >
         <DialogHeader>
           <DialogTitle className="text-2xl">{getDialogTitle()}</DialogTitle>
         </DialogHeader>
 
-        <div className="py-4">
+        <div id="add-chore-content" className="py-4">
           {error && (
             <div className="mb-4 p-3 bg-destructive/10 border border-destructive rounded-md">
               <p className="text-destructive text-sm">{error}</p>
