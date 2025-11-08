@@ -7,7 +7,7 @@ interface PointsBadgeProps {
 
 export function PointsBadge({ totalPoints }: PointsBadgeProps) {
   return (
-    <Badge variant="secondary" className="text-lg px-4 py-2 text-black">
+    <Badge variant="secondary" className="text-lg px-4 py-2 text-white dark:text-black">
       ⭐ {totalPoints} points earned today
     </Badge>
   );
