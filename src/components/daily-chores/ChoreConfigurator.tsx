@@ -290,7 +290,7 @@ export function ChoreConfigurator({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="px-4 py-2 text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-black dark:text-white bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50"
           >
             Back
           </button>

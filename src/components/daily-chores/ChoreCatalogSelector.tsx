@@ -232,12 +232,12 @@ export function ChoreCatalogSelector({
 
       {/* Add Custom Button */}
       <div className="border-t border-border pt-6">
-        <span className="text-primary text-2xl font-bold text-center my-4 block">
+        <span className="text-black dark:text-white text-xl font-bold text-center my-4 block">
           or maybe You would like to..
         </span>
         <button
           onClick={onCreateCustom}
-          className="w-full px-4 py-3 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium"
+          className="w-full px-4 py-3 bg-emerald-500 text-white dark:text-black rounded-lg hover:bg-emerald-600 transition-colors font-medium"
         >
           Add Custom Chore
         </button>
