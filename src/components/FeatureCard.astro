@@ -1,0 +1,19 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+const { title, description, icon } = Astro.props;
+---
+
+<div class="group flex items-start space-x-4 p-4 rounded-2xl bg-gradient-to-r from-teal-50/50 to-emerald-50/50 dark:from-teal-950/20 dark:to-emerald-950/20 border border-teal-100 dark:border-teal-800/50 hover:shadow-lg transition-all duration-300">
+  <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+    <Fragment set:html={icon} />
+  </div>
+  <div class="flex-1">
+    <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-1">{title}</h3>
+    <p class="text-gray-600 dark:text-gray-300">{description}</p>
+  </div>
+</div>

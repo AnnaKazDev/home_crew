@@ -16,6 +16,7 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.env.test
 
 # macOS-specific files
 .DS_Store
@@ -31,6 +32,14 @@ create-second-user.js
 test-db.js
 test-fresh-points.js
 debug-points.js
+test_supabase.js
+check_rls.js
+check_user.js
+
+# Test artifacts and cache
+test-results/
+playwright-report/
+playwright/.cache/
 *-test-user.js
 check-*.js
 check-*.sql

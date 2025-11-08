@@ -12,12 +12,22 @@ export const prerender = false;
  */
 export const GET: APIRoute = async (context) => {
   try {
-    // For development - use default user (same as other endpoints)
     const supabase = getSupabaseServiceClient() as SupabaseClient;
+
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+    }
 
     // Get household members for current user
     try {
-      const members = await getHouseholdMembers(supabase, DEFAULT_USER_ID);
+      const members = await getHouseholdMembers(supabase, userId);
 
       return new Response(JSON.stringify(members), {
         status: 200,

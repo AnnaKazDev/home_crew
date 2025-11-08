@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { CreateDailyChoreCmdSchema, getDailyChores, createDailyChore } from "@/lib/dailyChores.service";
+import { CreateDailyChoreCmdSchema, getDailyChores, createDailyChore, deleteDailyChore, deleteDailyChoresByDate } from "@/lib/dailyChores.service";
 import { getHouseholdForUser } from "@/lib/households.service";
 import { getSupabaseServiceClient, DEFAULT_USER_ID, type SupabaseClient } from "@/db/supabase.client";
 import type { Database } from "@/db/database.types";
@@ -48,8 +48,19 @@ export const GET: APIRoute = async (context) => {
 
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+    }
+
     // Get household for the current user
-    const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);
+    const household = await getHouseholdForUser(supabase, userId);
     if (!household) {
       return new Response(JSON.stringify({ error: "User not in any household" }), {
         status: 404,
@@ -108,7 +119,7 @@ export const POST: APIRoute = async (context) => {
     // Validate using Zod schema
     const validationResult = CreateDailyChoreCmdSchema.safeParse(requestData);
     if (!validationResult.success) {
-      const details = validationResult.error.errors.map((err) => ({
+      const details = validationResult.error.issues.map((err: any) => ({
         path: err.path.join("."),
         message: err.message,
       }));
@@ -120,13 +131,24 @@ export const POST: APIRoute = async (context) => {
 
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+    }
+
     // Get household for the current user
-    const household = await getHouseholdForUser(supabase, DEFAULT_USER_ID);
+    const household = await getHouseholdForUser(supabase, userId);
     if (!household) {
       return new Response(
         JSON.stringify({
           error: "Household not found",
-          userId: DEFAULT_USER_ID,
+          userId: userId,
         }),
         {
           status: 404,
@@ -193,6 +215,87 @@ export const POST: APIRoute = async (context) => {
     }
   } catch (error) {
     console.error("Unexpected error in POST /v1/daily-chores:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+};
+
+/**
+ * DELETE /v1/daily-chores?date=YYYY-MM-DD
+ * Deletes all daily chores for the given date (admin only)
+ *
+ * Query params:
+ *   - date: ISO date string (required)
+ *
+ * Response: 204 No Content
+ */
+export const DELETE: APIRoute = async (context) => {
+  try {
+    // Parse query parameters
+    const url = new URL(context.request.url);
+    const dateParam = url.searchParams.get("date");
+
+    // Validate date parameter
+    if (!dateParam || !/^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid date parameter",
+          details: "date must be in YYYY-MM-DD format",
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabase = getSupabaseServiceClient() as SupabaseClient;
+
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+    }
+
+    // Get household for the current user
+    const household = await getHouseholdForUser(supabase, userId);
+    if (!household) {
+      return new Response(JSON.stringify({ error: "User not in any household" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Delete all chores for the given date (admin only)
+    try {
+      await deleteDailyChoresByDate(supabase, household.id, dateParam, DEFAULT_USER_ID);
+
+      return new Response(null, {
+        status: 204,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (serviceError) {
+      const errorMessage = serviceError instanceof Error ? serviceError.message : "Unknown error";
+
+      if (errorMessage === "UNAUTHORIZED") {
+        return new Response(JSON.stringify({ error: "Only household admin can delete chores by date" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      console.error("Service error deleting chores by date:", serviceError);
+      return new Response(JSON.stringify({ error: "Internal server error" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  } catch (error) {
+    console.error("Unexpected error in DELETE /v1/daily-chores:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

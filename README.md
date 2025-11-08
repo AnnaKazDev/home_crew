@@ -55,6 +55,11 @@ _Target success metric_: **≥ 2 chores added per active member per day**.
 - **Supabase** (PostgreSQL, RLS, auth, audit)
 - Optional realtime channels for live status updates
 
+### Testing & Quality Assurance
+
+- **Vitest** – unit testing framework with React Testing Library
+- **Playwright** – end-to-end testing across all modern browsers
+
 ### Tooling & Infrastructure
 
 - **OpenRouter.ai** – multi-provider LLM gateway
@@ -199,6 +204,8 @@ npm run preview   # Local preview of production build
 | `npm run lint`     | Lint all source files                  |
 | `npm run lint:fix` | Lint and auto-fix issues               |
 | `npm run format`   | Prettier formatting for JSON/CSS/MD    |
+| `npm run test:unit`| Run unit tests with Vitest             |
+| `npm run test:e2e` | Run end-to-end tests with Playwright   |
 
 ---
 

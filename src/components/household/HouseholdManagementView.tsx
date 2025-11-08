@@ -63,7 +63,7 @@ const HouseholdManagementView: React.FC = memo(() => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background pt-8 px-4 md:px-8" aria-live="polite">
+      <div className="min-h-screen bg-background pt-[2rem] md:pt-[2.5rem] px-4 md:px-8" aria-live="polite">
         <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           {/* Title skeleton */}
           <div className="mb-8">
@@ -117,7 +117,7 @@ const HouseholdManagementView: React.FC = memo(() => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
+      <div className="min-h-screen bg-background pt-[2rem] md:pt-[2.5rem] px-4 md:px-8">
         <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           <div
             role="alert"
@@ -133,7 +133,7 @@ const HouseholdManagementView: React.FC = memo(() => {
 
   if (!household) {
     return (
-      <div className="min-h-screen bg-background pt-8 px-4 md:px-8">
+      <div className="min-h-screen bg-background pt-[2rem] md:pt-[2.5rem] px-4 md:px-8">
         <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
           <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
             {/* Header */}
@@ -184,7 +184,7 @@ const HouseholdManagementView: React.FC = memo(() => {
       <div className="max-w-md md:max-w-lg lg:max-w-xl mx-auto">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-8" id="household-title">
+          <h1 className="text-3xl text-primary font-bold text-foreground mb-8" id="household-title">
             Household Management
           </h1>
           <p className="text-muted-foreground dark:text-gray-300 mt-2 text-sm sm:text-base">

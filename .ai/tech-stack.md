@@ -20,6 +20,12 @@
 
 - **OpenRouter.ai** – gateway to multiple LLM providers (OpenAI, Anthropic, Google). Supports spend limits per API key.
 
+## Testing & Quality Assurance
+
+- **Vitest** – fast unit testing framework for TypeScript/JavaScript with native ESM support.
+- **React Testing Library** – testing utilities for React components with focus on user interactions.
+- **Playwright** – end-to-end testing framework for modern web apps with cross-browser support.
+
 ## CI/CD & Hosting
 
 - **GitHub Actions** – lint → test → build → preview → staging → manual approve → production.

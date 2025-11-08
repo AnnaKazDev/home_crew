@@ -15,6 +15,7 @@ interface ChoreColumnProps {
   onDrop: (choreId: string) => void;
   onChoreAssign?: (chore: ChoreViewModel) => void;
   onChoreDelete?: (choreId: string) => void;
+  onChoreMarkDone?: (choreId: string) => void;
   onAddChoreClick?: () => void;
 }
 
@@ -27,6 +28,7 @@ export function ChoreColumn({
   onDrop,
   onChoreAssign,
   onChoreDelete,
+  onChoreMarkDone,
   onAddChoreClick,
 }: ChoreColumnProps) {
   const [{ isOver }, drop] = useDrop({
@@ -42,12 +44,14 @@ export function ChoreColumn({
   return (
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
+      data-testid={`chore-column-${status}`}
+      data-test-id={`chore-column-${status}`}
       className={`bg-card p-6 rounded-lg shadow min-h-[400px] transition-colors ${
         isOver ? "bg-accent border-2 border-dashed border-accent" : ""
       }`}
     >
       <div className="flex items-center justify-between mb-4 min-h-[40px]">
-        <h2 className={`text-lg font-semibold ${status === "todo" ? "text-primary" : "text-primary"}`}>
+        <h2 className={`text-xl font-semibold ${status === "todo" ? "text-primary" : "text-primary"}`}>
           {title} ({chores.length})
         </h2>
         {status === "todo" && onAddChoreClick && <AddChoreButton onClick={onAddChoreClick} />}
@@ -67,6 +71,7 @@ export function ChoreColumn({
                 members={members}
                 onAssign={onChoreAssign ? () => onChoreAssign(chore) : undefined}
                 onDelete={onChoreDelete ? () => onChoreDelete(chore.id) : undefined}
+                onMarkDone={status === "todo" && onChoreMarkDone ? () => onChoreMarkDone(chore.id) : undefined}
               />
             ))}
 

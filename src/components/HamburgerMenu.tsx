@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { XIcon } from "lucide-react";
+import { XIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface MenuItem {
@@ -54,9 +54,15 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
   return (
     <>
       {/* Hamburger Button */}
-      <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)} title="Menu">
+      <button
+        className="p-0 w-8 h-8 bg-transparent border-none cursor-pointer flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+        onClick={() => setIsOpen(true)}
+        title="Menu"
+      >
         <svg
-          className="w-5 h-5 text-black dark:text-white"
+          width="32"
+          height="32"
+          className="text-black dark:text-white"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -64,7 +70,7 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
-      </Button>
+      </button>
 
       {/* Portal the overlay and menu to document body to escape stacking contexts */}
       {mounted &&
@@ -85,7 +91,16 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
               }`}
               style={{ top: "0" }} // Start from top to include header area
             >
-              <div className="p-6">
+              <div className="flex flex-col h-full p-6">
+                {/* Logo */}
+                <div className="flex mb-6">
+                  <img
+                    src="/logotype.png"
+                    alt="Logo"
+                    className="h-12 w-auto"
+                  />
+                </div>
+
                 {/* Close Button - same styling as modal close buttons */}
                 <Button
                   variant="ghost"
@@ -98,22 +113,46 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
                   <span className="sr-only">Close menu</span>
                 </Button>
 
-                <nav className="flex flex-col space-y-3 pt-12">
-                  {menuItems.map((item, index) => (
+                {/* Navigation - takes up available space */}
+                <nav className="flex flex-col space-y-3 pt-12 flex-1">
+                  {menuItems
+                    .filter(item => item.label !== "Sign out")
+                    .map((item, index) => (
                     item.separator ? (
                       <div key={index} className="border-t border-border my-2"></div>
                     ) : (
                       <button
                         key={index}
                         className="flex items-center gap-3 text-base font-medium text-foreground hover:text-primary transition-colors duration-200 px-4 py-2 rounded-md hover:bg-primary/5 text-left w-full"
-                        onClick={() => handleItemClick(item)}
-                      >
+                        onClick={() => handleItemClick(item)}    >
                         {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
                         <span className="flex-1">{item.label}</span>
                       </button>
                     )
                   ))}
                 </nav>
+
+                {/* Sign out button above the image */}
+                {menuItems.find(item => item.label === "Sign out") && (
+                  <div className="mt-4">
+                    <button
+                      className="flex items-center gap-3 text-base font-medium text-foreground hover:text-primary transition-colors duration-200 px-4 py-2 rounded-md hover:bg-primary/5 text-left w-full"
+                      onClick={() => handleItemClick(menuItems.find(item => item.label === "Sign out")!)}
+                    >
+                      <LogOut className="w-4 h-4 flex-shrink-0" />
+                      <span className="flex-1">Sign out</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Bottom Image - stays at bottom */}
+                <div className="mt-8">
+                  <img
+                    src="/lets_make_it_together.png"
+                    alt="Let's make it together"
+                    className="w-full h-auto"
+                  />
+                </div>
               </div>
             </div>
           </>,

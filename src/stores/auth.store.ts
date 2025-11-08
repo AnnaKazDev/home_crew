@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { getSupabaseClient } from '@/db/supabase.client';
-import type { ProfileDTO } from '@/types';
+import { create } from "zustand";
+import { getSupabaseClient } from "@/db/supabase.client";
+import type { ProfileDTO } from "@/types";
 
 interface User {
   id: string;
@@ -22,7 +22,7 @@ interface AuthState {
   updateProfile: (data: { name: string; avatar_url?: string | null }) => Promise<void>;
 
   // Initialization
-  initialize: () => Promise<void>;
+  initialize: () => Promise<(() => void) | undefined>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -33,10 +33,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   profile: null,
 
   // Actions
-  setUser: (user) => set({
-    user,
-    isAuthenticated: !!user
-  }),
+  setUser: (user) =>
+    set({
+      user,
+      isAuthenticated: !!user,
+    }),
 
   setLoading: (loading) => set({ loading }),
 
@@ -44,13 +45,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   updateProfile: async (data) => {
     const { user } = get();
-    if (!user) throw new Error('Not authenticated');
+    if (!user) throw new Error("Not authenticated");
 
     const supabase = getSupabaseClient();
-    const { error } = await supabase
-      .from('profiles')
-      .update(data)
-      .eq('id', user.id);
+    const { error } = await supabase.from("profiles").update(data).eq("id", user.id);
 
     if (error) throw error;
 
@@ -60,8 +58,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({
         profile: {
           ...currentProfile,
-          ...data
-        }
+          ...data,
+        },
       });
     }
   },
@@ -69,13 +67,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // Initialize auth state
   initialize: async () => {
     try {
+      console.log('auth.store: Initializing auth store...');
       const supabase = getSupabaseClient();
+      console.log('auth.store: Supabase client created');
 
       // Get current session
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      console.log('auth.store: Session check result:', { session: !!session, error });
 
       if (error) {
-        console.error('Auth error:', error);
+        console.error("Auth error:", error);
         set({ user: null, profile: null, loading: false });
         return;
       }
@@ -83,34 +88,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (session?.user) {
         get().setUser(session.user);
 
-        // Fetch profile
-        const profileResponse = await fetch(
-          `http://127.0.0.1:54321/rest/v1/profiles?select=*&id=eq.${session.user.id}`,
-          {
-            headers: {
-              'apikey': 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
-              'Authorization': `Bearer sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz`,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
+        // Fetch profile using Supabase client
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
 
-        if (profileResponse.ok) {
-          const profileData = await profileResponse.json();
-          if (profileData && profileData.length > 0) {
-            const profile: ProfileDTO = {
-              ...profileData[0],
-              email: session.user.email || '',
-              total_points: profileData[0].total_points || 0
-                };
-                set({ profile });
-          }
+        if (!profileError && profileData) {
+          const profile: ProfileDTO = {
+            ...profileData,
+            email: session.user.email || "",
+            total_points: profileData.total_points || 0,
+          };
+          set({ profile });
         }
       } else {
         set({ user: null, profile: null });
       }
     } catch (error) {
-      console.error('AuthStore: Initialization error:', error);
+      console.error("AuthStore: Initialization error:", error);
       set({ user: null, profile: null });
     } finally {
       set({ loading: false });
@@ -118,46 +115,37 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     // Set up auth listener
     const supabase = getSupabaseClient();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        get().setUser(session.user);
 
-        if (session?.user) {
-          get().setUser(session.user);
+        // Fetch profile
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
 
-          // Fetch profile
-          try {
-            const profileResponse = await fetch(
-              `http://127.0.0.1:54321/rest/v1/profiles?select=*&id=eq.${session.user.id}`,
-              {
-                headers: {
-                  'apikey': 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
-                  'Authorization': `Bearer sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz`,
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-
-            if (profileResponse.ok) {
-              const profileData = await profileResponse.json();
-              if (profileData && profileData.length > 0) {
-                const profile: ProfileDTO = {
-                  ...profileData[0],
-                  email: session.user.email || '',
-                  total_points: profileData[0].total_points || 0
-                };
-                set({ profile });
-              }
-            }
-          } catch (fetchError) {
-            console.error('AuthStore: Profile fetch error:', fetchError);
+          if (!profileError && profileData) {
+            const profile: ProfileDTO = {
+              ...profileData,
+              email: session.user.email || "",
+              total_points: profileData.total_points || 0,
+            };
+            set({ profile });
           }
-        } else {
-          set({ user: null, profile: null });
+        } catch (fetchError) {
+          console.error("AuthStore: Profile fetch error:", fetchError);
         }
-
-        set({ loading: false });
+      } else {
+        set({ user: null, profile: null });
       }
-    );
+
+      set({ loading: false });
+    });
 
     return () => subscription.unsubscribe();
   },

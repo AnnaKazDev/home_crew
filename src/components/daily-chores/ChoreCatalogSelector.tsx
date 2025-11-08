@@ -123,7 +123,7 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
   }
 
   return (
-    <div className="space-y-6">
+    <div data-test-id="chore-catalog-selector" className="space-y-6">
       {/* Header */}
       <div className="text-center">
         <h3 className="text-lg font-semibold text-foreground mb-2">Add Chore to Daily View</h3>
@@ -156,8 +156,8 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
               }}
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 selectedCategory === category
-                  ? "bg-primary/10 text-primary border border-primary/20"
-                  : "text-secondary-foreground hover:bg-secondary/80"
+                  ? "bg-primary/10 text-primary border-[4px] border-primary/20"
+                  : "bg-primary/10 text-primary border border-primary/20"
               }`}
             >
               {category === "all" ? "All" : category}
@@ -171,11 +171,12 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
         {filteredItems.map((item) => (
           <button
             key={item.id}
+            data-test-id={`chore-catalog-item-${item.id}`}
             onClick={() => onItemSelect(item)}
             className="group p-4 border border-border rounded-lg hover:border-accent hover:bg-accent/50 transition-colors text-left"
           >
             <div className="flex items-start space-x-3">
-              <span className="text-lg">{item.emoji || "📋"}</span>
+              <span className="text-4xl flex-shrink-0 mr-4">{item.emoji || "📋"}</span>
               <div className="flex-1">
                 <h4 className="font-medium text-foreground text-sm group-hover:text-black">
                   {item.title}
@@ -208,9 +209,10 @@ export function ChoreCatalogSelector({ onItemSelect, onCreateCustom }: ChoreCata
 
       {/* Add Custom Button */}
       <div className="border-t border-border pt-6">
+        <span className="text-primary text-2xl font-bold text-center my-4 block">or maybe You would like to..</span>
         <button
           onClick={onCreateCustom}
-          className="w-full px-4 py-3 border-2 border-dashed border-muted-foreground/25 rounded-lg hover:border-accent hover:bg-accent/50 transition-colors text-foreground font-medium"
+          className="w-full px-4 py-3 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium"
         >
           Add Custom Chore
         </button>

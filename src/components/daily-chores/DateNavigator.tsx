@@ -53,7 +53,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
           <div className="hidden md:block text-lg font-semibold text-foreground mb-2">{formatDate(currentDate)}</div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80">
+              <Button data-test-id="date-navigator-pick-date" className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80">
                 Pick a date
                 <CalendarIcon className="ml-2 h-4 w-4" />
               </Button>
@@ -104,7 +104,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
 
           <Popover>
             <PopoverTrigger asChild>
-              <Button className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80">
+              <Button data-test-id="date-navigator-pick-date-mobile" className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80">
                 <span>Pick a date</span>
                 <CalendarIcon className="h-4 w-4" />
               </Button>

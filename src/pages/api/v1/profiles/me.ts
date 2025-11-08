@@ -15,9 +15,20 @@ export const GET: APIRoute = async (context) => {
   try {
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+    }
+
     // Get the user's profile
     try {
-      const profile = await getProfile(supabase, DEFAULT_USER_ID);
+      const profile = await getProfile(supabase, userId);
 
       return new Response(JSON.stringify(profile), {
         status: 200,
@@ -84,9 +95,20 @@ export const PATCH: APIRoute = async (context) => {
 
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 
+    // Try to get authenticated user from session, fallback to DEFAULT_USER_ID for dev
+    let userId = DEFAULT_USER_ID;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        userId = session.user.id;
+      }
+    } catch (error) {
+      console.warn("Could not get authenticated user, using DEFAULT_USER_ID:", error);
+    }
+
     // Update the user's profile
     try {
-      const updatedProfile = await updateProfile(supabase, DEFAULT_USER_ID, validationResult.data);
+      const updatedProfile = await updateProfile(supabase, userId, validationResult.data);
 
       return new Response(JSON.stringify(updatedProfile), {
         status: 200,

@@ -20,16 +20,14 @@ export default function AppHeader() {
       href: "/daily_chores",
     },
     {
-      label: "Household",
+      label: "Household Management",
       href: "/household",
     },
     {
-      label: "Profile",
+      label: "Your Profile",
       href: "/profile",
     },
-    // Separator
     { separator: true },
-    // Mobile-only menu items
     ...(user
       ? [
           {
@@ -111,18 +109,27 @@ export default function AppHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background dark:bg-black border-b border-border">
-      <div className="w-full relative flex h-14 items-center px-4">
+      <div className="w-full relative flex h-[5.5rem] items-center px-4">
         {/* Logo/Brand and Hamburger Menu */}
-        <div className="flex items-center space-x-2">
-          <HamburgerMenu menuItems={menuItems} />
-          <h1 className="text-lg font-semibold text-foreground dark:text-white">Home Crew</h1>
+        <div className="flex items-center">
+          <div style={{ marginRight: '32px' }}>
+            <HamburgerMenu menuItems={menuItems} />
+          </div>
+          <a href="/">
+            <img
+              src="/logotype.png"
+              alt="Home icon"
+              className="w-32 cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          </a>
+          {/* <h1 className="text-lg font-semibold text-foreground dark:text-white">Home Crew</h1> */}
         </div>
 
         {/* Desktop controls - hidden on mobile, visible on desktop */}
         <div className="hidden md:flex items-center space-x-4 ml-auto">
           {user && (
-            <span className="text-sm font-medium text-foreground dark:text-white">
-              Hi, {profile?.name || user?.email?.split('@')[0] || 'Loading...'}
+            <span className="text-lg font-medium text-foreground dark:text-white">
+              Hi, <span className="font-bold text-primary">{profile?.name || user?.email?.split('@')[0] || 'Loading...'}</span>
             </span>
           )}
           <Button
