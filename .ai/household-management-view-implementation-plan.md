@@ -26,6 +26,7 @@ HouseholdManagementView (główny kontener)
 ## 4. Szczegóły komponentów
 
 ### HouseholdManagementView
+
 - **Opis komponentu**: Główny komponent widoku zarządzającego gospodarstwem domowym. Odpowiada za ładowanie danych gospodarstwa i członków, zarządzanie stanem oraz koordynację między podkomponentami.
 - **Główne elementy**: Kontener główny z sekcjami dla informacji o gospodarstwie, listy członków i ustawień. Wykorzystuje shadcn/ui Card komponenty dla organizacji layoutu.
 - **Obsługiwane interakcje**: Ładowanie danych przy montowaniu, obsługa błędów, aktualizacja danych po zmianach w podkomponentach.
@@ -34,6 +35,7 @@ HouseholdManagementView (główny kontener)
 - **Propsy**: Brak (komponent standalone).
 
 ### HouseholdInfo
+
 - **Opis komponentu**: Komponent wyświetlający podstawowe informacje o gospodarstwie oraz umożliwiający inline edycję nazwy dla administratorów.
 - **Główne elementy**: Pole z nazwą (z przyciskiem Edit dla adminów), inline formularz edycji, PIN dostępu (tylko dla adminów).
 - **Obsługiwane interakcje**: Wyświetlanie danych, ukrywanie PIN-u dla członków, inline edycja nazwy przez adminów.
@@ -42,6 +44,7 @@ HouseholdManagementView (główny kontener)
 - **Propsy**: household: HouseholdDTO, currentUserRole: 'admin' | 'member', onUpdate?: (updates: UpdateHouseholdCmd) => Promise<void>, isUpdating?: boolean.
 
 ### MembersList
+
 - **Opis komponentu**: Lista wszystkich członków gospodarstwa z możliwością zarządzania rolami i usuwania.
 - **Główne elementy**: Lista kart MemberCard w kontenerze z przewijaniem, przyciski akcji widoczne tylko dla adminów.
 - **Obsługiwane interakcje**: Renderowanie listy członków, przekazywanie zdarzeń zmiany roli i usunięcia.
@@ -50,6 +53,7 @@ HouseholdManagementView (główny kontener)
 - **Propsy**: members: MemberDTO[], currentUserRole: 'admin' | 'member', onUpdateRole: (memberId: string, role: string) => void, onRemoveMember: (memberId: string) => void.
 
 ### MemberCard
+
 - **Opis komponentu**: Pojedyncza karta członka gospodarstwa zawierająca avatar, nazwę, rolę i kontrolki zarządzania.
 - **Główne elementy**: Avatar (lub placeholder), informacje tekstowe, dropdown do zmiany roli, przycisk usunięcia.
 - **Obsługiwane interakcje**: Zmiana roli przez dropdown, usunięcie członka z potwierdzeniem.
@@ -57,10 +61,10 @@ HouseholdManagementView (główny kontener)
 - **Typy**: MemberDTO.
 - **Propsy**: member: MemberDTO, currentUserRole: 'admin' | 'member', currentUserId: string, onUpdateRole: (role: string) => void, onRemove: () => void.
 
-
 ## 5. Typy
 
 ### Istniejące typy z types.ts
+
 - `HouseholdDTO`: { id: UUID, name: string, timezone: string, pin?: string }
 - `MemberDTO`: { id: UUID, user_id: UUID, name: string, avatar_url?: string | null, role: "admin" | "member", joined_at: ISODate }
 - `UpdateMemberRoleCmd`: { role: "admin" | "member" }
@@ -145,6 +149,7 @@ Wszystkie wywołania API będą obsługiwane przez service layer z odpowiednią 
 - **Liczba członków**: Maksymalnie 10 osób (wymuszane przez backend)
 
 Walidacja odbywa się na poziomie:
+
 - **Komponentów**: Walidacja dostępu i uprawnień
 - **Formularzy**: Walidacja danych wejściowych (Zod schemas)
 - **API**: Business logic validation na backendzie

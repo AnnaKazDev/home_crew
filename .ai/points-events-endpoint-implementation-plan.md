@@ -30,7 +30,7 @@ The GET /v1/points-events endpoint returns a paginated list of points events for
 export interface GetPointsEventsOptions {
   cursor?: string;
   limit?: number;
-  event_type?: Enums<"points_event_type">;
+  event_type?: Enums<'points_event_type'>;
   from_date?: string;
   to_date?: string;
 }

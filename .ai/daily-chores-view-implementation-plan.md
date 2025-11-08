@@ -32,6 +32,7 @@ DailyView (main container)
 ## 4. Component Details
 
 ### DailyView
+
 - **Component Description**: Main container of the daily view, manages global state and coordinates all subcomponents. Handles data loading, modal management, and React Query integration.
 - **Main Elements**: Container div with header, main content area for task columns, overlay for modals.
 - **Handled Events**: onDateChange (date change), onChoreAdd (task addition), onChoreUpdate (status/assignment change), onChoreDelete (deletion).
@@ -40,6 +41,7 @@ DailyView (main container)
 - **Props**: None (main view component).
 
 ### DailyViewHeader
+
 - **Component Description**: Header with points badge, date navigator, and add button. Responsive layout adapting to mobile devices.
 - **Main Elements**: Flex container with PointsBadge, DateNavigator, and AddChoreButton.
 - **Handled Events**: onDateChange (passed to parent), onAddChoreClick (modal opening).
@@ -48,6 +50,7 @@ DailyView (main container)
 - **Props**: currentDate: ISODate, totalPoints: number, choresCount: number, onDateChange: (date: ISODate) => void, onAddChoreClick: () => void.
 
 ### ChoreColumns
+
 - **Component Description**: Container for two To Do and Done columns with drag-and-drop support between them.
 - **Main Elements**: Flex container with two ChoreColumn components, DropZone for drag-and-drop.
 - **Handled Events**: onChoreDrop (task movement between columns), onChoreClick (task click).
@@ -56,6 +59,7 @@ DailyView (main container)
 - **Props**: chores: ChoreViewModel[], members: MemberDTO[], currentUserId: UUID, onChoreUpdate: (id: UUID, updates: UpdateDailyChoreCmd) => void, onChoreClick: (chore: ChoreViewModel) => void.
 
 ### ChoreColumn
+
 - **Component Description**: Single task column (To Do or Done) with task dropping capability.
 - **Main Elements**: Column container with title, ChoreCard component list, DropZone.
 - **Handled Events**: onDrop (dropped task acceptance), onChoreClick (passed to parent).
@@ -64,6 +68,7 @@ DailyView (main container)
 - **Props**: title: string, status: 'todo' | 'done', chores: ChoreViewModel[], onDrop: (choreId: UUID) => void, onChoreClick: (chore: ChoreViewModel) => void.
 
 ### ChoreCard
+
 - **Component Description**: Single task card with information and action controls.
 - **Main Elements**: Card container with title, emoji, time, assignee avatar/name, action buttons (assign, delete).
 - **Handled Events**: onDragStart (drag start), onAssignClick (assignment modal opening), onDeleteClick (task deletion).
@@ -72,6 +77,7 @@ DailyView (main container)
 - **Props**: chore: ChoreViewModel, assignee: MemberDTO | null, onAssign: () => void, onDelete: () => void.
 
 ### DateNavigator
+
 - **Component Description**: Component for navigation between days with date picker and arrow buttons.
 - **Main Elements**: Flex container with prev/next buttons and date picker input.
 - **Handled Events**: onDateChange (selected date change).
@@ -80,6 +86,7 @@ DailyView (main container)
 - **Props**: currentDate: ISODate, onDateChange: (date: ISODate) => void.
 
 ### AddChoreModal
+
 - **Component Description**: Modal for adding new task with catalog selection or custom creation.
 - **Main Elements**: Dialog with ChoreCatalogSelector, optional ChoreForm for custom tasks, ChoreConfigurator.
 - **Handled Events**: onChoreSelect (catalog selection), onCustomChoreCreate (custom creation), onSubmit (task save).
@@ -88,6 +95,7 @@ DailyView (main container)
 - **Props**: isOpen: boolean, onClose: () => void, onSubmit: (cmd: CreateDailyChoreCmd) => void, catalogItems: CatalogItemDTO[], members: MemberDTO[].
 
 ### AssignChoreModal
+
 - **Component Description**: Modal for assigning member to task.
 - **Main Elements**: Dialog with household member list for selection.
 - **Handled Events**: onMemberSelect (member selection), onSubmit (assignment save).
@@ -98,6 +106,7 @@ DailyView (main container)
 ## 5. Types
 
 ### Existing types from types.ts:
+
 - `DailyChoreDTO`: id, date, time_of_day, status, assignee_id, points, chore_catalog_id
 - `CreateDailyChoreCmd`: date, chore_catalog_id, assignee_id?, time_of_day?
 - `UpdateDailyChoreCmd`: status?, assignee_id?
@@ -106,16 +115,17 @@ DailyView (main container)
 - `HouseholdDTO`: id, name, timezone, pin?
 
 ### New ViewModel Types:
+
 ```typescript
 interface ChoreViewModel extends DailyChoreDTO {
-  catalogTitle: string;           // Title from catalog
-  catalogEmoji?: string;          // Emoji from catalog
-  catalogCategory: string;        // Category from catalog
+  catalogTitle: string; // Title from catalog
+  catalogEmoji?: string; // Emoji from catalog
+  catalogCategory: string; // Category from catalog
   catalogTimeOfDay: TimeOfDayType; // Time of day from catalog
-  assigneeName?: string;          // Assigned member name
-  assigneeAvatar?: string;        // Assigned member avatar
-  canEdit: boolean;               // Can user edit (assignee or admin)
-  canDelete: boolean;             // Can user delete (creator or admin)
+  assigneeName?: string; // Assigned member name
+  assigneeAvatar?: string; // Assigned member avatar
+  canEdit: boolean; // Can user edit (assignee or admin)
+  canDelete: boolean; // Can user delete (creator or admin)
 }
 
 interface DailyViewState {
@@ -137,12 +147,14 @@ interface DailyViewState {
 State managed through combination of React Context (global application state) and local hooks. Main view state stored in DailyView component using useState for modals and temporary states. React Query used for API data with invalidation after mutations.
 
 Custom hook `useDailyView` encapsulates logic:
+
 - Data fetching (chores, members, household)
 - Mutation handling (create, update, delete chores)
 - Optimistic updates with error rollback
 - Cache invalidation on date changes
 
 Local state for:
+
 - Open modals (isAddModalOpen, isAssignModalOpen)
 - Selected task (selectedChore)
 - Loading and error states
@@ -152,21 +164,25 @@ Local state for:
 Integration through React Query with custom hooks in `src/hooks/useChores.ts` and `src/hooks/useHousehold.ts`.
 
 **GET /v1/daily-chores**:
+
 - Request: query params `date`, optionally `status`, `assignee_id`
 - Response: `DailyChoreDTO[]`
 - Usage: Fetching tasks for selected date on day change or refresh
 
 **POST /v1/daily-chores**:
+
 - Request body: `CreateDailyChoreCmd`
 - Response: `DailyChoreDTO`
 - Usage: Adding new task from modal, optimistic update
 
 **PATCH /v1/daily-chores/:id**:
+
 - Request body: `UpdateDailyChoreCmd` (status or assignee_id)
 - Response: `DailyChoreDTO`
 - Usage: Status change through drag-and-drop or member assignment
 
 **DELETE /v1/daily-chores/:id**:
+
 - Response: 204 No Content
 - Usage: Task deletion, confirmation through dialog
 

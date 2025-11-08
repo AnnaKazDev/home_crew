@@ -195,17 +195,17 @@ npm run preview   # Local preview of production build
 
 ## Available Scripts
 
-| Command            | Description                            |
-| ------------------ | -------------------------------------- |
-| `npm run dev`      | Start Astro dev server with hot-reload |
-| `npm run build`    | Build static & server output           |
-| `npm run preview`  | Preview production build locally       |
-| `npm run astro`    | Run arbitrary Astro CLI commands       |
-| `npm run lint`     | Lint all source files                  |
-| `npm run lint:fix` | Lint and auto-fix issues               |
-| `npm run format`   | Prettier formatting for JSON/CSS/MD    |
-| `npm run test:unit`| Run unit tests with Vitest             |
-| `npm run test:e2e` | Run end-to-end tests with Playwright   |
+| Command             | Description                            |
+| ------------------- | -------------------------------------- |
+| `npm run dev`       | Start Astro dev server with hot-reload |
+| `npm run build`     | Build static & server output           |
+| `npm run preview`   | Preview production build locally       |
+| `npm run astro`     | Run arbitrary Astro CLI commands       |
+| `npm run lint`      | Lint all source files                  |
+| `npm run lint:fix`  | Lint and auto-fix issues               |
+| `npm run format`    | Prettier formatting for JSON/CSS/MD    |
+| `npm run test:unit` | Run unit tests with Vitest             |
+| `npm run test:e2e`  | Run end-to-end tests with Playwright   |
 
 ---
 

@@ -14,6 +14,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 ## 2. Lista widoków
 
 ### 2.1 Landing z autentyfikacją
+
 - **Ścieżka**: `/`
 - **Główny cel**: Przywitanie niezalogowanych użytkowników i jednoczesne umożliwienie rejestracji/logowania na jednej stronie
 - **Kluczowe informacje**: Logo aplikacji, hasło reklamowe u góry; przełącznik rejestracja/logowanie poniżej, wieloetapowy proces rejestracji z wyborem roli (admin/członek), formularze rejestracji/logowania, wybór typu użytkownika, PIN dla członków
@@ -22,8 +23,8 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **Dostępność**: ARIA labels na wszystkich przyciskach, form labels, error announcements, keyboard navigation między sekcjami i przełącznikiem
 - **Bezpieczeństwo**: Secure password fields, role-based validation, protection przed 409/422 errors, publiczny dostęp do sekcji powitalnej
 
-
 ### 2.3 Główny widok dzienny (Daily View)
+
 - **Ścieżka**: `/daily_chores` (po zalogowaniu)
 - **Główny cel**: Centrum aplikacji - przegląd obowiązków na wybrany dzień z możliwością zarządzania
 - **Kluczowe informacje**: Dwie kolumny To Do/Done, lista zadań z przypisaniami, punkty użytkownika, data picker
@@ -33,6 +34,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **Bezpieczeństwo**: Role-based controls (tylko admin widzi niektóre funkcje), assignee validation
 
 ### 2.4 Zarządzanie gospodarstwem (Household Management)
+
 - **Ścieżka**: `/household`
 - **Główny cel**: Admin-only widok zarządzania gospodarstwem i członkami
 - **Kluczowe informacje**: Lista członków, PIN gospodarstwa, nazwa gospodarstwa, role użytkowników
@@ -42,6 +44,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **Bezpieczeństwo**: Tylko admin ma dostęp, confirmation dla usunięcia członków, PIN ukryty dla członków
 
 ### 2.5 Profil użytkownika (Profile)
+
 - **Ścieżka**: `/profile`
 - **Główny cel**: Zarządzanie informacjami osobowymi i przegląd punktów
 - **Kluczowe informacje**: Dane użytkownika, całkowite punkty, historia aktywności (poza mvp), avatar
@@ -51,6 +54,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **Bezpieczeństwo**: Tylko własne dane, validation dla wszystkich pól
 
 ### 2.6 Modal dodawania zadania (Add Chore Modal)
+
 - **Ścieżka**: Modal w Daily View (/daily_chores)
 - **Główny cel**: Dodanie nowego obowiązku do wybranego dnia z katalogu
 - **Kluczowe informacje**: Katalog zadań (predefiniowane + mozliwośc dodania własnego), wybór daty/czasu/przypisania
@@ -60,6 +64,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **Bezpieczeństwo**: Walidacja limitu 50 zadań dziennie, household context
 
 ### 2.7 Modal przypisywania zadania (Assign Chore Modal)
+
 - **Ścieżka**: Modal w Daily View
 - **Główny cel**: Zmiana przypisania obowiązku do członka gospodarstwa
 - **Kluczowe informacje**: Lista członków gospodarstwa, aktualne przypisanie
@@ -69,6 +74,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **Bezpieczeństwo**: Tylko admin/członek może przypisywać, household validation
 
 ### 2.8 Historia punktów (Points History) - opcjonalny
+
 - **Ścieżka**: `/points` lub modal w Profile
 - **Główny cel**: Szczegółowy przegląd historii punktów i aktywności
 - **Kluczowe informacje**: Lista zdarzeń punktów, filtry dat, podsumowanie
@@ -89,6 +95,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 6. **Zarządzanie**: Admin może zarządzać członkami w Household Management → członkowie mogą edytować profil
 
 ### Kluczowe interakcje:
+
 - **Dodanie zadania**: Przycisk "Dodaj" → modal wyboru z katalogu → konfiguracja → zapis → optimistic update w Daily View. z automatu zadanie przypisywane jest do danego usera, ale jest moliwośc zmiany listy wybranych czlonkow
 - **Zmiana statusu**: Drag-and-drop między kolumnami → API call → points award jeśli Done
 - **Przypisanie**: Klik na zadanie → modal wyboru członka (jezeli chcemy, aby byl inny niz dany, domyslny user) → update → live update dla wszystkich
@@ -97,21 +104,25 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 ## 4. Układ i struktura nawigacji
 
 ### Główne poziomy nawigacji:
+
 1. **Publiczny**: Landing page z rejestracją/logowaniem
 2. **Chroniony**: Wszystkie pozostałe widoki wymagają autoryzacji
 
 ### Struktura nawigacji:
+
 - **Header**: Logo, points badge, user menu (profil, household, logout)
 - **Sidebar**: Collapsible menu z: Daily View, Household (admin), Profile, Points History
 - **Breadcrumbs**: W widokach zarządzania dla contextu
 - **Modals**: Overlay dla akcji (dodaj zadanie, przypisz, potwierdzenia)
 
 ### Responsywność nawigacji:
+
 - **Desktop**: Pełna sidebar + header
 - **Tablet**: Collapsed sidebar z hamburger menu
 - **Mobile**:Collapsed sidebar z hamburger menu
 
 ### Navigation guards:
+
 - Role-based visibility (admin functions ukryte dla członków)
 - Auth guards przekierowujące niezalogowanych do /
 - Loading states podczas sprawdzania uprawnień
@@ -119,6 +130,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 ## 5. Kluczowe komponenty
 
 ### Komponenty UI (shadcn/ui):
+
 - **Button**: Primary/secondary/destructive variants z loading states
 - **Card**: Container dla zadań, członków, podsumowań
 - **Dialog/Modal**: Overlay dla formularzy i potwierdzeń
@@ -128,6 +140,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **Avatar**: Profile pictures członków
 
 ### Komponenty biznesowe:
+
 - **ChoreCard**: Draggable card z tytułem, assignee, czasem, punktami
 - **ChoreColumn**: Drop zone dla To Do/Done z limitami
 - **DateNavigator**: Picker z prefetching sąsiednich dni
@@ -136,6 +149,7 @@ Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, Rea
 - **ChoreCatalog**: Searchable list predefiniowanych zadań
 
 ### Komponenty systemowe:
+
 - **ErrorBoundary**: Global catch dla błędów z fallback UI
 - **ToastProvider**: Notifications dla sukcesów/błędów
 - **LoadingSpinner**: Consistent loading states

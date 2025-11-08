@@ -7,53 +7,65 @@ Ten katalog zawiera klasy Page Object Model dla testów e2e związanych z funkcj
 ### Klasy Bazowe
 
 #### `DailyChoresPage`
+
 Reprezentuje główną stronę `/daily_chores` z widokiem dziennym zadań.
 
 **Metody główne:**
+
 - `goto()` - nawigacja do strony
 - `clickAddChore()` - kliknięcie przycisku "Add Chore"
 - `getTodoChores()` - pobranie wszystkich zadań z kolumny "To Do"
 - `getDoneChores()` - pobranie wszystkich zadań z kolumny "Done"
 
 #### `AddChoreModal`
+
 Obsługuje modal dodawania nowego zadania z jego różnymi krokami.
 
 **Metody główne:**
+
 - `selectRandomChore()` - wybór losowego zadania z katalogu
 - `waitForCatalogStep()` - oczekiwanie na krok wyboru z katalogu
 - `waitForConfigStep()` - oczekiwanie na krok konfiguracji
 
 #### `ChoreConfigurator`
+
 Obsługuje krok konfiguracji zadania (data, przypisanie, zatwierdzenie).
 
 **Metody główne:**
+
 - `verifyCurrentDate()` - sprawdzenie czy data jest ustawiona na dzisiaj
 - `assignToUser(userId)` - przypisanie zadania do użytkownika
 - `assignToUnassigned()` - pozostawienie zadania bez przypisania
 - `submitChore()` - zatwierdzenie konfiguracji
 
 #### `ChoreCard`
+
 Reprezentuje pojedynczą kartę zadania z metodami do weryfikacji danych.
 
 **Metody główne:**
+
 - `getTitle()` - pobranie tytułu zadania
 - `getPoints()` - pobranie ilości punktów
 - `getAssignee()` - pobranie nazwy przypisanego użytkownika
 - `verifyChore()` - kompleksowa weryfikacja danych zadania
 
 #### `DateNavigator`
+
 Obsługuje nawigację między datami w aplikacji.
 
 **Metody główne:**
+
 - `selectDate(date)` - wybór konkretnej daty w kalendarzu
 - `getCurrentDate()` - pobranie obecnie wyświetlanej daty
 
 ### Klasa Złożona
 
 #### `AddChoreFlow`
+
 Łączy wszystkie komponenty w kompletny przepływ dodawania zadania.
 
 **Metoda główna:**
+
 - `addRandomChore(userId?, userName?)` - kompletny scenariusz dodawania losowego zadania
 - `verifyChoreInTodoList()` - weryfikacja czy zadanie pojawiło się na liście To Do
 
@@ -62,6 +74,7 @@ Obsługuje nawigację między datami w aplikacji.
 Testy używają danych użytkowników z bazy Supabase. **Użytkownicy są tworzeni tylko raz podczas setupu bazy testowej**.
 
 ### Główny Użytkownik Testowy (Admin)
+
 - **ID**: `e9d12995-1f3e-491d-9628-3c4137d266d1`
 - **Email**: `dev@example.com`
 - **Hasło**: `password`
@@ -70,6 +83,7 @@ Testy używają danych użytkowników z bazy Supabase. **Użytkownicy są tworze
 - **Household**: `Test Household` (ID: `11111111-aaaa-bbbb-cccc-222222222222`)
 
 ### Drugi Użytkownik Testowy (Member)
+
 - **Email**: `testmember@example.com`
 - **Hasło**: `password`
 - **Nazwa**: `Test Member`
@@ -80,6 +94,7 @@ Testy używają danych użytkowników z bazy Supabase. **Użytkownicy są tworze
 **Użytkownicy są tworzeni automatycznie przez endpoint `/api/auth/dev-login`** - nie trzeba uruchamiać skryptów ręcznie!
 
 Każdy test używa specjalnego endpointu `/api/auth/dev-login` który:
+
 1. Próbuje zalogować użytkownika testowego
 2. Jeśli użytkownik nie istnieje - tworzy go automatycznie
 3. Ustawia odpowiednie ciasteczka sesji
@@ -99,10 +114,12 @@ node create-second-user.js
 **Każdy test jest odpowiedzialny za czyszczenie po sobie** - podejście "leave no trace":
 
 #### 1. **Unikalne identyfikatory**
+
 - Każdy test generuje unikalny suffix: `e2e-${timestamp}-${random}`
 - Zapobiega kolizjom między równolegle uruchomionymi testami
 
 #### 2. **Cleanup na końcu testu**
+
 ```typescript
 // Dodaj zadanie
 const addedChore = await addChoreFlow.addRandomChore({...});
@@ -115,6 +132,7 @@ await addChoreFlow.dailyChoresPage.deleteChoreById(addedChore.id!);
 ```
 
 #### 3. **Korzyści tego podejścia**
+
 - ✅ **Izolacja testów** - każdy test działa na czystym środowisku
 - ✅ **Równoległość** - testy mogą być uruchamiane równolegle bez interferencji
 - ✅ **Niezawodność** - jeśli test się wysypie, następne testy mają czyste środowisko
@@ -140,7 +158,7 @@ const testUser = {
   id: 'e9d12995-1f3e-491d-9628-3c4137d266d1',
   email: 'dev@example.com',
   password: 'password',
-  name: 'Test User'
+  name: 'Test User',
 };
 
 // Funkcja pomocnicza do logowania
@@ -150,7 +168,7 @@ async function loginWithTestUser(page, user) {
   await page.locator('input[type="email"]').fill(user.email);
   await page.locator('input[type="password"]').first().fill(user.password);
   await page.locator('button').filter({ hasText: 'Sign in' }).last().click();
-  await page.waitForURL(url => !url.pathname.includes('/auth'));
+  await page.waitForURL((url) => !url.pathname.includes('/auth'));
 }
 
 test.describe('Add Chore Flow', () => {
@@ -167,7 +185,7 @@ test.describe('Add Chore Flow', () => {
     const addedChore = await addChoreFlow.addRandomChore({
       userId: testUser.id,
       userName: testUser.name,
-      uniqueSuffix
+      uniqueSuffix,
     });
 
     // Zweryfikuj że zadanie pojawiło się na liście
@@ -193,7 +211,7 @@ test('add chore with custom date and unique identifier', async ({ page }) => {
     userId: 'user-123',
     userName: 'John Doe',
     date: tomorrow,
-    uniqueSuffix: 'test-run-1'
+    uniqueSuffix: 'test-run-1',
   });
 
   // Przejdź do jutrzejszej daty
@@ -214,7 +232,7 @@ test('cleanup chores before test', async ({ page }) => {
   const addedChore = await addChoreFlow.addRandomChore({
     userId: 'user-123',
     userName: 'John Doe',
-    uniqueSuffix: 'fresh-test'
+    uniqueSuffix: 'fresh-test',
   });
 
   await addChoreFlow.verifyChoreInTodoList(addedChore);
