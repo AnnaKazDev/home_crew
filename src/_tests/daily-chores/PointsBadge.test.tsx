@@ -45,7 +45,7 @@ describe('PointsBadge', () => {
     render(<PointsBadge totalPoints={30} />);
 
     const badge = screen.getByText('⭐ 30 points earned today');
-    expect(badge).toHaveClass('text-lg', 'px-4', 'py-2', 'text-white', 'dark:text-black');
+    expect(badge).toHaveClass('text-lg', 'p-4', 'text-white', 'dark:text-black');
   });
 
   it('contains star emoji', () => {
