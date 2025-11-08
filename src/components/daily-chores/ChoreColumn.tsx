@@ -3,6 +3,7 @@ import { useDrop } from 'react-dnd';
 import { ChoreCard } from './ChoreCard';
 import { ChoreCardSkeleton } from './ChoreCardSkeleton';
 import { AddChoreButton } from './AddChoreButton';
+import { Badge } from '@/components/ui/badge';
 import type { ChoreViewModel } from '@/types/daily-view.types';
 import type { MemberDTO } from '@/types';
 
@@ -51,11 +52,14 @@ export function ChoreColumn({
       }`}
     >
       <div className="flex items-center justify-between mb-4 min-h-[40px]">
-        <h2
-          className={`text-xl font-semibold ${status === 'todo' ? 'text-primary' : 'text-primary'}`}
-        >
-          {title} ({chores.length})
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-primary">
+            {title}
+          </h2>
+          <div className="inline-flex items-center justify-center w-7 h-7 rounded-full border-2 border-orange-500 text-orange-600 text-sm font-bold bg-transparent">
+            {chores.length}
+          </div>
+        </div>
         {status === 'todo' && onAddChoreClick && <AddChoreButton onClick={onAddChoreClick} />}
       </div>
 

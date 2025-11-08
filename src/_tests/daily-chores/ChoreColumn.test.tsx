@@ -97,7 +97,7 @@ describe('ChoreColumn', () => {
     it('renders column title with chore count', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -108,13 +108,14 @@ describe('ChoreColumn', () => {
         />
       );
 
-      expect(screen.getByText('To Do (2)')).toBeInTheDocument();
+      expect(screen.getByText('TO DO')).toBeInTheDocument();
+      expect(screen.getByText('2')).toBeInTheDocument();
     });
 
     it('renders all chore cards', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -134,7 +135,7 @@ describe('ChoreColumn', () => {
     it('renders empty state message when no chores', () => {
       render(
         <ChoreColumn
-          title="Done"
+          title="DONE"
           status="done"
           chores={[]}
           members={mockMembers}
@@ -151,7 +152,7 @@ describe('ChoreColumn', () => {
     it('shows different empty state for todo column', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={[]}
           members={mockMembers}
@@ -170,7 +171,7 @@ describe('ChoreColumn', () => {
     it('renders add button for todo column when callback provided', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -187,7 +188,7 @@ describe('ChoreColumn', () => {
     it('does not render add button for done column', () => {
       render(
         <ChoreColumn
-          title="Done"
+          title="DONE"
           status="done"
           chores={mockChores}
           members={mockMembers}
@@ -204,7 +205,7 @@ describe('ChoreColumn', () => {
     it('does not render add button when callback not provided', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -222,7 +223,7 @@ describe('ChoreColumn', () => {
 
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -247,7 +248,7 @@ describe('ChoreColumn', () => {
 
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -275,7 +276,7 @@ describe('ChoreColumn', () => {
       // Manually trigger the drop logic
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -294,7 +295,7 @@ describe('ChoreColumn', () => {
 
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -313,7 +314,7 @@ describe('ChoreColumn', () => {
 
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -323,7 +324,7 @@ describe('ChoreColumn', () => {
         />
       );
 
-      const column = screen.getByText('To Do (2)').closest('div');
+      const column = screen.getByTestId('chore-column-todo');
       expect(column).not.toHaveClass('bg-accent');
     });
   });
@@ -332,7 +333,7 @@ describe('ChoreColumn', () => {
     it('renders skeleton cards when loading', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -350,7 +351,7 @@ describe('ChoreColumn', () => {
     it('renders actual chore cards when not loading', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -369,7 +370,7 @@ describe('ChoreColumn', () => {
     it('shows loading state for empty column', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={[]}
           members={mockMembers}
@@ -389,7 +390,7 @@ describe('ChoreColumn', () => {
     it('passes correct props to ChoreCard components', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -406,7 +407,7 @@ describe('ChoreColumn', () => {
     it('passes assign callback to chore cards when provided', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -423,7 +424,7 @@ describe('ChoreColumn', () => {
     it('does not pass assign callback when not provided', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -441,7 +442,7 @@ describe('ChoreColumn', () => {
     it('applies correct base column styling', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -458,7 +459,7 @@ describe('ChoreColumn', () => {
     it('applies correct header styling', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -468,14 +469,14 @@ describe('ChoreColumn', () => {
         />
       );
 
-      const header = screen.getByText('To Do (2)');
-      expect(header).toHaveClass('text-xl', 'font-semibold');
+      const header = screen.getByText('TO DO');
+      expect(header).toHaveClass('text-xl', 'font-semibold', 'text-primary');
     });
 
     it('applies correct empty state styling', () => {
       render(
         <ChoreColumn
-          title="Done"
+          title="DONE"
           status="done"
           chores={[]}
           members={mockMembers}
@@ -500,7 +501,7 @@ describe('ChoreColumn', () => {
     it('shows correct status-based styling for todo column', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -510,14 +511,17 @@ describe('ChoreColumn', () => {
         />
       );
 
-      const header = screen.getByText('To Do (2)');
-      expect(header).toHaveClass('text-primary');
+      const header = screen.getByText('TO DO');
+      expect(header).toHaveClass('text-xl', 'font-semibold', 'text-primary');
+
+      const badge = screen.getByText('2');
+      expect(badge).toBeInTheDocument();
     });
 
     it('shows correct status-based styling for done column', () => {
       render(
         <ChoreColumn
-          title="Done"
+          title="DONE"
           status="done"
           chores={mockChores}
           members={mockMembers}
@@ -527,8 +531,11 @@ describe('ChoreColumn', () => {
         />
       );
 
-      const header = screen.getByText('Done (2)');
-      expect(header).toHaveClass('text-primary');
+      const header = screen.getByText('DONE');
+      expect(header).toHaveClass('text-xl', 'font-semibold', 'text-primary');
+
+      const badge = screen.getByText('2');
+      expect(badge).toBeInTheDocument();
     });
   });
 
@@ -536,7 +543,7 @@ describe('ChoreColumn', () => {
     it('handles undefined optional callbacks gracefully', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={mockMembers}
@@ -551,7 +558,7 @@ describe('ChoreColumn', () => {
     it('handles empty members array', () => {
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={mockChores}
           members={[]}
@@ -574,7 +581,7 @@ describe('ChoreColumn', () => {
 
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={incompleteChores}
           members={mockMembers}
@@ -597,7 +604,7 @@ describe('ChoreColumn', () => {
 
       render(
         <ChoreColumn
-          title="To Do"
+          title="TO DO"
           status="todo"
           chores={manyChores}
           members={mockMembers}

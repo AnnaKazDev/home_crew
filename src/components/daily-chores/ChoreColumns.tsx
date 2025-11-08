@@ -37,7 +37,7 @@ export function ChoreColumns({
   return (
     <div data-test-id="chore-columns" className="flex flex-col md:grid md:grid-cols-2 gap-4">
       <ChoreColumn
-        title="To Do"
+        title="TO DO"
         status="todo"
         chores={todoChores}
         members={members}
@@ -50,7 +50,7 @@ export function ChoreColumns({
       />
 
       <ChoreColumn
-        title="Done"
+        title="DONE"
         status="done"
         chores={doneChores}
         members={members}
