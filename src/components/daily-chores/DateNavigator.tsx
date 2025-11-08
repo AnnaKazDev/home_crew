@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DateNavigatorProps {
@@ -57,10 +57,10 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
             <PopoverTrigger asChild>
               <Button
                 data-test-id="date-navigator-pick-date"
-                className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80"
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-accent to-accent/90 text-black border-accent hover:from-accent/90 hover:to-accent/80 shadow-md hover:shadow-lg transition-all duration-200 rounded-lg font-medium"
               >
                 Pick a date
-                <CalendarIcon className="ml-2 h-4 w-4" />
+                <CalendarIcon className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
             <PopoverContent
@@ -111,7 +111,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
             <PopoverTrigger asChild>
               <Button
                 data-test-id="date-navigator-pick-date-mobile"
-                className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80"
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-accent to-accent/90 text-black border-accent hover:from-accent/90 hover:to-accent/80 shadow-md hover:shadow-lg transition-all duration-200 rounded-lg font-medium"
               >
                 <span>Pick a date</span>
                 <CalendarIcon className="h-4 w-4" />
