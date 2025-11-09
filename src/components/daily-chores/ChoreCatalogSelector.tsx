@@ -49,10 +49,17 @@ export function ChoreCatalogSelector({
 
       let items: CatalogItemDTO[];
 
-      if (isSupabaseConfigured) {
-        // Use Supabase client directly (same as useDailyView)
-        items = await getCatalogItems(getSupabaseClient(), householdId || null, 'all');
-      } else {
+
+
+      try {
+        // Try Supabase first if configured
+        if (isSupabaseConfigured) {
+          items = await getCatalogItems(getSupabaseClient(), householdId || null, 'all');
+        } else {
+          throw new Error('Supabase not configured');
+        }
+      } catch (supabaseError) {
+        console.warn('Supabase catalog fetch failed, falling back to API:', supabaseError);
         // Fallback to API mode
         const controller = new AbortController();
         const res = await fetch('/api/v1/catalog?type=all', { signal: controller.signal });
