@@ -17,7 +17,9 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "npx playwright test",
     "test:e2e:ui": "npx playwright test --ui",
-    "test:e2e:debug": "npx playwright test --debug"
+    "test:e2e:debug": "npx playwright test --debug",
+    "db:create-test-user": "node scripts/create-test-user.example.js",
+    "debug:points": "node scripts/debug-points.js"
   },
   "dependencies": {
     "@astrojs/node": "^9.4.3",

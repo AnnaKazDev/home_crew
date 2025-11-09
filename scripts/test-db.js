@@ -1,10 +1,26 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'http://127.0.0.1:54321';
-const supabaseKey = 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH';
-const supabaseServiceKey = 'sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz'; // Service key for bypassing RLS
+// Use environment variables for all configuration
+// Get Supabase values from: supabase status -o env
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Missing required environment variables:');
+  console.error('- SUPABASE_URL');
+  console.error('- SUPABASE_SERVICE_ROLE_KEY');
+  console.error('');
+  console.error('Get Supabase values by running: supabase status -o env');
+  console.error('Then add them to your .env.test file');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
 
 async function testDB() {
   console.log('Testing database connection...');
