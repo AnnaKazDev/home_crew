@@ -1,87 +1,87 @@
-# SPECYFIKACJA ARCHITEKTURY MODUŁU AUTENTYKACJI - HOME CREW
+# AUTHENTICATION MODULE ARCHITECTURE SPECIFICATION - HOME CREW
 
-## WSTĘP
+## INTRODUCTION
 
-Niniejsza specyfikacja opisuje kompleksową architekturę modułu rejestracji, logowania i odzyskiwania hasła dla aplikacji Home Crew, zgodną z wymaganiami zdefiniowanymi w `prd.md` oraz wykorzystującą technologię Supabase Auth w połączeniu z architekturą Astro + React.
+This specification describes the comprehensive architecture of the registration, login, and password recovery module for the Home Crew application, compliant with the requirements defined in `prd.md` and utilizing Supabase Auth technology in combination with Astro + React architecture.
 
-## 1. ARCHITEKTURA INTERFEJSU UŻYTKOWNIKA
+## 1. USER INTERFACE ARCHITECTURE
 
-### 1.1 Struktura stron i routingu
+### 1.1 Page Structure and Routing
 
-#### Nowe strony autentykacji (tryb non-auth):
+#### New authentication pages (non-auth mode):
 
-- **`/auth`** - Główna strona autentykacji (Astro)
-  - Komponent: `AuthPage.astro`
-  - Zawiera przełącznik między rejestracją a logowaniem
-  - Responsywny design dla desktop/tablet/mobile
-  - Automatyczne przekierowanie dla zalogowanych użytkowników
+- **`/auth`** - Main authentication page (Astro)
+  - Component: `AuthPage.astro`
+  - Contains toggle between registration and login
+  - Responsive design for desktop/tablet/mobile
+  - Automatic redirection for logged-in users
 
-#### Modyfikacje istniejących stron (ochrona przed dostępem niezalogowanych):
+#### Modifications to existing pages (protection against unauthorized access):
 
-- **`/`** (index.astro) - Strona powitalna
-  - **Modyfikacja**: Dodanie middleware przekierowującego do `/daily_chores` dla zalogowanych użytkowników
-  - **Modyfikacja**: Dla niezalogowanych - wyświetlanie strony powitalnej z przyciskami do rejestracji/logowania
+- **`/`** (index.astro) - Welcome page
+  - **Modification**: Adding middleware redirecting to `/daily_chores` for logged-in users
+  - **Modification**: For non-logged-in users - displaying welcome page with registration/login buttons
 
-- **`/daily_chores`** - Główny widok aplikacji
-  - **Modyfikacja**: Dodanie middleware wymagającego autentykacji
-  - **Zachowanie**: Przekierowanie do `/auth` dla niezalogowanych użytkowników
+- **`/daily_chores`** - Main application view
+  - **Modification**: Adding authentication-required middleware
+  - **Behavior**: Redirect to `/auth` for non-logged-in users
 
-- **`/household`** - Zarządzanie gospodarstwem
-  - **Modyfikacja**: Dodanie middleware wymagającego autentykacji
-  - **Zachowanie**: Przekierowanie do `/auth` dla niezalogowanych użytkowników
+- **`/household`** - Household management
+  - **Modification**: Adding authentication-required middleware
+  - **Behavior**: Redirect to `/auth` for non-logged-in users
 
-- **`/profile`** - Profil użytkownika
-  - **Modyfikacja**: Dodanie middleware wymagającego autentykacji
-  - **Zachowanie**: Przekierowanie do `/auth` dla niezalogowanych użytkowników
+- **`/profile`** - User profile
+  - **Modification**: Adding authentication-required middleware
+  - **Behavior**: Redirect to `/auth` for non-logged-in users
 
-- **`/chores`** - Katalog zadań
-  - **Modyfikacja**: Dodanie middleware wymagającego autentykacji
-  - **Zachowanie**: Przekierowanie do `/auth` dla niezalogowanych użytkowników
+- **`/chores`** - Task catalog
+  - **Modification**: Adding authentication-required middleware
+  - **Behavior**: Redirect to `/auth` for non-logged-in users
 
-### 1.2 Komponenty React (client-side islands)
+### 1.2 React Components (client-side islands)
 
-#### Nowe komponenty autentykacji:
+#### New authentication components:
 
-- **`AuthForm.tsx`** - Główny komponent formularza autentykacji
+- **`AuthForm.tsx`** - Main authentication form component
   - Props: `{ mode: 'login' | 'register' | 'reset-password' }`
-  - Stan wewnętrzny: loading, errors
-  - Integracja z Supabase Auth
-  - Walidacja pól w czasie rzeczywistym
+  - Internal state: loading, errors
+  - Integration with Supabase Auth
+  - Real-time field validation
 
-- **`LoginForm.tsx`** - Formularz logowania
-  - Pola: email, password
-  - Przycisk "Zapomniałeś hasła?"
-  - Przycisk "Zaloguj się"
+- **`LoginForm.tsx`** - Login form
+  - Fields: email, password
+  - "Forgot password?" button
+  - "Sign in" button
 
-- **`RegisterForm.tsx`** - Formularz rejestracji
-  - Pola: name (login/nick), email, password, confirmPassword, role (radio: Admin/Członek), householdName (tylko dla roli Admin), pin (tylko dla roli Członek)
-  - Dynamiczne wyświetlanie pól w zależności od wybranej roli
-  - Przycisk "Zarejestruj się"
-  - Success screen dla admina pokazujący PIN gospodarstwa
+- **`RegisterForm.tsx`** - Registration form
+  - Fields: name (login/nick), email, password, confirmPassword, role (radio: Admin/Member), householdName (only for Admin role), pin (only for Member role)
+  - Dynamic field display based on selected role
+  - "Register" button
+  - Success screen for admin showing household PIN
 
-- **`ResetPasswordForm.tsx`** - Formularz resetowania hasła
-  - Pola: email
-  - Przycisk "Wyślij link resetujący"
+- **`ResetPasswordForm.tsx`** - Password reset form
+  - Fields: email
+  - "Send reset link" button
 
-- **`AuthModeToggle.tsx`** - Przełącznik między trybami
-  - Przyciski: "Mam konto" / "Nie mam konta"
-  - Animacje przejścia między formularzami
+- **`AuthModeToggle.tsx`** - Mode toggle switch
+  - Buttons: "I have an account" / "I don't have an account"
+  - Transition animations between forms
 
-#### Modyfikacje istniejących komponentów:
+#### Modifications to existing components:
 
 - **`AppHeader.tsx`**
-  - **Dodanie**: Przycisk "Wyloguj się" obok powitania użytkownika
-  - **Modyfikacja**: Warunkowe wyświetlanie powitania tylko dla zalogowanych użytkowników
-  - **Dodanie**: Obsługa akcji wylogowania z Supabase Auth
+  - **Addition**: "Log out" button next to user greeting
+  - **Modification**: Conditional display of greeting only for logged-in users
+  - **Addition**: Handling logout action from Supabase Auth
 
 - **`HamburgerMenu.tsx`**
-  - **Dodanie**: Element menu "Wyloguj się" dla urządzeń mobilnych
+  - **Addition**: "Log out" menu item for mobile devices
 
-### 1.3 Context i hooki autentykacji
+### 1.3 Authentication Context and Hooks
 
-#### Nowe hooki:
+#### New hooks:
 
-- **`useAuthRedirect.ts`** - Hook do automatycznego przekierowania niezalogowanych użytkowników
+- **`useAuthRedirect.ts`** - Hook for automatic redirection of non-logged-in users
   ```typescript
   interface UseAuthRedirectReturn {
     isAuthenticated: boolean;
@@ -90,70 +90,70 @@ Niniejsza specyfikacja opisuje kompleksową architekturę modułu rejestracji, l
   }
   ```
 
-#### Istniejące hooki (rozszerzone):
+#### Existing hooks (extended):
 
-- **`useAuthStore`** (Zustand) - Główny store zarządzania stanem autentykacji
-  - Zarządzanie stanem użytkownika, profilu, gospodarstwa
-  - Metody: signIn, signUp, signOut, resetPassword
-  - Automatyczna synchronizacja z Supabase Auth
+- **`useAuthStore`** (Zustand) - Main store for authentication state management
+  - Managing user, profile, household state
+  - Methods: signIn, signUp, signOut, resetPassword
+  - Automatic synchronization with Supabase Auth
 
-#### Nowe konteksty:
+#### New contexts:
 
-- **`AuthContext.tsx`** - Provider kontekstu autentykacji
-  - Zarządzanie stanem globalnym użytkownika
-  - Automatyczne odświeżanie sesji
-  - Obsługa eventów Supabase Auth
+- **`AuthContext.tsx`** - Authentication context provider
+  - Managing global user state
+  - Automatic session refresh
+  - Handling Supabase Auth events
 
-### 1.4 Middleware i ochrona routów
+### 1.4 Middleware and Route Protection
 
-#### Aktualny middleware (`src/middleware/index.ts`):
+#### Current middleware (`src/middleware/index.ts`):
 
 ```typescript
 export const onRequest = defineMiddleware(async (context, next) => {
-  // Inicjalizacja Supabase client
+  // Initialize Supabase client
   context.locals.supabase = getSupabaseServiceClient();
 
-  // Autentykacja jest obsługiwana po stronie klienta przez useAuthStore
-  // Komponenty używają useAuthRedirect hook do automatycznego przekierowania
-  // niezalogowanych użytkowników na /auth
+  // Authentication is handled on the client side by useAuthStore
+  // Components use useAuthRedirect hook for automatic redirection
+  // of non-logged-in users to /auth
 
   return next();
 });
 ```
 
-**Uwaga:** W obecnej implementacji ochrona route'ów jest realizowana po stronie klienta przez `useAuthRedirect` hook w komponentach React, a nie przez middleware po stronie serwera. To zapewnia lepsze doświadczenie SPA bez problemów z hydratacją.
+**Note:** In the current implementation, route protection is implemented on the client side through the `useAuthRedirect` hook in React components, not through server-side middleware. This provides better SPA experience without hydration issues.
 
-### 1.5 Obsługa błędów i walidacja
+### 1.5 Error Handling and Validation
 
-#### Komponenty błędów:
+#### Error components:
 
-- **`AuthErrorDisplay.tsx`** - Wyświetlanie błędów autentykacji
-  - Mapowanie błędów Supabase na przyjazne komunikaty
-  - Obsługa różnych typów błędów (walidacja, sieć, autentykacja)
+- **`AuthErrorDisplay.tsx`** - Displaying authentication errors
+  - Mapping Supabase errors to user-friendly messages
+  - Handling different error types (validation, network, authentication)
 
-#### Schematy walidacji (Zod):
+#### Validation schemas (Zod):
 
 ```typescript
 // src/lib/validation/auth.schemas.ts
 export const loginSchema = z.object({
-  email: z.string().email('Nieprawidłowy adres email'),
-  password: z.string().min(6, 'Hasło musi mieć co najmniej 6 znaków'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 export const registerSchema = z
   .object({
     name: z
       .string()
-      .min(2, 'Imię musi mieć co najmniej 2 znaki')
-      .max(50, 'Imię nie może przekraczać 50 znaków'),
-    email: z.string().email('Nieprawidłowy adres email'),
-    password: z.string().min(8, 'Hasło musi mieć co najmniej 8 znaków'),
+      .min(2, 'Name must be at least 2 characters')
+      .max(50, 'Name cannot exceed 50 characters'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
     role: z.enum(['admin', 'member']),
     pin: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Hasła nie są identyczne',
+    message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
   .refine(
@@ -164,68 +164,68 @@ export const registerSchema = z
       return true;
     },
     {
-      message: 'PIN musi składać się z 6 cyfr',
+      message: 'PIN must consist of 6 digits',
       path: ['pin'],
     }
   );
 ```
 
-### 1.6 Scenariusze użycia i przepływy
+### 1.6 Use Cases and Flows
 
-#### Scenariusz 1: Rejestracja nowego administratora
+#### Scenario 1: New Administrator Registration
 
-1. Użytkownik wchodzi na `/auth`
-2. Wybiera tryb rejestracji
-3. Wypełnia formularz (name, email, password, role=admin, householdName)
-4. Po wysłaniu: tworzenie konta w Supabase Auth + profilu w `profiles`
-5. Utworzenie gospodarstwa z podaną nazwą i wygenerowanym 6-cyfrowym PIN
-6. Wysłanie emaila potwierdzającego z PIN
-7. Wyświetlenie success screen z nazwą gospodarstwa i PIN do udostępnienia członkom rodziny
-8. Użytkownik może skopiować PIN lub kliknąć "Continue to App" żeby przejść do `/daily_chores`
+1. User enters `/auth`
+2. Selects registration mode
+3. Fills out form (name, email, password, role=admin, householdName)
+4. After submission: account creation in Supabase Auth + profile in `profiles`
+5. Household creation with provided name and generated 6-digit PIN
+6. Confirmation email sent with PIN
+7. Success screen displayed with household name and PIN to share with family members
+8. User can copy PIN or click "Continue to App" to go to `/daily_chores`
 
-#### Scenariusz 2: Rejestracja członka rodziny
+#### Scenario 2: Family Member Registration
 
-1. Użytkownik wchodzi na `/auth`
-2. Wybiera tryb rejestracji
-3. Wypełnia formularz (name, email, password, role=member, pin=XXXXXX)
-4. Walidacja PIN z istniejącym gospodarstwem
-5. Po wysłaniu: tworzenie konta + dołączenie do gospodarstwa
-6. Przekierowanie do `/daily_chores`
+1. User enters `/auth`
+2. Selects registration mode
+3. Fills out form (name, email, password, role=member, pin=XXXXXX)
+4. PIN validation against existing household
+5. After submission: account creation + joining household
+6. Redirect to `/daily_chores`
 
-#### Scenariusz 3: Logowanie istniejącego użytkownika
+#### Scenario 3: Existing User Login
 
-1. Użytkownik wchodzi na `/auth` lub jest przekierowany
-2. Wybiera tryb logowania
-3. Wypełnia email i hasło
-4. Po pomyślnym logowaniu - przekierowanie do `/daily_chores`
+1. User enters `/auth` or is redirected
+2. Selects login mode
+3. Fills in email and password
+4. After successful login - redirect to `/daily_chores`
 
-#### Scenariusz 4: Reset hasła
+#### Scenario 4: Password Reset
 
-1. Użytkownik klika "Zapomniałeś hasła?" w formularzu logowania
-2. Przechodzi do trybu resetowania hasła
-3. Wprowadza email
-4. Otrzymuje email z linkiem resetującym
-5. Po kliknięciu w link - nowa strona do ustawienia nowego hasła
+1. User clicks "Forgot password?" in login form
+2. Switches to password reset mode
+3. Enters email
+4. Receives email with reset link
+5. After clicking link - new page to set new password
 
-## 2. LOGIKA BACKENDOWA
+## 2. BACKEND LOGIC
 
-### 2.1 Struktura endpointów API
+### 2.1 API Endpoints Structure
 
-#### Nowe endpointy autentykacji:
+#### New authentication endpoints:
 
-- **`POST /api/v1/auth/register`** - Rejestracja użytkownika
-- **`POST /api/v1/auth/login`** - Logowanie (opcjonalne, może korzystać z Supabase bezpośrednio)
-- **`POST /api/v1/auth/logout`** - Wylogowanie
-- **`POST /api/v1/auth/reset-password`** - Reset hasła
+- **`POST /api/v1/auth/register`** - User registration
+- **`POST /api/v1/auth/login`** - Login (optional, may use Supabase directly)
+- **`POST /api/v1/auth/logout`** - Logout
+- **`POST /api/v1/auth/reset-password`** - Password reset
 
-#### Rozszerzone endpointy istniejące:
+#### Extended existing endpoints:
 
-- **`POST /api/v1/households`** - Rozszerzony o automatyczne tworzenie gospodarstwa podczas rejestracji admina
-- **`POST /api/v1/households/join`** - Dołączanie członka do gospodarstwa podczas rejestracji
+- **`POST /api/v1/households`** - Extended with automatic household creation during admin registration
+- **`POST /api/v1/households/join`** - Member joining household during registration
 
-### 2.2 Modele danych i DTO
+### 2.2 Data Models and DTOs
 
-#### Nowe typy autentykacji:
+#### New authentication types:
 
 ```typescript
 // src/types/auth.types.ts
@@ -234,7 +234,7 @@ export interface SignUpData {
   email: string;
   password: string;
   role: 'admin' | 'member';
-  pin?: string; // tylko dla członków
+  pin?: string; // only for members
 }
 
 export interface AuthResponse {
@@ -249,9 +249,9 @@ export interface ResetPasswordRequest {
 }
 ```
 
-### 2.3 Walidacja danych wejściowych
+### 2.3 Input Data Validation
 
-#### Schematy walidacji po stronie serwera:
+#### Server-side validation schemas:
 
 ```typescript
 // src/lib/validation/auth-api.schemas.ts
@@ -272,9 +272,9 @@ export const loginApiSchema = z.object({
 });
 ```
 
-### 2.4 Obsługa wyjątków
+### 2.4 Exception Handling
 
-#### Klasy błędów autentykacji:
+#### Authentication error classes:
 
 ```typescript
 // src/lib/errors/auth.errors.ts
@@ -301,7 +301,7 @@ export class HouseholdJoinError extends AuthenticationError {
 }
 ```
 
-#### Middleware obsługi błędów:
+#### Error handling middleware:
 
 ```typescript
 // src/middleware/error-handler.ts
@@ -318,42 +318,42 @@ export function handleAuthError(error: unknown): Response {
       }
     );
   }
-  // obsługa innych błędów...
+  // handle other errors...
 }
 ```
 
-### 2.5 Integracja z istniejącymi serwisami
+### 2.5 Integration with Existing Services
 
-#### Rozszerzenie `profiles.service.ts`:
+#### Extension of `profiles.service.ts`:
 
-- Dodanie funkcji `createProfileForAuth`
-- Dodanie funkcji `linkProfileToHousehold`
+- Addition of `createProfileForAuth` function
+- Addition of `linkProfileToHousehold` function
 
-#### Rozszerzenie `households.service.ts`:
+#### Extension of `households.service.ts`:
 
-- Dodanie funkcji `createHouseholdForAdmin`
-- Dodanie funkcji `validateAndJoinHousehold`
+- Addition of `createHouseholdForAdmin` function
+- Addition of `validateAndJoinHousehold` function
 
-## 3. SYSTEM AUTENTYKACJI
+## 3. AUTHENTICATION SYSTEM
 
-### 3.1 Konfiguracja Supabase Auth
+### 3.1 Supabase Auth Configuration
 
-#### Ustawienia RLS (Row Level Security):
+#### RLS Settings (Row Level Security):
 
 ```sql
--- Włącz RLS dla wszystkich tabel
+-- Enable RLS for all tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE households ENABLE ROW LEVEL SECURITY;
 ALTER TABLE household_members ENABLE ROW LEVEL SECURITY;
 
--- Polityki dostępu dla profiles
+-- Access policies for profiles
 CREATE POLICY "Users can view own profile" ON profiles
   FOR SELECT USING (auth.uid() = id);
 
 CREATE POLICY "Users can update own profile" ON profiles
   FOR UPDATE USING (auth.uid() = id);
 
--- Polityki dla households
+-- Policies for households
 CREATE POLICY "Household members can view their household" ON households
   FOR SELECT USING (
     EXISTS (
@@ -364,19 +364,19 @@ CREATE POLICY "Household members can view their household" ON households
   );
 ```
 
-### 3.2 Integracja z Astro
+### 3.2 Astro Integration
 
-#### Konfiguracja klienta Supabase:
+#### Supabase client configuration:
 
 ```typescript
-// src/db/supabase.client.ts - rozszerzenie
+// src/db/supabase.client.ts - extension
 export function getSupabaseAuthClient(): SupabaseClient {
   const client = getSupabaseClient();
 
-  // Konfiguracja event listenerów autentykacji
+  // Configure authentication event listeners
   client.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN' && session) {
-      // Automatyczne załadowanie profilu i gospodarstwa
+      // Automatically load profile and household
       loadUserData(session.user.id);
     }
   });
@@ -385,7 +385,7 @@ export function getSupabaseAuthClient(): SupabaseClient {
 }
 ```
 
-#### Obsługa sesji w Astro:
+#### Session handling in Astro:
 
 ```typescript
 // src/lib/auth/astro-auth.ts
@@ -405,9 +405,9 @@ export async function requireAuth(context: APIContext): Promise<User> {
 }
 ```
 
-### 3.3 Zarządzanie sesjami
+### 3.3 Session Management
 
-#### Automatyczne odświeżanie sesji:
+#### Automatic session refresh:
 
 ```typescript
 // src/hooks/useAuth.ts - fragment
@@ -429,21 +429,21 @@ useEffect(() => {
 }, []);
 ```
 
-### 3.4 Bezpieczeństwo
+### 3.4 Security
 
-#### Mechanizmy bezpieczeństwa:
+#### Security mechanisms:
 
-1. **HTTPS only** - wszystkie endpointy wymagają HTTPS
-2. **CSRF protection** - dla wrażliwych operacji
-3. **Rate limiting** - ograniczenie liczby prób logowania/reset hasła
-4. **Password policies** - wymagania siły hasła
-5. **Session management** - automatyczne wygasanie sesji
-6. **Audit logging** - logowanie wszystkich operacji autentykacji
+1. **HTTPS only** - all endpoints require HTTPS
+2. **CSRF protection** - for sensitive operations
+3. **Rate limiting** - limit login/reset password attempts
+4. **Password policies** - password strength requirements
+5. **Session management** - automatic session expiration
+6. **Audit logging** - logging all authentication operations
 
-#### Konfiguracja Supabase Auth:
+#### Supabase Auth configuration:
 
 ```typescript
-// Konfiguracja w supabase/config.toml
+// Configuration in supabase/config.toml
 [auth];
 enabled = true;
 site_url = 'https://home-crew.app';
@@ -456,66 +456,66 @@ double_confirm_changes = true;
 enable_confirmations = true;
 ```
 
-## 4. INTEGRACJA Z ISTNIEJĄCYM KODEM
+## 4. INTEGRATION WITH EXISTING CODE
 
-### 4.1 Modyfikacje istniejących komponentów
+### 4.1 Modifications to Existing Components
 
-#### `useProfile.ts` - refaktoryzacja:
+#### `useProfile.ts` - refactoring:
 
-- Usunięcie hardcoded user ID
-- Integracja z `useAuth` hook
-- Użycie prawdziwej autentykacji Supabase
+- Removal of hardcoded user ID
+- Integration with `useAuth` hook
+- Use of real Supabase authentication
 
 #### `DailyViewWithProvider.tsx`:
 
-- Dodanie sprawdzenia autentykacji przed renderowaniem
-- Ładowanie danych tylko dla zalogowanych użytkowników
+- Addition of authentication check before rendering
+- Loading data only for logged-in users
 
-### 4.2 Migracja danych
+### 4.2 Data Migration
 
-#### Strategia migracji:
+#### Migration strategy:
 
-1. **Aktualizacja istniejących profili** - dodanie wymaganych pól autentykacji
-2. **Migracja sesji** - przejście z hardcoded ID na prawdziwe sesje Supabase
-3. **Aktualizacja RLS** - włączenie polityk bezpieczeństwa dla produkcji
+1. **Update existing profiles** - add required authentication fields
+2. **Session migration** - transition from hardcoded ID to real Supabase sessions
+3. **RLS update** - enable security policies for production
 
-### 4.3 Testowanie integracji
+### 4.3 Integration Testing
 
-#### Strategia testów:
+#### Testing strategy:
 
-1. **Unit tests** - testy komponentów autentykacji
-2. **Integration tests** - testy przepływów rejestracji/logowania
-3. **E2E tests** - pełne scenariusze użytkownika z Cypress/Playwright
-4. **Security tests** - testy penetracyjne wrażliwych endpointów
+1. **Unit tests** - authentication component tests
+2. **Integration tests** - registration/login flow tests
+3. **E2E tests** - full user scenarios with Cypress/Playwright
+4. **Security tests** - penetration tests of sensitive endpoints
 
-## 5. WDRAŻANIE I DEPLOYMENT
+## 5. IMPLEMENTATION AND DEPLOYMENT
 
-### 5.1 Kolejność implementacji
+### 5.1 Implementation Order
 
-#### Faza 1: Podstawa autentykacji
+#### Phase 1: Authentication Foundation
 
-1. Konfiguracja Supabase Auth
-2. Implementacja middleware ochrony routów
-3. Proste strony autentykacji (login/register)
-4. Integracja z istniejącymi komponentami
+1. Supabase Auth configuration
+2. Route protection middleware implementation
+3. Simple authentication pages (login/register)
+4. Integration with existing components
 
-#### Faza 2: Zaawansowane funkcje
+#### Phase 2: Advanced Features
 
-1. Reset hasła
-2. Zarządzanie gospodarstwami podczas rejestracji
-3. Pełna walidacja i obsługa błędów
-4. UI/UX ulepszenia
+1. Password reset
+2. Household management during registration
+3. Full validation and error handling
+4. UI/UX improvements
 
-#### Faza 3: Bezpieczeństwo i optymalizacja
+#### Phase 3: Security and Optimization
 
-1. Implementacja RLS polityk
-2. Dodanie rate limiting
-3. Optymalizacja wydajności
-4. Monitoring i logowanie
+1. RLS policy implementation
+2. Rate limiting addition
+3. Performance optimization
+4. Monitoring and logging
 
-### 5.2 Konfiguracja środowiska
+### 5.2 Environment Configuration
 
-#### Zmienne środowiskowe:
+#### Environment variables:
 
 ```env
 # Supabase
@@ -528,15 +528,15 @@ PUBLIC_SITE_URL=https://home-crew.app
 AUTH_REDIRECT_URL=/daily_chores
 ```
 
-### 5.3 Monitoring i utrzymanie
+### 5.3 Monitoring and Maintenance
 
-#### Metryki do monitorowania:
+#### Metrics to monitor:
 
-- Liczba rejestracji/logowań dziennie
-- Czas odpowiedzi endpointów autentykacji
-- Rate błędów autentykacji
-- Czas życia sesji użytkowników
+- Number of daily registrations/logins
+- Authentication endpoint response times
+- Authentication error rates
+- User session lifetimes
 
 ---
 
-**Specyfikacja opracowana na podstawie wymagań z `prd.md` oraz stacku technologicznego z `tech-stack.md`. Zapewnia pełną zgodność z istniejącą architekturą aplikacji przy jednoczesnym dodaniu kompletnego systemu autentykacji.**
+**Specification developed based on requirements from `prd.md` and technology stack from `tech-stack.md`. Ensures full compliance with existing application architecture while adding a complete authentication system.**

@@ -1,159 +1,159 @@
-# Architektura UI dla Home Crew
+# UI Architecture for Home Crew
 
-## 1. Przegląd struktury UI
+## 1. UI Structure Overview
 
-Architektura UI aplikacji Home Crew została zaprojektowana jako responsywna aplikacja webowa oparta na frameworku Astro z komponentami React, skupiająca się na zarządzaniu obowiązkami domowymi w gospodarstwach domowych. Główny nacisk położono na:
+The UI architecture of the Home Crew application has been designed as a responsive web application based on the Astro framework with React components, focusing on managing household chores in family households. The main emphasis has been placed on:
 
-- **Responsywność**: Grid layout automatycznie dostosowujący się do urządzeń desktop/tablet/mobile
-- **Dostępność**: Pełne wsparcie ARIA (labels, role, live regions), nawigacja klawiszowa, kompatybilność ze screen readerami
-- **Bezpieczeństwo**: Role-based UI controls ukrywające funkcje administracyjne dla zwykłych członków
-- **UX**: Główny widok dzienny jako centrum nawigacji, collapsible sidebar, drag-and-drop między kolumnami To Do/Done z fallback dla urządzeń mobilnych
+- **Responsiveness**: Grid layout automatically adapting to desktop/tablet/mobile devices
+- **Accessibility**: Full ARIA support (labels, role, live regions), keyboard navigation, screen reader compatibility
+- **Security**: Role-based UI controls hiding administrative functions for regular members
+- **UX**: Main daily view as navigation center, collapsible sidebar, drag-and-drop between To Do/Done columns with mobile fallback
 
-Aplikacja wykorzystuje shadcn/ui i Tailwind CSS dla spójnego design system, React Context dla globalnego zarządzania stanem oraz React Query dla efektywnego cachowania i aktualizacji danych API.
+The application uses shadcn/ui and Tailwind CSS for consistent design system, React Context for global state management, and React Query for efficient API data caching and updates.
 
-## 2. Lista widoków
+## 2. Views List
 
-### 2.1 Landing z autentyfikacją
+### 2.1 Landing with Authentication
 
-- **Ścieżka**: `/`
-- **Główny cel**: Przywitanie niezalogowanych użytkowników i jednoczesne umożliwienie rejestracji/logowania na jednej stronie
-- **Kluczowe informacje**: Logo aplikacji, hasło reklamowe u góry; przełącznik rejestracja/logowanie poniżej, wieloetapowy proces rejestracji z wyborem roli (admin/członek), formularze rejestracji/logowania, wybór typu użytkownika, PIN dla członków
-- **Kluczowe komponenty**: Welcome header (logo, tagline), auth toggle, multi-step forms, validation feedback, role selector
-- **UX**: U góry powitanie, poniżej formularze; przełącznik między rejestracją a logowaniem, walidacja w czasie rzeczywistym, clear error messages, success redirect do dashboardu
-- **Dostępność**: ARIA labels na wszystkich przyciskach, form labels, error announcements, keyboard navigation między sekcjami i przełącznikiem
-- **Bezpieczeństwo**: Secure password fields, role-based validation, protection przed 409/422 errors, publiczny dostęp do sekcji powitalnej
+- **Path**: `/`
+- **Main goal**: Welcome non-logged-in users and simultaneously enable registration/login on one page
+- **Key information**: Application logo, advertising slogan at the top; registration/login toggle below, multi-step registration process with role selection (admin/member), registration/login forms, user type selection, PIN for members
+- **Key components**: Welcome header (logo, tagline), auth toggle, multi-step forms, validation feedback, role selector
+- **UX**: Welcome at the top, forms below; toggle between registration and login, real-time validation, clear error messages, success redirect to dashboard
+- **Accessibility**: ARIA labels on all buttons, form labels, error announcements, keyboard navigation between sections and toggle
+- **Security**: Secure password fields, role-based validation, protection against 409/422 errors, public access to welcome section
 
-### 2.3 Główny widok dzienny (Daily View)
+### 2.3 Main Daily View
 
-- **Ścieżka**: `/daily_chores` (po zalogowaniu)
-- **Główny cel**: Centrum aplikacji - przegląd obowiązków na wybrany dzień z możliwością zarządzania
-- **Kluczowe informacje**: Dwie kolumny To Do/Done, lista zadań z przypisaniami, punkty użytkownika, data picker
-- **Kluczowe komponenty**: Chore columns, date navigator, add chore button, points badge, collapsible sidebar
-- **UX**: Drag-and-drop między kolumnami z mobile fallback, optimistic updates, toast notifications
-- **Dostępność**: ARIA live regions dla status updates, keyboard navigation, screen reader support dla zadań
-- **Bezpieczeństwo**: Role-based controls (tylko admin widzi niektóre funkcje), assignee validation
+- **Path**: `/daily_chores` (after login)
+- **Main goal**: Application center - overview of chores for selected day with management capabilities
+- **Key information**: Two columns To Do/Done, task list with assignments, user points, date picker
+- **Key components**: Chore columns, date navigator, add chore button, points badge, collapsible sidebar
+- **UX**: Drag-and-drop between columns with mobile fallback, optimistic updates, toast notifications
+- **Accessibility**: ARIA live regions for status updates, keyboard navigation, screen reader support for tasks
+- **Security**: Role-based controls (only admin sees certain functions), assignee validation
 
-### 2.4 Zarządzanie gospodarstwem (Household Management)
+### 2.4 Household Management
 
-- **Ścieżka**: `/household`
-- **Główny cel**: Admin-only widok zarządzania gospodarstwem i członkami
-- **Kluczowe informacje**: Lista członków, PIN gospodarstwa, nazwa gospodarstwa, role użytkowników
-- **Kluczowe komponenty**: Member list, PIN display, household settings, role management controls
-- **UX**: Clear hierarchy, confirmation dialogs dla destruktywnych akcji
-- **Dostępność**: Table navigation, action button labels, screen reader announcements
-- **Bezpieczeństwo**: Tylko admin ma dostęp, confirmation dla usunięcia członków, PIN ukryty dla członków
+- **Path**: `/household`
+- **Main goal**: Admin-only view for managing household and members
+- **Key information**: Member list, household PIN, household name, user roles
+- **Key components**: Member list, PIN display, household settings, role management controls
+- **UX**: Clear hierarchy, confirmation dialogs for destructive actions
+- **Accessibility**: Table navigation, action button labels, screen reader announcements
+- **Security**: Only admin has access, confirmation for member removal, PIN hidden for members
 
-### 2.5 Profil użytkownika (Profile)
+### 2.5 User Profile
 
-- **Ścieżka**: `/profile`
-- **Główny cel**: Zarządzanie informacjami osobowymi i przegląd punktów
-- **Kluczowe informacje**: Dane użytkownika, całkowite punkty, historia aktywności (poza mvp), avatar
-- **Kluczowe komponenty**: Profile form, points summary, activity log, avatar upload
-- **UX**: Edit-in-place dla prostych pól, points history z paginacją
-- **Dostępność**: Form labels, data table navigation, progress indicators dla punktów
-- **Bezpieczeństwo**: Tylko własne dane, validation dla wszystkich pól
+- **Path**: `/profile`
+- **Main goal**: Managing personal information and points overview
+- **Key information**: User data, total points, activity history (outside MVP), avatar
+- **Key components**: Profile form, points summary, activity log, avatar upload
+- **UX**: Edit-in-place for simple fields, points history with pagination
+- **Accessibility**: Form labels, data table navigation, progress indicators for points
+- **Security**: Only own data, validation for all fields
 
-### 2.6 Modal dodawania zadania (Add Chore Modal)
+### 2.6 Add Chore Modal
 
-- **Ścieżka**: Modal w Daily View (/daily_chores)
-- **Główny cel**: Dodanie nowego obowiązku do wybranego dnia z katalogu
-- **Kluczowe informacje**: Katalog zadań (predefiniowane + mozliwośc dodania własnego), wybór daty/czasu/przypisania
-- **Kluczowe komponenty**: Chore catalog browser, date/time selectors, assignee picker
-- **UX**: Search/filter w katalogu, validation feedback, success toast
-- **Dostępność**: Modal focus management, list navigation, form validation announcements
-- **Bezpieczeństwo**: Walidacja limitu 50 zadań dziennie, household context
+- **Path**: Modal in Daily View (/daily_chores)
+- **Main goal**: Add new chore to selected day from catalog
+- **Key information**: Task catalog (predefined + ability to add custom), date/time/assignment selection
+- **Key components**: Chore catalog browser, date/time selectors, assignee picker
+- **UX**: Search/filter in catalog, validation feedback, success toast
+- **Accessibility**: Modal focus management, list navigation, form validation announcements
+- **Security**: Validation of 50 daily tasks limit, household context
 
-### 2.7 Modal przypisywania zadania (Assign Chore Modal)
+### 2.7 Assign Chore Modal
 
-- **Ścieżka**: Modal w Daily View
-- **Główny cel**: Zmiana przypisania obowiązku do członka gospodarstwa
-- **Kluczowe informacje**: Lista członków gospodarstwa, aktualne przypisanie
-- **Kluczowe komponenty**: Member selector, current assignee display
+- **Path**: Modal in Daily View
+- **Main goal**: Change chore assignment to household member
+- **Key information**: Household member list, current assignment
+- **Key components**: Member selector, current assignee display
 - **UX**: Quick selection, immediate feedback
-- **Dostępność**: Radio group navigation, current selection announcement
-- **Bezpieczeństwo**: Tylko admin/członek może przypisywać, household validation
+- **Accessibility**: Radio group navigation, current selection announcement
+- **Security**: Only admin/member can assign, household validation
 
-### 2.8 Historia punktów (Points History) - opcjonalny
+### 2.8 Points History - optional
 
-- **Ścieżka**: `/points` lub modal w Profile
-- **Główny cel**: Szczegółowy przegląd historii punktów i aktywności
-- **Kluczowe informacje**: Lista zdarzeń punktów, filtry dat, podsumowanie
-- **Kluczowe komponenty**: Points events table, date filters, summary stats
+- **Path**: `/points` or modal in Profile
+- **Main goal**: Detailed overview of points history and activity
+- **Key information**: Points events list, date filters, summary
+- **Key components**: Points events table, date filters, summary stats
 - **UX**: Paginated list, filter controls, export option (future)
-- **Dostępność**: Table navigation, filter controls, data announcements
-- **Bezpieczeństwo**: Tylko własne dane, date range validation
+- **Accessibility**: Table navigation, filter controls, data announcements
+- **Security**: Only own data, date range validation
 
-## 3. Mapa podróży użytkownika
+## 3. User Journey Map
 
-### Główny przypadek użycia: Zarządzanie obowiązkami domowymi
+### Main use case: Household chores management
 
-1. **Pierwsze uruchomienie**: Użytkownik odwiedza `/` → jeśli niezalogowany: widzi landing z powitaniem u góry i formularzem rejestracji/logowania poniżej; jeśli zalogowany: automatyczne przekierowanie do Daily View (`/daily_chores`)
-2. **Rejestracja**: Wybór roli (admin/członek) → formularz rejestracji → walidacja → sukces → przekierowanie do Daily View
-3. **Admin flow**: Tworzenie gospodarstwa (nazwa) → otrzymanie PIN → zaproszenie rodziny
-4. **Member flow**: Wprowadzenie PIN → dołączenie do gospodarstwa → dostęp do wspólnych zadań
-5. **Codzienne użytkowanie**: Daily View (daily-chores) z zadaniami To Do/Done → dodawanie zadań z katalogu → drag-and-drop do Done → automatyczne przyznanie punktów
-6. **Zarządzanie**: Admin może zarządzać członkami w Household Management → członkowie mogą edytować profil
+1. **First launch**: User visits `/` → if not logged in: sees landing with welcome at the top and registration/login form below; if logged in: automatic redirect to Daily View (`/daily_chores`)
+2. **Registration**: Role selection (admin/member) → registration form → validation → success → redirect to Daily View
+3. **Admin flow**: Household creation (name) → PIN receipt → family invitation
+4. **Member flow**: PIN entry → household joining → access to shared tasks
+5. **Daily usage**: Daily View (daily-chores) with To Do/Done tasks → adding tasks from catalog → drag-and-drop to Done → automatic points award
+6. **Management**: Admin can manage members in Household Management → members can edit profile
 
-### Kluczowe interakcje:
+### Key interactions:
 
-- **Dodanie zadania**: Przycisk "Dodaj" → modal wyboru z katalogu → konfiguracja → zapis → optimistic update w Daily View. z automatu zadanie przypisywane jest do danego usera, ale jest moliwośc zmiany listy wybranych czlonkow
-- **Zmiana statusu**: Drag-and-drop między kolumnami → API call → points award jeśli Done
-- **Przypisanie**: Klik na zadanie → modal wyboru członka (jezeli chcemy, aby byl inny niz dany, domyslny user) → update → live update dla wszystkich
-- **Nawigacja dni**: Date picker → prefetch sąsiednich dni → smooth transition
+- **Add task**: "Add" button → catalog selection modal → configuration → save → optimistic update in Daily View. Task is automatically assigned to current user, but member list can be changed
+- **Status change**: Drag-and-drop between columns → API call → points award if Done
+- **Assignment**: Click on task → member selection modal (if we want different than default user) → update → live update for all
+- **Day navigation**: Date picker → prefetch neighboring days → smooth transition
 
-## 4. Układ i struktura nawigacji
+## 4. Navigation Layout and Structure
 
-### Główne poziomy nawigacji:
+### Main navigation levels:
 
-1. **Publiczny**: Landing page z rejestracją/logowaniem
-2. **Chroniony**: Wszystkie pozostałe widoki wymagają autoryzacji
+1. **Public**: Landing page with registration/login
+2. **Protected**: All other views require authorization
 
-### Struktura nawigacji:
+### Navigation structure:
 
-- **Header**: Logo, points badge, user menu (profil, household, logout)
-- **Sidebar**: Collapsible menu z: Daily View, Household (admin), Profile, Points History
-- **Breadcrumbs**: W widokach zarządzania dla contextu
-- **Modals**: Overlay dla akcji (dodaj zadanie, przypisz, potwierdzenia)
+- **Header**: Logo, points badge, user menu (profile, household, logout)
+- **Sidebar**: Collapsible menu with: Daily View, Household (admin), Profile, Points History
+- **Breadcrumbs**: In management views for context
+- **Modals**: Overlay for actions (add task, assign, confirmations)
 
-### Responsywność nawigacji:
+### Navigation responsiveness:
 
-- **Desktop**: Pełna sidebar + header
-- **Tablet**: Collapsed sidebar z hamburger menu
-- **Mobile**:Collapsed sidebar z hamburger menu
+- **Desktop**: Full sidebar + header
+- **Tablet**: Collapsed sidebar with hamburger menu
+- **Mobile**: Collapsed sidebar with hamburger menu
 
 ### Navigation guards:
 
-- Role-based visibility (admin functions ukryte dla członków)
-- Auth guards przekierowujące niezalogowanych do /
-- Loading states podczas sprawdzania uprawnień
+- Role-based visibility (admin functions hidden for members)
+- Auth guards redirecting non-logged-in users to /
+- Loading states during permission checking
 
-## 5. Kluczowe komponenty
+## 5. Key Components
 
-### Komponenty UI (shadcn/ui):
+### UI Components (shadcn/ui):
 
-- **Button**: Primary/secondary/destructive variants z loading states
-- **Card**: Container dla zadań, członków, podsumowań
-- **Dialog/Modal**: Overlay dla formularzy i potwierdzeń
-- **Input/Textarea**: Form controls z validation
-- **Table**: Lista członków, historia punktów
-- **Badge**: Status zadania, role, punkty
-- **Avatar**: Profile pictures członków
+- **Button**: Primary/secondary/destructive variants with loading states
+- **Card**: Container for tasks, members, summaries
+- **Dialog/Modal**: Overlay for forms and confirmations
+- **Input/Textarea**: Form controls with validation
+- **Table**: Member list, points history
+- **Badge**: Task status, roles, points
+- **Avatar**: Member profile pictures
 
-### Komponenty biznesowe:
+### Business Components:
 
-- **ChoreCard**: Draggable card z tytułem, assignee, czasem, punktami
-- **ChoreColumn**: Drop zone dla To Do/Done z limitami
-- **DateNavigator**: Picker z prefetching sąsiednich dni
-- **PointsBadge**: Header badge z aktualnymi punktami
-- **MemberSelector**: Dropdown/radio dla wyboru członka
-- **ChoreCatalog**: Searchable list predefiniowanych zadań
+- **ChoreCard**: Draggable card with title, assignee, time, points
+- **ChoreColumn**: Drop zone for To Do/Done with limits
+- **DateNavigator**: Picker with prefetching of neighboring days
+- **PointsBadge**: Header badge with current points
+- **MemberSelector**: Dropdown/radio for member selection
+- **ChoreCatalog**: Searchable list of predefined tasks
 
-### Komponenty systemowe:
+### System Components:
 
-- **ErrorBoundary**: Global catch dla błędów z fallback UI
-- **ToastProvider**: Notifications dla sukcesów/błędów
+- **ErrorBoundary**: Global catch for errors with fallback UI
+- **ToastProvider**: Notifications for successes/errors
 - **LoadingSpinner**: Consistent loading states
 - **AuthGuard**: Route protection wrapper
 - **RoleGuard**: Conditional rendering based on user role
 
-Wszystkie komponenty implementują ARIA attributes, keyboard navigation i responsive design zgodnie z wytycznymi dostępności.
+All components implement ARIA attributes, keyboard navigation, and responsive design according to accessibility guidelines.

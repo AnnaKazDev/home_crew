@@ -1,201 +1,201 @@
-# Dokument wymagań produktu (PRD) - Home Crew
+# Product Requirements Document (PRD) - Home Crew
 
-## 1. Przegląd produktu
+## 1. Product Overview
 
-Home Crew to responsywna web-aplikacja (EN) pomagająca rodzinom sprawiedliwie planować i śledzić codzienne obowiązki/zadania domowe.
-System umożliwia tworzenie gospodarstwa domowego (do 10 osób), wybór z listy 50 predefiniowanych zadań lub dodawanie własnych,
-przypisywanie się do zadań, przenoszenie ich ze statusu „To Do” do „Done” oraz przegląd historii zadań w widoku dziennym.
-Wszystkie operacje są logowane w bazie danych.
+Home Crew is a responsive web application (EN) helping families fairly plan and track daily household chores/tasks.
+The system enables creating a household (up to 10 people), selecting from a list of 50 predefined tasks or adding custom ones,
+assigning tasks to members, moving them from "To Do" to "Done" status, and browsing task history in the daily view.
+All operations are logged in the database.
 
-## 2. Problem użytkownika
+## 2. User Problem
 
-Domownicy nie mają przejrzystego sposobu śledzenia, kto i kiedy wykonał dany obowiązek/zadanie domowe.
-Prowadzi to do sporów o sprawiedliwy podział pracy i trudności w przypominaniu sobie kolejności wykonywania zadań oraz planowania przyszłych zadań/harmonogramu prac.
+Household members don't have a clear way to track who performed which household chore/task and when.
+This leads to disputes about fair work distribution and difficulties in remembering task sequences and planning future tasks/schedules.
 
-## 3. Wymagania funkcjonalne
+## 3. Functional Requirements
 
-FR-01 Rejestracja użytkownika z wyborem roli „Admin rodziny” lub „Członek rodziny”.  
-FR-02 Autoryzacja: e-mail, hasło + reset hasła via e-mail. Login (imię/nick) jest osobnym polem w profilu.
-FR-03 Admin tworzy gospodarstwo domowe (nazwa) i otrzymuje 6-cyfrowy PIN; członek dołącza, podając PIN.  
-FR-04 Dzienny widok kalendarza z dwoma kolumnami: To Do / Done; możliwość przełączania dni (przeszłe / przyszłe) oraz przyciskiem dodawania obowiązków do danego dnia (button "Dodaj").  
-FR-05 Lista 50 zadań wbudowanych + możliwość dodania/edycji/usunięcia własnych zadań (tytuł, pora dnia (rano, popołudniu, wieczorem, w nocy), emoji z puli ikon). Dodane zadanie powiększa pulę zadań wbudowanych (predefiniowanych).
-FR-06 Przeciąganie lub klik do zmiany statusu zadania (To Do → Done, odwrotnie).
-FR-07 Moliwość przypisania członka rodziny (siebie lub kogoś innego) do zadania (zarówno w statusie To Do jak i Done)
-FR-08 Limit 50 zadań dziennie na gospodarstwo; po przekroczeniu przycisk „Dodaj” jest ukrywany.  
-FR-09 Obsługa RWD - desktop, tablet, telefon.  
-FR-10 Edycja i usuwanie zadań tylko dodanych przez danego członka rodziny.  
-FR-11 Log audytowy (tworzenie, przypisanie, status, edycje) zapisywany w bazie, brak widoku UI w MVP.  
-FR-12 Język: EN z detekcją przeglądarki.
-FR-13 Dane o obowiązkach przechowywane są w sposób zapewniający skalowalność i bezpieczeństwo.
-FR-14 Dane osobowe userów i ich obowiązków domowych przechowywane zgodnie z RODO
-FR-15 Prawo do wglądu i usunięcia danych (konto wraz z obowiązkami) na wniosek usera.
-FR-16 Tylko zalogowany user moze widzieć widok dzienny, listę zadań/obowiązków itd.
-FR-17 System punktów: każde zadanie ma przypisaną liczbę punktów (0-100); po oznaczeniu "Done" punkty są dodawane do konta użytkownika. Punkty są zawsze obliczane na świeżo z aktualnych ukończonych zadań (wykluczając usunięte zadania) i mogą być wykorzystane do nagród (np. 1h gry na komputerze). W MVP tylko gromadzenie punktów, bez ekranu nagród/statystyk.
+FR-01 User registration with role selection "Family Admin" or "Family Member".
+FR-02 Authentication: email, password + password reset via email. Login (name/nickname) is a separate field in the profile.
+FR-03 Admin creates a household (name) and receives a 6-digit PIN; member joins by providing the PIN.
+FR-04 Daily calendar view with two columns: To Do / Done; ability to switch days (past/future) and a button to add chores to a specific day ("Add" button).
+FR-05 List of 50 built-in tasks + ability to add/edit/delete custom tasks (title, time of day (morning, afternoon, evening, night), emoji from icon pool). Added task expands the pool of built-in (predefined) tasks.
+FR-06 Drag-and-drop or click to change task status (To Do → Done, and vice versa).
+FR-07 Ability to assign a family member (yourself or someone else) to a task (both in To Do and Done status)
+FR-08 50 daily tasks limit per household; after exceeding, the "Add" button is hidden.
+FR-09 RWD support - desktop, tablet, phone.
+FR-10 Edit and delete tasks only by the family member who added them.
+FR-11 Audit log (creation, assignment, status, edits) saved in database, no UI view in MVP.
+FR-12 Language: EN with browser detection.
+FR-13 Chore data stored in a way that ensures scalability and security.
+FR-14 Users' personal data and their household chores stored in compliance with GDPR
+FR-15 Right to access and delete data (account along with chores) upon user request.
+FR-16 Only logged-in user can see daily view, task list, chores, etc.
+FR-17 Points system: each task has an assigned number of points (0-100); after marking "Done", points are added to the user's account. Points are always calculated fresh from current completed tasks (excluding deleted tasks) and can be used for rewards (e.g., 1h of computer games). In MVP only point accumulation, no rewards/stats screen.
 
-## 4. Granice produktu
+## 4. Product Boundaries
 
-• Brak powiadomień push/SMS, aplikacji mobilnej, sortowania ani filtrowania zadań w MVP.  
-• Jedno gospodarstwo na jedno konto admina; brak obsługi wielu gospodarstw.  
-• Brak eksportu danych i panelu statystyk w MVP.  
-• Realtime odświeżanie opcjonalne (rozważane tylko dla zmiany statusu).
-• UI nagród i wymiany punktów poza MVP (punkty są zapisywane w bazie).
+• No push/SMS notifications, mobile app, task sorting or filtering in MVP.
+• One household per admin account; no multi-household support.
+• No data export and statistics panel in MVP.
+• Realtime refresh optional (considered only for status changes).
+• Rewards UI and point redemption outside MVP (points are saved in database).
 
-## 5. Historyjki użytkowników
+## 5. User Stories
 
-### US-001: Rejestracja admina
+### US-001: Admin Registration
 
-**Jako nowy użytkownik chcę utworzyć gospodarstwo, nadać mu nazwę i otrzymać PIN, aby zaprosić rodzinę.**
+**As a new user I want to create a household, give it a name and receive a PIN, so I can invite my family.**
 
-**Kryteria akceptacji:**
+**Acceptance Criteria:**
 
-1. Formularz rejestracji z rolą „Admin" dostępny w wspólnym widoku autentykacji
-2. Po wysłaniu: konto utworzone, PIN i nazwa zapisane, e-mail potwierdzający wysłany
-3. Użytkownik zostaje zalogowany i widzi pustą listę zadań na dany dzień
-4. Widok autentykacji zawiera przełącznik między rejestracją a logowaniem
-5. Uzytkownik moze się wylogowac poprzez przycisk w menu bocznym.
-
----
-
-### US-002: Rejestracja członka
-
-**Jako członek rodziny chcę dołączyć, przy rejestracji podaję PIN, abym widział wspólne obowiązki.**
-
-**Kryteria akceptacji:**
-
-1. Formularz z polem PIN dostępny w wspólnym widoku autentyfikacji
-2. PIN zweryfikowany; konto przypisane do gospodarstwa
-3. Po rejestracji użytkownik widzi dzisiejszy widok zadań
+1. Registration form with "Admin" role available in the shared authentication view
+2. After submission: account created, PIN and name saved, confirmation email sent
+3. User gets logged in and sees empty task list for the current day
+4. Authentication view contains toggle between registration and login
+5. User can log out via the sidebar menu button.
 
 ---
 
-### US-003: Reset hasła
+### US-002: Member Registration
 
-**Jako użytkownik chcę zresetować hasło, gdy je zapomnę.**
+**As a family member I want to join, providing PIN during registration, so I can see shared chores.**
 
-**Kryteria akceptacji:**
+**Acceptance Criteria:**
 
-1. Link „Zapomniałeś hasła"
-2. E-mail resetujący wysłany
-3. Po ustawieniu nowego hasła mogę się zalogować
-
----
-
-### US-004: Przegląd dzienny
-
-**Jako użytkownik chcę widzieć obowiązki na dziś podzielone na To Do i Done.**
-
-**Kryteria akceptacji:**
-
-1. Dwie kolumny widoczne
-2. Zadania przypisane odpowiednio do statusu
-3. Widok responsywny na mobile
-4. W danym zadaniu widzę: tytuł, kategorię z jakiej jest dane zadanie, opcjonalnie: czas, emoji, osobę przypisaną
+1. Form with PIN field available in the shared authentication view
+2. PIN verified; account assigned to household
+3. After registration user sees today's task view
 
 ---
 
-### US-005: Nawigacja dni
+### US-003: Password Reset
 
-**Jako użytkownik chcę przełączać się na wczorajsze i jutrzejsze dni, by planować lub sprawdzić wykonanie.**
+**As a user I want to reset my password when I forget it.**
 
-**Kryteria akceptacji:**
+**Acceptance Criteria:**
 
-1. Strzałki / date-picker pozwalają zmienić dzień
-2. Dane ładowane dla wybranej daty
-
----
-
-### US-006: Dodanie zadania
-
-**Jako użytkownik chcę dodać nowe zadanie do listy predefiniowanych zadań (~50 zadań) widocznych dla wszystkich członków danej rodziny. Zadanie posiada odpowiednie pola.**
-
-**Kryteria akceptacji:**
-
-1. Formularz dodawania otwiera się
-2. Walidacja: tytuł (50 znaków - obowiązkowe), kategoria (obowiązkowe), limit emoji (1 - opcjonalnie), liczba punktów, pora dnia (opcjonalne);
-3. Po zapisaniu zadanie pojawia się na liście predefiniowyanych zadań. Stamtąd mona je wybrac i dodać - wtedy pojawi się w kolumnie To Do.
+1. "Forgot password" link
+2. Reset email sent
+3. After setting new password I can log in
 
 ---
 
-### US-007: Wybór zadania/obowiązku domowego z listy zadań
+### US-004: Daily Overview
 
-**Jako użytkownik chcę wybrać zadanie z predefiniowanej listy (znajdują się tam predefiniowane zadania w ilości ~50 oraz te, które zostały dodane przez członków danej rodziny, jako customowe.)**
+**As a user I want to see today's chores divided into To Do and Done.**
 
-**Kryteria akceptacji:**
+**Acceptance Criteria:**
 
-1. Lista predefiniowana wyświetla ~50 pozycji oraz ewentualnie dodanie zadania customowe - dodane przez członków danego gospodarstwa domowego.
-2. Wybranie pozycji dodaje ją do dzisiejszej listy
-
----
-
-### US-008: Przypisanie się
-
-**Jako użytkownik chcę przypisać się do zadania w To Do, aby było jasne, kto je wykona.**
-
-**Kryteria akceptacji:**
-
-1. Klik „Przypisz" (pokazuje się lista dostępnych członków rodziny, mogę wybrać kogoś lub siebie)
-2. Ikona/tekst wskazuje przypisanego użytkownika
+1. Two columns visible
+2. Tasks assigned to appropriate status
+3. View responsive on mobile
+4. In each task I see: title, category the task belongs to, optionally: time, emoji, assigned person
 
 ---
 
-### US-009: Oznaczenie Done
+### US-005: Day Navigation
 
-**Jako użytkownik chcę przenieść zadanie do kolumny Done, gdy je wykonam.**
+**As a user I want to switch to yesterday's and tomorrow's days, to plan or check completion.**
 
-**Kryteria akceptacji:**
+**Acceptance Criteria:**
 
-1. Drag-and-drop lub przycisk „Zrobione"
-2. Status zadania zmieniony; aktualizacja widoczna dla wszystkich
-
----
-
-### US-010: Edycja zadania
-
-**Jako użytkownik chcę edytować tytuł/porę/emoji zadania, także z przeszłych dni.**
-
-**Kryteria akceptacji:**
-
-1. Nie ma mozliwości edycji zadania w zakresie MVP
-2. Jedyna dostępna opcja to jest usunięcie danego zadania z widoku dziennego i ewentualnie dodanie nowego
+1. Arrows / date-picker allow changing the day
+2. Data loaded for selected date
 
 ---
 
-### US-011: Usunięcie zadania
+### US-006: Add Task
 
-**Jako użytkownik chcę usunąć zadanie, które jest nieaktualne.**
+**As a user I want to add a new task to the list of predefined tasks (~50 tasks) visible to all members of a given family. The task has appropriate fields.**
 
-**Kryteria akceptacji:**
+**Acceptance Criteria:**
 
-1. Akcja „Usuń" z potwierdzeniem
-2. Zadanie znika z widoku danego dnia
+1. Add form opens
+2. Validation: title (50 characters - required), category (required), emoji limit (1 - optional), points number, time of day (optional);
+3. After saving, task appears in the predefined tasks list. From there it can be selected and added - then it appears in the To Do column.
 
-### US-012: Zdobywanie punktów
+---
 
-**Jako** członek rodziny **chcę** otrzymywać punkty za każde ukończone zadanie, **aby** mieć motywację i móc je później wymienić na nagrody.
+### US-007: Select Task/Household Chore from Task List
 
-**Kryteria akceptacji:**
+**As a user I want to select a task from the predefined list (containing ~50 predefined tasks plus those added by family members as custom ones.)**
 
-1. Po oznaczeniu zadania "Done" liczba punktów przypisana do zadania dodaje się do mojego konta.
-2. Punkty są przechowywane w profilu użytkownika.
-3. W MVP brak widoku nagród; punkty można zobaczyć w profilu (lub tylko w bazie).
+**Acceptance Criteria:**
 
-### US-013: Logowanie do aplikacji
+1. Predefined list displays ~50 items plus any custom tasks added by members of the given household.
+2. Selecting an item adds it to today's list
 
-**Jako użytkownik posiadający konto chcę się zalogować do systemu, aby uzyskać dostęp do swoich obowiązków domowych.**
+---
 
-**Kryteria akceptacji:**
+### US-008: Self-Assignment
 
-1. Formularz logowania z polami e-mail i hasło dostępny w wspólnym widoku autentykacji
-2. Walidacja danych wejściowych (wymagany e-mail i hasło)
-3. Po pomyślnym logowaniu użytkownik zostaje przekierowany do dziennego widoku zadań
-4. Obsługa błędów logowania z odpowiednimi komunikatami
-5. Przycisk "Zapomniałeś hasła?" prowadzący do resetowania hasła
-6. Użytkownik nie może korzystać z serwisu bez zalogowania się
-7. Zalogowany użytkownik wchodzący na główną stronę `/` zostaje automatycznie przekierowany do dziennego widoku zadań
+**As a user I want to assign myself to a To Do task, so it's clear who will do it.**
 
-## 6. Metryki sukcesu
+**Acceptance Criteria:**
 
-• MS-01 Średnio 2 lub więcej obowiązków dodawanych dziennie na aktywnego członka gospodarstwa
+1. "Assign" click (shows list of available family members, I can choose someone or myself)
+2. Icon/text indicates assigned user
+
+---
+
+### US-009: Mark Done
+
+**As a user I want to move a task to the Done column when I complete it.**
+
+**Acceptance Criteria:**
+
+1. Drag-and-drop or "Done" button
+2. Task status changed; update visible to everyone
+
+---
+
+### US-010: Edit Task
+
+**As a user I want to edit task title/time/emoji, even from past days.**
+
+**Acceptance Criteria:**
+
+1. No task editing capability in MVP scope
+2. The only available option is to delete the given task from the daily view and possibly add a new one
+
+---
+
+### US-011: Delete Task
+
+**As a user I want to delete a task that is outdated.**
+
+**Acceptance Criteria:**
+
+1. "Delete" action with confirmation
+2. Task disappears from the day's view
+
+### US-012: Earning Points
+
+**As a** family member **I want** to receive points for each completed task, **so** I have motivation and can redeem them for rewards later.
+
+**Acceptance Criteria:**
+
+1. After marking task "Done", the number of points assigned to the task is added to my account.
+2. Points are stored in the user profile.
+3. In MVP no rewards view; points can be seen in profile (or just in database).
+
+### US-013: Login to Application
+
+**As a user with an account I want to log into the system, to access my household chores.**
+
+**Acceptance Criteria:**
+
+1. Login form with email and password fields available in the shared authentication view
+2. Input validation (email and password required)
+3. After successful login user is redirected to the daily task view
+4. Login error handling with appropriate messages
+5. "Forgot password?" button leading to password reset
+6. User cannot use the service without logging in
+7. Logged-in user entering the main page `/` gets automatically redirected to the daily task view
+
+## 6. Success Metrics
+
+• MS-01 Average of 2 or more chores added daily per active household member
 
 ```
 
