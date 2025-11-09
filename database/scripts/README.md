@@ -5,14 +5,17 @@ This directory contains SQL scripts for database diagnostics, testing, and devel
 ## Available Scripts
 
 ### Diagnostics
+
 - `check_rls.sql` - Check Row Level Security settings on tables
 - `test.sql` - Test database connectivity and table existence
 
 ### Test Data
+
 - `test_data.sql` - Test data for development
 - `insert_seed.sql` - Seed data (consider using `supabase/seed.sql` instead)
 
 ### Legacy Scripts (May be outdated)
+
 - `create_table.sql` - Manual table creation (use migrations instead)
 - `disable_rls.sql` - Disable RLS (use migrations instead)
 

@@ -38,14 +38,14 @@ Example:
 
 ## 4. Response Details
 
-| Status Code | Description                                  | Content (`application/json`)               |
-| ----------- | -------------------------------------------- | ------------------------------------------ |
-| **201**     | Created                                      | `CatalogItemDTO` of newly created row      |
-| 400         | Invalid input data (Zod validation)          | `{ error: "Validation error", details }`   |
-| 401         | Unauthorized                                 | `{ error: "Unauthorized" }`                |
-| 404         | User does not belong to household            | `{ error: "Household not found" }`         |
-| 409         | Duplicate title in catalog                   | `{ error: "Duplicate title" }`             |
-| 500         | Server error                                 | `{ error: "Internal server error" }`       |
+| Status Code | Description                         | Content (`application/json`)             |
+| ----------- | ----------------------------------- | ---------------------------------------- |
+| **201**     | Created                             | `CatalogItemDTO` of newly created row    |
+| 400         | Invalid input data (Zod validation) | `{ error: "Validation error", details }` |
+| 401         | Unauthorized                        | `{ error: "Unauthorized" }`              |
+| 404         | User does not belong to household   | `{ error: "Household not found" }`       |
+| 409         | Duplicate title in catalog          | `{ error: "Duplicate title" }`           |
+| 500         | Server error                        | `{ error: "Internal server error" }`     |
 
 ## 5. Data Flow
 
@@ -72,13 +72,13 @@ Example:
 
 ## 7. Error Handling
 
-| Scenario                                  | Code | Handling                                                |
-| ----------------------------------------- | ---- | ------------------------------------------------------ |
-| Missing JWT or invalid session             | 401  | Return `Unauthorized` error.                           |
-| User has no household                      | 404  | "Household not found".                                 |
-| Zod validation fails                       | 400  | Zod details in `details`.                              |
-| Duplicate `(household_id, lower(title))`   | 409  | Postgres uniqueness error — map to `Duplicate title`. |
-| Other DB/server errors                     | 500  | Log `console.error`, return generic.                   |
+| Scenario                                 | Code | Handling                                              |
+| ---------------------------------------- | ---- | ----------------------------------------------------- |
+| Missing JWT or invalid session           | 401  | Return `Unauthorized` error.                          |
+| User has no household                    | 404  | "Household not found".                                |
+| Zod validation fails                     | 400  | Zod details in `details`.                             |
+| Duplicate `(household_id, lower(title))` | 409  | Postgres uniqueness error — map to `Duplicate title`. |
+| Other DB/server errors                   | 500  | Log `console.error`, return generic.                  |
 
 ## 8. Performance Considerations
 
