@@ -209,7 +209,7 @@ export const useProfile = () => {
             .eq('id', currentUserId);
 
           if (updateError) {
-            console.log('Could not update profile, using mock data');
+            // Could not update profile, using mock data
           }
 
           setProfile({

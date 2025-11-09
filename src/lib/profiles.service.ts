@@ -64,20 +64,14 @@ export async function getProfile(
   supabase: SupabaseClient<Database>,
   userId: string
 ): Promise<ProfileDTO> {
-  console.log('Fetching profile for userId:', userId);
-
   // Try to get profile from database first
-  console.log('Attempting to fetch profile from database...');
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)
     .single();
 
-  console.log('Database query result:', { profile, error: profileError });
-
   if (profile && !profileError) {
-    console.log('Found profile in database:', profile);
     return {
       ...profile,
       email: profile.email || 'unknown@example.com',
@@ -85,12 +79,8 @@ export async function getProfile(
     } as ProfileDTO;
   }
 
-  console.log("Profile not found in database, checking if it's the development user...");
-
   // For development: if user doesn't exist, create mock data
   if (userId === 'e9d12995-1f3e-491d-9628-3c4137d266d1') {
-    console.log('Using mock data for development user');
-
     // Try to get profile first
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
@@ -100,7 +90,6 @@ export async function getProfile(
 
     if (profileError || !profile) {
       // Create mock profile if it doesn't exist
-      console.log('Creating mock profile for development');
       const mockProfile = {
         id: userId,
         name: 'Developer',
@@ -119,7 +108,7 @@ export async function getProfile(
           })
           .single();
       } catch (insertError) {
-        console.log('Could not insert profile (tables might not exist yet):', insertError);
+        // Profile insertion failed (tables might not exist yet)
       }
 
       return mockProfile;
@@ -170,10 +159,6 @@ export async function getProfile(
     throw new Error('User email not found');
   }
 
-  console.log('Profile data:', existingProfile);
-  console.log('User email:', 'unknown@example.com');
-  console.log('Fresh total points:', freshTotalPoints);
-
   return {
     id: existingProfile.id,
     name: existingProfile.name,
@@ -199,8 +184,6 @@ export async function updateProfile(
 ): Promise<ProfileDTO> {
   // For development user, handle mock data
   if (userId === 'e9d12995-1f3e-491d-9628-3c4137d266d1') {
-    console.log('Updating mock profile for development user');
-
     // Try to update the profile
     try {
       const updatePayload: Record<string, unknown> = {
@@ -217,7 +200,7 @@ export async function updateProfile(
         .eq('id', userId);
 
       if (updateError) {
-        console.log('Could not update profile (might not exist yet), returning mock data');
+        // Profile update failed (might not exist yet), returning mock data
       }
 
       return {
@@ -228,7 +211,7 @@ export async function updateProfile(
         email: 'dev@example.com',
       };
     } catch (error) {
-      console.log('Database update failed, returning mock updated data');
+      // Database update failed, returning mock updated data
       return {
         id: userId,
         name: data.name,
@@ -250,8 +233,6 @@ export async function updateProfile(
   if (getError || !currentProfile) {
     throw new Error('PROFILE_NOT_FOUND');
   }
-
-  console.log('Current profile before update:', currentProfile);
 
   // Build update payload
   const updatePayload: Record<string, unknown> = {
@@ -281,8 +262,6 @@ export async function updateProfile(
     .select('id, name, avatar_url, total_points')
     .eq('id', userId)
     .single();
-
-  console.log('Fetched updated profile:', updatedProfile, 'fetch error:', fetchError);
 
   if (fetchError || !updatedProfile) {
     console.error('Fetch error after update:', fetchError);

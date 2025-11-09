@@ -30,8 +30,6 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onError, onLoadin
       // For now, just simulate a delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log('Password reset attempt:', data);
-
       // Simulate success for demo purposes
       // In real implementation, this would send reset email
       alert('Password reset functionality will be implemented with Supabase Auth');

@@ -140,14 +140,6 @@ export function useDailyView() {
   const catalogQuery = useQuery({
     queryKey: [...dailyViewKeys.all, 'catalog', 'all'] as const,
     queryFn: async () => {
-      console.log(
-        'Fetching catalog data... useApi:',
-        useApi,
-        'isSupabaseConfigured:',
-        isSupabaseConfigured,
-        'effectiveHouseholdId:',
-        effectiveHouseholdId
-      );
       try {
         if (useApi) {
           const res = await fetch('/api/v1/catalog?type=all');
@@ -156,7 +148,6 @@ export function useDailyView() {
             throw new Error('Failed to load catalog');
           }
           const data = await res.json();
-          console.log('Catalog data fetched:', data.length, 'items');
           return data;
         }
         const result = await getCatalogItems(
@@ -179,12 +170,6 @@ export function useDailyView() {
   const choresQuery = useQuery({
     queryKey: dailyViewKeys.chores(currentDate),
     queryFn: async () => {
-      console.log(
-        'Chores query starting for date:',
-        currentDate,
-        'householdId:',
-        effectiveHouseholdId
-      );
       let chores: DailyChoreDTO[];
       if (useApi) {
         // Ensure household exists before fetching chores
@@ -216,20 +201,17 @@ export function useDailyView() {
         predefined: boolean;
       }[] = [];
 
-      console.log('Fetching catalog data for chores enrichment...');
       try {
         if (useApi) {
           const res = await fetch('/api/v1/catalog?type=all');
           if (res.ok) {
             catalog = await res.json();
-            console.log('Fetched catalog for enrichment (API):', catalog.length, 'items');
           } else {
             console.error('Failed to fetch catalog for enrichment, status:', res.status);
           }
         } else {
           // Fetch catalog fresh for Supabase mode too for reliability
           catalog = await getCatalogItems(getSupabaseClient(), effectiveHouseholdId || null, 'all');
-          console.log('Fetched catalog for enrichment (Supabase):', catalog.length, 'items');
         }
       } catch (error) {
         console.error('Error fetching catalog for enrichment:', error);
@@ -270,7 +252,6 @@ export function useDailyView() {
         };
       });
 
-      console.log('Chores query completed successfully:', viewModels.length, 'chores');
       return viewModels;
     },
     enabled: !!effectiveHouseholdId && !householdQuery.isLoading, // Wait for household to be loaded

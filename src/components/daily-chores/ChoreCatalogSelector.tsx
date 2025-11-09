@@ -90,27 +90,11 @@ export function ChoreCatalogSelector({
       return matchesSearch && matchesCategory;
     });
 
-    console.log('Filtering:', {
-      selectedCategory,
-      searchQuery,
-      totalItems: catalogItems.length,
-      filteredItems: items.length,
-      sampleItem: catalogItems[0]?.category,
-    });
     return items;
   }, [catalogItems, searchQuery, selectedCategory]);
 
   // Get unique categories
   const categories = ['all', ...Array.from(new Set(catalogItems.map((item) => item.category)))];
-
-  console.log(
-    'ChoreCatalogSelector rendering, items:',
-    catalogItems.length,
-    'loading:',
-    isLoading,
-    'categories:',
-    categories
-  );
 
   if (isLoading) {
     return (
@@ -178,9 +162,7 @@ export function ChoreCatalogSelector({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Category clicked:', category, 'current selected:', selectedCategory);
                 setSelectedCategory(category);
-                console.log('Category set to:', category);
               }}
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 selectedCategory === category

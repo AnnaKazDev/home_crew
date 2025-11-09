@@ -6,8 +6,6 @@ import { ThemeProvider } from './ThemeProvider';
 import DailyView from './DailyView';
 
 export default function DailyViewWithProvider() {
-  console.log('DailyViewWithProvider rendering...');
-
   // Client-only component with React hooks
   try {
     return (
