@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* globals setTimeout */
+
 /**
  * Script do testowania rejestracji z potwierdzaniem email
  * Używa lokalnego serwera email Inbucket do sprawdzania wiadomości
@@ -9,7 +11,8 @@ import { createClient } from '@supabase/supabase-js';
 
 // Konfiguracja
 const supabaseUrl = process.env.PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321';
-const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH';
+const supabaseAnonKey =
+  process.env.PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH';
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -21,7 +24,7 @@ function generateTestEmail() {
 
 // Funkcja do czekania
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function testEmailRegistration() {
@@ -73,14 +76,12 @@ async function testEmailRegistration() {
       console.log('2. Znajdź email potwierdzający rejestrację');
       console.log('3. Kliknij link potwierdzający w emailu');
       console.log('4. Spróbuj się zalogować po potwierdzeniu');
-
     } else if (data.user?.email_confirmed_at) {
       console.log('⚠️  Użytkownik został utworzony i email jest już potwierdzony');
       console.log('   (Możliwe, że potwierdzanie email jest wyłączone)');
     } else {
       console.log('❓ Nieoczekiwany stan rejestracji');
     }
-
   } catch (error) {
     console.error('❌ Błąd podczas testowania:', error);
   }

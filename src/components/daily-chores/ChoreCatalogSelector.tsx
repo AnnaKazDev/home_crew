@@ -49,8 +49,6 @@ export function ChoreCatalogSelector({
 
       let items: CatalogItemDTO[];
 
-
-
       try {
         // Try Supabase first if configured
         if (isSupabaseConfigured) {
@@ -246,7 +244,8 @@ export function ChoreCatalogSelector({
           onClick={onCreateCustom}
           className="w-full px-4 py-3 bg-emerald-500 text-white dark:text-black rounded-lg hover:bg-emerald-600 transition-colors font-medium"
         >
-          <span style={{transform: 'scale(1.3)', display: 'inline-block'}}>✨</span> Add Custom Chore
+          <span style={{ transform: 'scale(1.3)', display: 'inline-block' }}>✨</span> Add Custom
+          Chore
         </button>
       </div>
     </div>

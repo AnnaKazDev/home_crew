@@ -75,8 +75,7 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
       <Card className="w-full p-6">
         <CardHeader className="px-0 py-0">
           <CardTitle className="flex items-center gap-2 !text-xl">
-            ⭐
-            Points Summary - Last 7 Days
+            ⭐ Points Summary - Last 7 Days
           </CardTitle>
         </CardHeader>
         <CardContent className="px-0 py-0">
@@ -101,8 +100,7 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
       <Card className="w-full p-6">
         <CardHeader className="px-0 py-0">
           <CardTitle className="flex items-center gap-2 !text-xl">
-            ⭐
-            Points Summary - Last 7 Days
+            ⭐ Points Summary - Last 7 Days
           </CardTitle>
         </CardHeader>
         <CardContent className="px-0 py-0">
@@ -119,8 +117,7 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
     <Card className="w-full p-6">
       <CardHeader className="px-0 py-0">
         <CardTitle className="flex items-center gap-2 !text-xl">
-          ⭐
-          Points Summary - Last 7 Days
+          ⭐ Points Summary - Last 7 Days
         </CardTitle>
         <div className="flex gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">

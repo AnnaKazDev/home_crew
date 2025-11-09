@@ -53,9 +53,7 @@ export function ChoreColumn({
     >
       <div className="flex items-center justify-between mb-4 min-h-[40px]">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-primary">
-            {title}
-          </h2>
+          <h2 className="text-xl font-semibold text-primary">{title}</h2>
           <div className="inline-flex items-center justify-center w-7 h-7 rounded-full border-2 border-orange-500 text-orange-600 text-sm font-bold bg-transparent">
             {chores.length}
           </div>

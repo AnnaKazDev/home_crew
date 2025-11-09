@@ -28,7 +28,6 @@ async function checkPoints() {
   console.log('Sprawdzanie punktów po migracji...');
 
   try {
-
     // Sprawdź wszystkie points_events z task_date
     const { data: allEvents, error: allEventsError } = await supabase
       .from('points_events')
@@ -54,7 +53,6 @@ async function checkPoints() {
     } else {
       console.log('Profil:', profile);
     }
-
   } catch (error) {
     console.error('Błąd:', error);
   }

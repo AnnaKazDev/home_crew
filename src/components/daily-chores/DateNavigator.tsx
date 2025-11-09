@@ -55,10 +55,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                data-test-id="date-navigator-pick-date"
-                className=""
-              >
+              <Button data-test-id="date-navigator-pick-date" className="">
                 Pick a date
                 <CalendarIcon className="h-4 w-4" />
               </Button>
@@ -109,10 +106,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
 
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                data-test-id="date-navigator-pick-date-mobile"
-                className=""
-              >
+              <Button data-test-id="date-navigator-pick-date-mobile" className="">
                 <span>Pick a date</span>
                 <CalendarIcon className="h-4 w-4" />
               </Button>

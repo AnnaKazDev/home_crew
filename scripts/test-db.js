@@ -61,7 +61,7 @@ async function testDB() {
             assignee_id: 'e9d12995-1f3e-491d-9628-3c4137d266d1',
             points: catalogItems[0].points,
             time_of_day: 'morning',
-            status: 'todo'
+            status: 'todo',
           })
           .select()
           .single();
@@ -141,7 +141,6 @@ async function testDB() {
     } else {
       console.log('Updated profile:', updatedProfile);
     }
-
   } catch (error) {
     console.error('Test failed:', error);
   }

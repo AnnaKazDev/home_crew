@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import EmojiPicker, { Theme } from 'emoji-picker-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
@@ -175,9 +181,11 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
             >
               <Minus className="h-4 w-4" />
             </Button>
-            <div className={`flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium text-foreground ${
-              errors.points ? 'border-destructive' : 'border-border'
-            }`}>
+            <div
+              className={`flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium text-foreground ${
+                errors.points ? 'border-destructive' : 'border-border'
+              }`}
+            >
               {formData.points} pts
             </div>
             <Button
@@ -204,9 +212,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
                 <label
                   key={option.value}
                   className={`group flex items-center space-x-3 cursor-pointer p-3 rounded-lg border transition-all duration-200 hover:bg-accent hover:text-black ${
-                    isSelected
-                      ? 'border-primary bg-primary/5 shadow-sm'
-                      : 'border-border'
+                    isSelected ? 'border-primary bg-primary/5 shadow-sm' : 'border-border'
                   }`}
                 >
                   <input
@@ -217,7 +223,9 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
                     onChange={(e) => handleChange('time_of_day', e.target.value)}
                     className="text-primary focus:ring-ring"
                   />
-                  <span className="text-sm text-foreground group-hover:text-black">{option.label}</span>
+                  <span className="text-sm text-foreground group-hover:text-black">
+                    {option.label}
+                  </span>
                 </label>
               );
             })}

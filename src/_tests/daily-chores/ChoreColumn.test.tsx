@@ -453,7 +453,14 @@ describe('ChoreColumn', () => {
       );
 
       const column = screen.getByTestId('chore-column-todo');
-      expect(column).toHaveClass('bg-card', 'p-6', 'rounded-lg', 'shadow', 'min-h-[150px]', 'md:min-h-[400px]');
+      expect(column).toHaveClass(
+        'bg-card',
+        'p-6',
+        'rounded-lg',
+        'shadow',
+        'min-h-[150px]',
+        'md:min-h-[400px]'
+      );
     });
 
     it('applies correct header styling', () => {

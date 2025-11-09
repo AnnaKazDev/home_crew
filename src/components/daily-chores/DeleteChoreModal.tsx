@@ -29,8 +29,9 @@ export function DeleteChoreModal({ isOpen, chore, onClose, onConfirm }: DeleteCh
         <DialogHeader>
           <DialogTitle>Delete this chore?</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this chore <strong>"{chore?.catalogTitle}"</strong>? <br />This action cannot be
-            undone.
+            Are you sure you want to delete this chore <strong>"{chore?.catalogTitle}"</strong>?{' '}
+            <br />
+            This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

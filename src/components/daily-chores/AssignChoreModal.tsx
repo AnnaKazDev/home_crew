@@ -85,7 +85,10 @@ export function AssignChoreModal({
               <div>
                 <h3 className="font-medium text-foreground">{chore?.catalogTitle ?? 'Chore'}</h3>
                 <div className="flex items-center space-x-2 mt-1">
-                  <Badge variant="outline" className="text-xs text-black dark:border-white dark:text-white">
+                  <Badge
+                    variant="outline"
+                    className="text-xs text-black dark:border-white dark:text-white"
+                  >
                     ⭐ {chore?.points ?? 0} pts
                   </Badge>
                   <Badge variant="secondary" className="text-xs">

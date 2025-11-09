@@ -34,7 +34,6 @@ export function AddChoreModal({
   const [catalogKey, setCatalogKey] = useState(0); // Force re-render of catalog
   const [error, setError] = useState<string | null>(null);
 
-
   const resetModal = () => {
     setCurrentStep('catalog');
     setSelectedItem(null);
@@ -157,7 +156,6 @@ export function AddChoreModal({
         return 'Choose a Chore';
     }
   };
-
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose} modal={false}>

@@ -34,7 +34,9 @@ async function createSecondUser() {
       return;
     }
 
-    const existingUser = existingUsers.users.find(user => user.email === 'testmember@example.com');
+    const existingUser = existingUsers.users.find(
+      (user) => user.email === 'testmember@example.com'
+    );
 
     if (existingUser) {
       console.log('Second test user already exists:', existingUser.email);
@@ -47,7 +49,7 @@ async function createSecondUser() {
     const { data: userData, error: userError } = await supabase.auth.admin.createUser({
       email: 'testmember@example.com',
       password: 'password',
-      email_confirm: true
+      email_confirm: true,
     });
 
     if (userError) {
@@ -74,13 +76,11 @@ async function createSecondUser() {
     // Now join the household using the PIN via direct database insert
     console.log('Joining household with PIN...');
 
-    const { data: joinData, error: joinError } = await supabase
-      .from('household_members')
-      .insert({
-        household_id: '11111111-aaaa-bbbb-cccc-222222222222', // From check-household-pin.js
-        user_id: userData.user.id,
-        role: 'member'
-      });
+    const { data: joinData, error: joinError } = await supabase.from('household_members').insert({
+      household_id: '11111111-aaaa-bbbb-cccc-222222222222', // From check-household-pin.js
+      user_id: userData.user.id,
+      role: 'member',
+    });
 
     if (joinError) {
       console.error('Error joining household:', joinError);
@@ -88,7 +88,6 @@ async function createSecondUser() {
     }
 
     console.log('Successfully joined household:', joinData);
-
   } catch (err) {
     console.error('Unexpected error:', err);
   }
