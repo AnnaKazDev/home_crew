@@ -12,7 +12,9 @@ export default defineConfig({
   output: 'server',
   integrations: [react(), tailwind(), sitemap()],
   server: { port: process.env.PORT ? parseInt(process.env.PORT) : 3001 },
-  adapter: process.env.VERCEL ? vercel() : node({
-    mode: 'standalone',
-  }),
+  adapter: process.env.VERCEL
+    ? vercel()
+    : node({
+        mode: 'standalone',
+      }),
 });
