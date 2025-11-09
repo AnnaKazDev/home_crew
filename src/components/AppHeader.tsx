@@ -23,6 +23,10 @@ export default function AppHeader() {
       label: 'Your Profile & Points',
       href: '/profile',
     },
+    {
+      label: 'About Home Crew',
+      href: '/',
+    },
     { separator: true },
     ...(user
       ? [
