@@ -31,9 +31,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
           return []; // Return empty array since we don't need to read existing cookies for login
         },
         setAll(cookiesToSet) {
-          console.log('Setting cookies:', cookiesToSet);
           cookiesToSet.forEach(({ name, value, options }) => {
-            console.log(`Setting cookie ${name}=${value}`);
             cookies.set(name, value, options);
           });
         },

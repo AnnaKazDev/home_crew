@@ -67,17 +67,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // Initialize auth state
   initialize: async () => {
     try {
-      console.log('auth.store: Initializing auth store...');
       const supabase = getSupabaseClient();
-      console.log('auth.store: Supabase client created');
 
       // Get current session
       const {
         data: { session },
         error,
       } = await supabase.auth.getSession();
-
-      console.log('auth.store: Session check result:', { session: !!session, error });
 
       if (error) {
         console.error('Auth error:', error);

@@ -106,8 +106,6 @@ export async function createDailyChore(
   householdId: string,
   data: CreateDailyChoreCmdType
 ): Promise<DailyChoreDTO> {
-  console.log('🔍 Creating daily chore from catalog');
-
   // Fetch the chore catalog item to get points and time_of_day
   const { data: catalogItem, error: catalogError } = await supabase
     .from('chores_catalog')
@@ -116,14 +114,10 @@ export async function createDailyChore(
     .is('deleted_at', null)
     .single();
 
-  console.log('Catalog query result:', { catalogItem, catalogError });
-
   if (catalogError || !catalogItem) {
     console.error('Error fetching chore catalog item:', catalogError);
     throw new Error('CATALOG_ITEM_NOT_FOUND');
   }
-
-  console.log('Found catalog item:', catalogItem);
 
   // TEMP: Skip all validations for debugging
 

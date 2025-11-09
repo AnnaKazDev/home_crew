@@ -23,12 +23,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log('🔥 LoginForm onSubmit called with data:', data);
     try {
       onLoading(true);
       onError('');
 
-      console.log('📡 Using Supabase client directly');
       // Create a fresh client instance to ensure proper configuration
       const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(
@@ -54,10 +52,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onError, onLoading, loading, onMo
         throw new Error(error.message);
       }
 
-      console.log('📡 Login successful:', authData.user?.id);
-
       // Success - redirect to daily_chores page (main app page for logged-in users)
-      console.log('Login successful, redirecting to daily_chores...');
       setTimeout(() => {
         window.location.href = '/daily_chores';
       }, 500); // Shorter delay

@@ -14,8 +14,6 @@ const ProfileView: React.FC = () => {
   const { user, profile, updateProfile } = useAuthStore();
   const { dailyPoints, loading: pointsLoading, error: pointsError } = useDailyPoints();
 
-  console.log('ProfileView render:', { loading, profile, isAuthenticated, user: user?.id });
-
   // Calculate date range from daily points
   const pointsDateRange = React.useMemo(() => {
     if (!dailyPoints.length) return { firstDate: null, lastDate: null };

@@ -15,7 +15,6 @@ export default function AppWithTheme({ children }: AppWithThemeProps) {
 
   // Initialize auth store on mount
   useEffect(() => {
-    console.log('AppWithTheme: Initializing auth store...');
     initialize();
   }, [initialize]);
 
