@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CatalogItemDTO, MemberDTO } from '@/types';
 
@@ -135,8 +135,11 @@ export function ChoreConfigurator({
                   <Badge variant="secondary" className="text-xs truncate text-black">
                     {currentItem?.category || 'No category'}
                   </Badge>
-                  <Badge variant="outline" className="text-xs flex-shrink-0">
-                    {currentItem?.points || 0} pts
+                  <Badge
+                    variant="outline"
+                    className="text-xs flex-shrink-0 text-black dark:border-white dark:text-white"
+                  >
+                    ⭐ {currentItem?.points || 0} pts
                   </Badge>
                 </div>
               </div>
@@ -200,52 +203,63 @@ export function ChoreConfigurator({
         <div>
           <label className="block text-sm font-medium text-foreground mb-3">Assign to</label>
           <div className="space-y-2">
-            {sortedMembers.map((member) => (
-              <label
-                key={member.id}
-                className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border"
-              >
-                <input
-                  type="radio"
-                  name="assignee"
-                  value={member.user_id}
-                  data-test-id={`assignee-option-${member.user_id}`}
-                  checked={config.assignee_id === member.user_id}
-                  onChange={(e) => handleChange('assignee_id', e.target.value)}
-                  className="text-primary focus:ring-ring"
-                />
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                    {member.avatar_url ? (
-                      <img
-                        src={member.avatar_url}
-                        alt={member.name}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {member.name.charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-medium text-foreground group-hover:text-black flex items-center gap-2">
-                      {member.name}
-                      {member.user_id === currentUserId && (
-                        <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-medium">
-                          you
+            {sortedMembers.map((member) => {
+              const isSelected = config.assignee_id === member.user_id;
+              return (
+                <label
+                  key={member.id}
+                  className={`group flex items-center space-x-3 cursor-pointer p-3 rounded-lg border-2 transition-all duration-200 hover:bg-accent hover:text-black ${
+                    isSelected ? 'border-primary bg-primary/5 shadow-sm' : 'border-border'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="assignee"
+                    value={member.user_id}
+                    data-test-id={`assignee-option-${member.user_id}`}
+                    checked={config.assignee_id === member.user_id}
+                    onChange={(e) => handleChange('assignee_id', e.target.value)}
+                    className="text-primary focus:ring-ring"
+                  />
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                      {member.avatar_url ? (
+                        <img
+                          src={member.avatar_url}
+                          alt={member.name}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {member.name.charAt(0).toUpperCase()}
                         </span>
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground group-hover:text-black">
-                      {member.role === 'admin' ? 'Admin' : 'Member'}
+                    <div>
+                      <div className="font-medium text-foreground group-hover:text-black flex items-center gap-2">
+                        {member.name}
+                        {member.user_id === currentUserId && (
+                          <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-medium">
+                            you
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground group-hover:text-black">
+                        {member.role === 'admin' ? 'Admin' : 'Member'}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </label>
-            ))}
+                </label>
+              );
+            })}
 
-            <label className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border">
+            <label
+              className={`group flex items-center space-x-3 cursor-pointer p-3 rounded-lg border-2 transition-all duration-200 hover:bg-accent hover:text-black ${
+                config.assignee_id === null
+                  ? 'border-primary bg-primary/5 shadow-sm'
+                  : 'border-border'
+              }`}
+            >
               <input
                 type="radio"
                 name="assignee"
@@ -290,7 +304,7 @@ export function ChoreConfigurator({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="px-4 py-2 text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-black dark:text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50"
           >
             Back
           </button>

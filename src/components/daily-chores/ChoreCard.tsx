@@ -81,10 +81,10 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="text-xs flex-shrink-0"
+                  className="text-xs flex-shrink-0 text-black dark:border-white dark:text-white"
                   data-test-id="chore-card-points"
                 >
-                  {chore.points} pts
+                  ⭐ {chore.points} pts
                 </Badge>
               </div>
             </div>
@@ -151,7 +151,7 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
               variant="default"
               size="sm"
               onClick={onMarkDone}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 h-7 text-xs font-medium"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-3 py-1 h-7 text-xs font-medium"
               title="Mark as done"
             >
               Mark as done

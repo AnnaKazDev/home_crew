@@ -20,8 +20,12 @@ export default function AppHeader() {
       href: '/household',
     },
     {
-      label: 'Your Profile',
+      label: 'Your Profile & Points',
       href: '/profile',
+    },
+    {
+      label: 'About Home Crew',
+      href: '/',
     },
     { separator: true },
     ...(user

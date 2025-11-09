@@ -49,10 +49,15 @@ export function ChoreCatalogSelector({
 
       let items: CatalogItemDTO[];
 
-      if (isSupabaseConfigured) {
-        // Use Supabase client directly (same as useDailyView)
-        items = await getCatalogItems(getSupabaseClient(), householdId || null, 'all');
-      } else {
+      try {
+        // Try Supabase first if configured
+        if (isSupabaseConfigured) {
+          items = await getCatalogItems(getSupabaseClient(), householdId || null, 'all');
+        } else {
+          throw new Error('Supabase not configured');
+        }
+      } catch (supabaseError) {
+        console.warn('Supabase catalog fetch failed, falling back to API:', supabaseError);
         // Fallback to API mode
         const controller = new AbortController();
         const res = await fetch('/api/v1/catalog?type=all', { signal: controller.signal });
@@ -214,8 +219,8 @@ export function ChoreCatalogSelector({
                   <span className="text-xs px-2 py-1 rounded bg-primary text-primary-foreground border border-primary">
                     {item.category}
                   </span>
-                  <span className="text-xs text-muted-foreground px-2 py-1 rounded group-hover:text-black">
-                    {item.points} pts
+                  <span className="text-xs text-black px-2 py-1 rounded-full border border-black group-hover:text-black dark:border-white dark:text-white">
+                    ⭐ {item.points} pts
                   </span>
                 </div>
               </div>
@@ -232,14 +237,15 @@ export function ChoreCatalogSelector({
 
       {/* Add Custom Button */}
       <div className="border-t border-border pt-6">
-        <span className="text-primary text-2xl font-bold text-center my-4 block">
+        <span className="text-black dark:text-white text-xl font-bold text-center my-4 block">
           or maybe You would like to..
         </span>
         <button
           onClick={onCreateCustom}
-          className="w-full px-4 py-3 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium"
+          className="w-full px-4 py-3 bg-emerald-500 text-white dark:text-black rounded-lg hover:bg-emerald-600 transition-colors font-medium"
         >
-          Add Custom Chore
+          <span style={{ transform: 'scale(1.3)', display: 'inline-block' }}>✨</span> Add Custom
+          Chore
         </button>
       </div>
     </div>

@@ -1,88 +1,88 @@
-# Plan implementacji widoku Profil użytkownika
+# User Profile View Implementation Plan
 
-## 1. Przegląd
+## 1. Overview
 
-Widok Profil użytkownika umożliwia użytkownikom przeglądanie i edycję swoich danych osobowych, takich jak nazwa i avatar, oraz wyświetlanie zgromadzonych punktów za ukończone zadania. Jest to kluczowy element aplikacji Home Crew, zapewniający personalizację i motywację poprzez system punktowy, zgodny z wymaganiami bezpieczeństwa i prywatności danych.
+The User Profile view allows users to view and edit their personal data, such as name and avatar, as well as display accumulated points for completed tasks. This is a key element of the Home Crew application, providing personalization and motivation through the points system, compliant with security and data privacy requirements.
 
-## 2. Routing widoku
+## 2. View Routing
 
-Widok powinien być dostępny pod ścieżką `/profile`. W aplikacji Astro należy utworzyć plik `src/pages/profile.astro` lub `src/pages/profile.tsx` z odpowiednią konfiguracją routingu.
+The view should be available at the `/profile` path. In the Astro application, create a file `src/pages/profile.astro` or `src/pages/profile.tsx` with appropriate routing configuration.
 
-## 3. Struktura komponentów
+## 3. Component Structure
 
-- **ProfileView**: Główny komponent strony, zawierający layout i zarządzanie stanem.
-  - **ProfileForm**: Formularz edycji profilu z polami nazwy i avatara.
-  - **PointsDisplay**: Komponent wyświetlający całkowitą liczbę punktów użytkownika.
+- **ProfileView**: Main page component, containing layout and state management.
+  - **ProfileForm**: Profile edit form with name and avatar fields.
+  - **PointsDisplay**: Component displaying the user's total points.
 
-## 4. Szczegóły komponentów
+## 4. Component Details
 
 ### ProfileView
 
-- **Opis komponentu**: Główny komponent widoku, odpowiedzialny za ładowanie danych profilu, zarządzanie stanem i renderowanie podkomponentów. Składa się z nagłówka, formularza edycji i sekcji punktów.
-- **Główne elementy**: `<div>` kontener z `<h1>` tytułem, `<ProfileForm>`, `<PointsDisplay>`.
-- **Obsługiwane zdarzenia**: onLoad (pobranie danych), onFormSubmit (aktualizacja profilu).
-- **Warunki walidacji**: Walidacja pól formularza zgodnie z API (name: 1-100 znaków, avatar_url: opcjonalny URL). Błędy walidacji wyświetlane w czasie rzeczywistym.
-- **Typy**: ProfileDTO dla danych profilu, ViewModel dla stanu formularza.
-- **Propsy**: Brak (komponent główny).
+- **Component description**: Main view component, responsible for loading profile data, managing state, and rendering subcomponents. Consists of header, edit form, and points section.
+- **Main elements**: `<div>` container with `<h1>` title, `<ProfileForm>`, `<PointsDisplay>`.
+- **Handled events**: onLoad (data fetching), onFormSubmit (profile update).
+- **Validation conditions**: Form field validation according to API (name: 1-100 characters, avatar_url: optional URL). Validation errors displayed in real-time.
+- **Types**: ProfileDTO for profile data, ViewModel for form state.
+- **Props**: None (main component).
 
 ### ProfileForm
 
-- **Opis komponentu**: Formularz do edycji nazwy użytkownika i avatara, z przyciskiem zapisu. Wykorzystuje shadcn/ui dla pól input i button.
-- **Główne elementy**: `<form>` z `<Input>` dla name, `<Input>` dla avatar_url, `<Button>` submit.
-- **Obsługiwane zdarzenia**: onChange pól, onSubmit formularza.
-- **Warunki walidacji**: name wymagane, ≤100 znaków, trimmed; avatar_url opcjonalne, musi być prawidłowym URL jeśli podane.
-- **Typy**: UpdateProfileCmd dla danych formularza, ProfileDTO dla wstępnego wypełnienia.
-- **Propsy**: { profile: ProfileDTO, onUpdate: (data: UpdateProfileCmd) => Promise<void> }
+- **Component description**: Form for editing user name and avatar, with save button. Uses shadcn/ui for input fields and button.
+- **Main elements**: `<form>` with `<Input>` for name, `<Input>` for avatar_url, `<Button>` submit.
+- **Handled events**: onChange for fields, onSubmit for form.
+- **Validation conditions**: name required, ≤100 characters, trimmed; avatar_url optional, must be valid URL if provided.
+- **Types**: UpdateProfileCmd for form data, ProfileDTO for initial filling.
+- **Props**: { profile: ProfileDTO, onUpdate: (data: UpdateProfileCmd) => Promise<void> }
 
 ### PointsDisplay
 
-- **Opis komponentu**: Prosty komponent wyświetlający liczbę punktów, używający badge z shadcn/ui.
-- **Główne elementy**: `<Badge>` lub `<span>` z tekstem punktów.
-- **Obsługiwane zdarzenia**: Brak (tylko wyświetlanie).
-- **Warunki walidacji**: Brak.
-- **Typy**: ProfileDTO.total_points (number) - punkty obliczane na świeżo z aktualnych zadań.
-- **Propsy**: { points: number }
+- **Component description**: Simple component displaying points number, using badge from shadcn/ui.
+- **Main elements**: `<Badge>` or `<span>` with points text.
+- **Handled events**: None (display only).
+- **Validation conditions**: None.
+- **Types**: ProfileDTO.total_points (number) - points calculated fresh from current tasks.
+- **Props**: { points: number }
 
-## 5. Typy
+## 5. Types
 
-- **ProfileDTO**: { id: string, name: string, avatar_url: string | null, total_points: number } - DTO z API dla danych profilu.
-- **UpdateProfileCmd**: { name: string, avatar_url?: string | null } - Command dla aktualizacji.
-- **ProfileFormViewModel**: { formData: UpdateProfileCmd, isLoading: boolean, errors: Record<string, string> } - ViewModel dla stanu formularza, zawierający dane, flagę ładowania i błędy walidacji.
+- **ProfileDTO**: { id: string, name: string, avatar_url: string | null, total_points: number } - DTO from API for profile data.
+- **UpdateProfileCmd**: { name: string, avatar_url?: string | null } - Command for updates.
+- **ProfileFormViewModel**: { formData: UpdateProfileCmd, isLoading: boolean, errors: Record<string, string> } - ViewModel for form state, containing data, loading flag, and validation errors.
 
-## 6. Zarządzanie stanem
+## 6. State Management
 
-Stan zarządzany jest przez główny komponent ProfileView z użyciem useState dla profilu i formularza. Dla złożonych operacji zalecany jest custom hook `useProfile`, który obsługuje fetch i update via API, zwracając { profile, loading, error, updateProfile }.
+State is managed by the main ProfileView component using useState for profile and form. For complex operations, a custom hook `useProfile` is recommended, which handles fetch and update via API, returning { profile, loading, error, updateProfile }.
 
-## 7. Integracja API
+## 7. API Integration
 
-Integracja z endpointem `/v1/profiles/me` (GET dla pobrania, PATCH dla aktualizacji). Żądanie GET zwraca ProfileDTO, PATCH przyjmuje UpdateProfileCmd i zwraca zaktualizowany ProfileDTO. Użyj Supabase client z context.locals w Astro routes. Obsługuj JWT token automatycznie.
+Integration with `/v1/profiles/me` endpoint (GET for retrieval, PATCH for updates). GET request returns ProfileDTO, PATCH accepts UpdateProfileCmd and returns updated ProfileDTO. Use Supabase client from context.locals in Astro routes. Handle JWT token automatically.
 
-## 8. Interakcje użytkownika
+## 8. User Interactions
 
-- **Edycja nazwy**: Użytkownik wpisuje nową nazwę w polu input, walidacja w czasie rzeczywistym.
-- **Edycja avatara**: Opcjonalne pole URL, walidacja formatu URL.
-- **Zapisywanie**: Kliknięcie przycisku submit wysyła PATCH, wyświetla toast sukcesu lub błędy.
-- **Przegląd punktów**: Statyczne wyświetlanie punktów bez interakcji.
+- **Name editing**: User enters new name in input field, real-time validation.
+- **Avatar editing**: Optional URL field, URL format validation.
+- **Saving**: Submit button click sends PATCH, displays success toast or errors.
+- **Points overview**: Static points display without interaction.
 
-## 9. Warunki i walidacja
+## 9. Conditions and Validation
 
-- **Name**: Wymagane, 1-100 znaków, trimmed, sprawdzane przez Zod schema w komponencie.
-- **Avatar URL**: Opcjonalne, musi być prawidłowym URL jeśli podane, walidacja w formularzu.
-- **Stan interfejsu**: Przy błędach walidacji przycisk submit disabled, komunikaty błędów wyświetlane pod polami.
+- **Name**: Required, 1-100 characters, trimmed, checked by Zod schema in component.
+- **Avatar URL**: Optional, must be valid URL if provided, validation in form.
+- **UI state**: On validation errors submit button disabled, error messages displayed under fields.
 
-## 10. Obsługa błędów
+## 10. Error Handling
 
-- **Błędy API**: 401 - przekierowanie do logowania, 422 - wyświetl błędy walidacji z API, 404 - komunikat "profil nie znaleziony", 500 - ogólny błąd serwera.
-- **Błędy sieci**: Toast z komunikatem "problem z połączeniem", możliwość retry.
-- **Błędy walidacji**: Wyświetlanie pod polami formularza, blokowanie submit.
+- **API errors**: 401 - redirect to login, 422 - display API validation errors, 404 - message "profile not found", 500 - general server error.
+- **Network errors**: Toast with "connection problem" message, retry option.
+- **Validation errors**: Display under form fields, block submit.
 
-## 11. Kroki implementacji
+## 11. Implementation Steps
 
-1. Utwórz plik `src/pages/profile.astro` z podstawowym layoutem.
-2. Zaimplementuj komponent ProfileView z ładowaniem danych.
-3. Utwórz ProfileForm z walidacją przy użyciu React Hook Form i shadcn/ui.
-4. Dodaj PointsDisplay jako prosty komponent.
-5. Zintegruj API calls w useProfile hook.
-6. Dodaj obsługę błędów i toasty dla feedbacku użytkownika.
-7. Przetestuj responsywność i dostępność zgodnie z shadcn/ui.
-8. Przeprowadź testy integracyjne z backendem.
+1. Create `src/pages/profile.astro` file with basic layout.
+2. Implement ProfileView component with data loading.
+3. Create ProfileForm with validation using React Hook Form and shadcn/ui.
+4. Add PointsDisplay as simple component.
+5. Integrate API calls in useProfile hook.
+6. Add error handling and toasts for user feedback.
+7. Test responsiveness and accessibility according to shadcn/ui.
+8. Conduct integration tests with backend.

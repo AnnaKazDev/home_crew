@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DateNavigatorProps {
@@ -55,12 +55,9 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                data-test-id="date-navigator-pick-date"
-                className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80"
-              >
+              <Button data-test-id="date-navigator-pick-date" className="">
                 Pick a date
-                <CalendarIcon className="ml-2 h-4 w-4" />
+                <CalendarIcon className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
             <PopoverContent
@@ -109,10 +106,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
 
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                data-test-id="date-navigator-pick-date-mobile"
-                className="flex items-center justify-center space-x-2 bg-accent text-black border-accent hover:bg-accent/80"
-              >
+              <Button data-test-id="date-navigator-pick-date-mobile" className="">
                 <span>Pick a date</span>
                 <CalendarIcon className="h-4 w-4" />
               </Button>

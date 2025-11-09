@@ -1,146 +1,146 @@
-# Plan Testów - Home Crew
+# Test Plan - Home Crew
 
-## Wprowadzenie i cele testowania
+## Introduction and Testing Goals
 
-Celem tego planu testów jest zapewnienie wysokiej jakości aplikacji Home Crew poprzez systematyczne testowanie wszystkich kluczowych funkcjonalności. Projekt Home Crew to aplikacja do zarządzania zadaniami w gospodarstwie domowym, zbudowana w oparciu o Astro 5, React 19, TypeScript 5, Tailwind CSS 4 oraz Supabase.
+The goal of this test plan is to ensure high quality of the Home Crew application through systematic testing of all key functionalities. The Home Crew project is a household task management application, built on Astro 5, React 19, TypeScript 5, Tailwind CSS 4, and Supabase.
 
-Główne cele testowania:
+Main testing goals:
 
-- Zapewnienie bezpieczeństwa aplikacji, szczególnie w krytycznych obszarach autoryzacji i hashowania PIN-ów
-- Weryfikacja poprawności działania systemu punktów i zadań
-- Testowanie integracji z bazą danych Supabase i politykami RLS
-- Zapewnienie responsywności i dostępności aplikacji
-- Weryfikacja wydajności przy dużej ilości danych
+- Ensure application security, especially in critical areas of authorization and PIN hashing
+- Verify correct operation of points and tasks system
+- Test integration with Supabase database and RLS policies
+- Ensure application responsiveness and accessibility
+- Verify performance with large amounts of data
 
-## Zakres testów
+## Test Scope
 
-### Zakres uwzględniony:
+### Included scope:
 
-- **Autoryzacja i bezpieczeństwo**: rejestracja, logowanie, hashowanie PIN-ów, ochrona route'ów
-- **Zarządzanie gospodarstwami**: tworzenie gospodarstw, dołączanie przez PIN, zarządzanie członkami
-- **System zadań**: katalog zadań, zadania dzienne, drag & drop, statusy zadań
-- **System punktów**: przyznawanie punktów, historia punktów, statystyki
-- **Profile użytkowników**: edycja profili, wyświetlanie statystyk
-- **Responsywność**: obsługa urządzeń mobilnych, tabletów i desktop
-- **Integracja Supabase**: API endpoints, realtime subscriptions, RLS policies
+- **Authorization and security**: registration, login, PIN hashing, route protection
+- **Household management**: household creation, PIN joining, member management
+- **Task system**: task catalog, daily tasks, drag & drop, task statuses
+- **Points system**: point awarding, points history, statistics
+- **User profiles**: profile editing, statistics display
+- **Responsiveness**: mobile, tablet, and desktop device support
+- **Supabase integration**: API endpoints, realtime subscriptions, RLS policies
 
-### Zakres wykluczony:
+### Excluded scope:
 
-- Testy obciążeniowe infrastruktury Supabase (zakładamy standardową wydajność)
-- Testy kompatybilności przeglądarek starszych niż 2 lata
-- Testy dostępności WCAG 2.1 AA (tylko podstawowe wymagania)
+- Supabase infrastructure load tests (we assume standard performance)
+- Browser compatibility tests for browsers older than 2 years
+- WCAG 2.1 AA accessibility tests (only basic requirements)
 
-## Typy testów do przeprowadzenia
+## Test Types to Conduct
 
-### 1. Testy jednostkowe (Unit Tests)
+### 1. Unit Tests
 
 - **Framework**: Vitest + React Testing Library
-- **Pokrycie**: Komponenty React, hooki, utility functions, walidacje
-- **Lokalizacja**: `tests/unit/`
-- **Uruchamianie**: `npm run test:unit`
+- **Coverage**: React components, hooks, utility functions, validations
+- **Location**: `tests/unit/`
+- **Running**: `npm run test:unit`
 
-### 2. Testy integracyjne (Integration Tests)
+### 2. Integration Tests
 
 - **Framework**: Vitest + MSW (Mock Service Worker) + Supertest
-- **Pokrycie**: API endpoints, integracja z Supabase, przepływy biznesowe, testy bezpośrednie API
-- **Lokalizacja**: `tests/integration/`
-- **Uruchamianie**: `npm run test:integration`
+- **Coverage**: API endpoints, Supabase integration, business flows, direct API tests
+- **Location**: `tests/integration/`
+- **Running**: `npm run test:integration`
 
-### 3. Testy komponentowe (Component Tests)
+### 3. Component Tests
 
 - **Framework**: Storybook + Vitest
-- **Pokrycie**: Izolowane testowanie komponentów React z różnymi stanami i props
-- **Lokalizacja**: `tests/component/` + `.storybook/`
-- **Uruchamianie**: `npm run test:component`
+- **Coverage**: Isolated testing of React components with different states and props
+- **Location**: `tests/component/` + `.storybook/`
+- **Running**: `npm run test:component`
 
-### 4. Testy end-to-end (E2E)
+### 4. End-to-End Tests (E2E)
 
 - **Framework**: Playwright
-- **Pokrycie**: pełne scenariusze użytkownika, responsywność, dostępność, testy wizualne
-- **Lokalizacja**: `tests/e2e/`
-- **Uruchamianie**: `npm run test:e2e`
+- **Coverage**: full user scenarios, responsiveness, accessibility, visual tests
+- **Location**: `tests/e2e/`
+- **Running**: `npm run test:e2e`
 
-### 5. Testy wydajnościowe (Performance Tests)
+### 5. Performance Tests
 
 - **Framework**: Lighthouse CI + Playwright
-- **Pokrycie**: Core Web Vitals, czas ładowania, wydajność przy dużej ilości danych
-- **Lokalizacja**: `tests/performance/`
-- **Uruchamianie**: `npm run test:performance`
+- **Coverage**: Core Web Vitals, loading time, performance with large amounts of data
+- **Location**: `tests/performance/`
+- **Running**: `npm run test:performance`
 
-### 6. Testy bezpieczeństwa (Security Tests)
+### 6. Security Tests
 
 - **Framework**: OWASP ZAP + Snyk + Semgrep + custom scripts
-- **Pokrycie**: autoryzacja, hashowanie PIN-ów, RLS policies, rate limiting, SAST, dependency scanning
-- **Lokalizacja**: `tests/security/`
-- **Uruchamianie**: `npm run test:security`
+- **Coverage**: authorization, PIN hashing, RLS policies, rate limiting, SAST, dependency scanning
+- **Location**: `tests/security/`
+- **Running**: `npm run test:security`
 
-## Scenariusze testowe dla kluczowych funkcjonalności
+## Test Scenarios for Key Functionalities
 
-### Scenariusz 1: Rejestracja nowego gospodarstwa (PRIORYTET KRYTYCZNY)
+### Scenario 1: New Household Registration (CRITICAL PRIORITY)
 
-**Warunki wstępne**: Użytkownik nie jest zalogowany
-**Kroki**:
+**Prerequisites**: User is not logged in
+**Steps**:
 
-1. Użytkownik przechodzi na stronę `/auth`
-2. Wybiera tryb rejestracji administratora
-3. Wprowadza email i hasło
-4. System tworzy gospodarstwo i generuje 6-cyfrowy PIN
-5. Wyświetla zieloną kartę z PIN-em
+1. User navigates to `/auth` page
+2. Selects administrator registration mode
+3. Enters email and password
+4. System creates household and generates 6-digit PIN
+5. Displays green card with PIN
 
-**Oczekiwane rezultaty**:
+**Expected results**:
 
-- PIN jest prawidłowo zahashowany (bcrypt)
-- Gospodarstwo zostaje utworzone w bazie danych
-- Użytkownik zostaje automatycznie zalogowany
-- PIN jest wyświetlony tylko administratorowi
+- PIN is properly hashed (bcrypt)
+- Household is created in database
+- User is automatically logged in
+- PIN is displayed only to administrator
 
-### Scenariusz 2: Dołączanie członka do gospodarstwa
+### Scenario 2: Member Joining Household
 
-**Warunki wstępne**: Istnieje gospodarstwo z aktywnym PIN-em
-**Kroki**:
+**Prerequisites**: Household exists with active PIN
+**Steps**:
 
-1. Użytkownik przechodzi na stronę `/auth`
-2. Wybiera tryb rejestracji członka
-3. Wprowadza email, hasło i 6-cyfrowy PIN
-4. System waliduje PIN i dołącza użytkownika
+1. User navigates to `/auth` page
+2. Selects member registration mode
+3. Enters email, password and 6-digit PIN
+4. System validates PIN and adds user to household
 
-**Oczekiwane rezultaty**:
+**Expected results**:
 
-- PIN jest prawidłowo zweryfikowany
-- Użytkownik zostaje członkiem gospodarstwa
-- Profile zostaje automatycznie utworzony
+- PIN is properly verified
+- User becomes household member
+- Profile is automatically created
 
-### Scenariusz 3: Dodawanie zadania dziennego
+### Scenario 3: Adding Daily Task
 
-**Warunki wstępne**: Użytkownik jest zalogowany i należy do gospodarstwa
-**Kroki**:
+**Prerequisites**: User is logged in and belongs to household
+**Steps**:
 
-1. Użytkownik przechodzi na stronę `/daily-chores`
-2. Klika przycisk "Dodaj zadanie"
-3. Wybiera zadanie z katalogu lub tworzy własne
-4. Przypisuje zadanie do członka gospodarstwa
-5. Ustawia czas wykonania
+1. User navigates to `/daily-chores` page
+2. Clicks "Add task" button
+3. Selects task from catalog or creates custom one
+4. Assigns task to household member
+5. Sets execution time
 
-**Oczekiwane rezultaty**:
+**Expected results**:
 
-- Zadanie zostaje dodane do bazy danych
-- Pojawia się w odpowiedniej kolumnie (rano/wieczór)
-- Wszystkie członkowie gospodarstwa widzą zadanie
+- Task is added to database
+- Appears in appropriate column (morning/evening)
+- All household members can see the task
 
-### Scenariusz 4: Oznaczanie zadania jako wykonane
+### Scenario 4: Marking Task as Completed
 
-**Warunki wstępne**: Istnieje zadanie w statusie "todo"
-**Kroki**:
+**Prerequisites**: Task exists in "todo" status
+**Steps**:
 
-1. Użytkownik przeciąga zadanie do kolumny "Done" lub klika przycisk ukończenia
-2. System aktualizuje status zadania
-3. Przyznaje punkty wykonawcy
+1. User drags task to "Done" column or clicks completion button
+2. System updates task status
+3. Awards points to executor
 
-**Oczekiwane rezultaty**:
+**Expected results**:
 
-- Status zadania zmienia się na "done"
-- Punkty zostają dodane do profilu użytkownika
-- Aktualizacja jest widoczna dla wszystkich członków
+- Task status changes to "done"
+- Points are added to user's profile
+- Update is visible to all members
 
 ### Scenariusz 5: Wyświetlanie statystyk punktów
 

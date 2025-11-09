@@ -1,30 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useTheme } from './ThemeProvider';
 import AuthForm from './AuthForm';
 
 const AuthPage: React.FC = () => {
-  const [isDark, setIsDark] = useState(true);
+  const { theme } = useTheme();
   const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    // Check initial theme
-    const checkTheme = () => {
-      const hasDarkClass = document.documentElement.classList.contains('dark');
-      setIsDark(hasDarkClass);
-    };
-
-    checkTheme();
-
-    // Listen for theme changes
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const isDark = theme === 'dark';
 
   return (
     <div
@@ -54,7 +37,7 @@ const AuthPage: React.FC = () => {
       )}
 
       <div
-        className={`relative max-w-md mx-auto backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-12 border mt-16 ${
+        className={`relative max-w-md mx-auto backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-12 border mt-[88px] ${
           isDark
             ? 'bg-gray-900/90 text-white border-gray-700/50'
             : 'bg-white/90 text-gray-900 border-white/20'
@@ -84,6 +67,15 @@ const AuthPage: React.FC = () => {
         )}
 
         <AuthForm onSuccessChange={setShowSuccess} />
+      </div>
+
+      {/* Welcome image - bottom right corner, desktop only */}
+      <div className="hidden lg:block fixed bottom-4 right-4 z-10">
+        <img
+          src="/welcome_to_home_crew.png"
+          alt="Welcome to Home Crew"
+          className="w-[23rem] h-auto opacity-80 hover:opacity-100 transition-opacity duration-300"
+        />
       </div>
     </div>
   );

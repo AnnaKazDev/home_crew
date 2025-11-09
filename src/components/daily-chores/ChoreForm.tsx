@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import EmojiPicker, { Theme } from 'emoji-picker-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Minus, Plus } from 'lucide-react';
 import type { CatalogItemDTO } from '@/types';
 
 interface ChoreFormProps {
@@ -95,11 +105,11 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
   ];
 
   const timeOptions = [
+    { value: 'any', label: '🕐 Anytime' },
     { value: 'morning', label: '🌅 Morning' },
     { value: 'afternoon', label: '☀️ Afternoon' },
     { value: 'evening', label: '🌆 Evening' },
     { value: 'night', label: '🌙 Night' },
-    { value: 'any', label: '🕐 Anytime' },
   ];
 
   return (
@@ -111,8 +121,8 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
-        <div>
-          <label htmlFor="title" className="block text-xl font-medium text-foreground mb-1">
+        <div className="pt-6">
+          <label htmlFor="title" className="block text-ml font-medium text-foreground mb-1">
             Title *
           </label>
           <input
@@ -130,71 +140,101 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
         </div>
 
         {/* Category */}
-        <div>
-          <label htmlFor="category" className="block text-xl font-medium text-foreground mb-1">
+        <div className="pt-6">
+          <label htmlFor="category" className="block text-ml font-medium text-foreground mb-1">
             Category *
           </label>
-          <select
-            id="category"
+          <Select
             value={formData.category}
-            onChange={(e) => handleChange('category', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground ${
-              errors.category ? 'border-destructive' : 'border-border'
-            }`}
+            onValueChange={(value) => handleChange('category', value)}
           >
-            <option value="">Select a category</option>
-            {commonCategories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger
+              id="category"
+              className={`w-full ${errors.category ? 'border-destructive' : ''}`}
+            >
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent>
+              {commonCategories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.category && <p className="mt-1 text-sm text-destructive">{errors.category}</p>}
         </div>
 
         {/* Points */}
-        <div>
-          <label htmlFor="points" className="block text-xl font-medium text-foreground mb-1">
+        <div className="pt-6">
+          <label htmlFor="points" className="block text-ml font-medium text-foreground mb-1">
             Points (0-100, divisible by 5) *
           </label>
-          <input
-            type="number"
-            id="points"
-            value={formData.points}
-            onChange={(e) => handleChange('points', parseInt(e.target.value) || 0)}
-            min={0}
-            max={100}
-            step={5}
-            className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground ${
-              errors.points ? 'border-destructive' : 'border-border'
-            }`}
-          />
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              onClick={() => handleChange('points', Math.max(0, formData.points - 5))}
+              disabled={formData.points <= 0}
+              className="h-9 w-9 p-0"
+            >
+              <Minus className="h-4 w-4" />
+            </Button>
+            <div
+              className={`flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium text-foreground ${
+                errors.points ? 'border-destructive' : 'border-border'
+              }`}
+            >
+              {formData.points} pts
+            </div>
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              onClick={() => handleChange('points', Math.min(100, formData.points + 5))}
+              disabled={formData.points >= 100}
+              className="h-9 w-9 p-0 bg-primary hover:bg-primary/90"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
           {errors.points && <p className="mt-1 text-sm text-destructive">{errors.points}</p>}
         </div>
 
         {/* Time of Day */}
-        <div>
-          <label className="block text-xl font-medium text-foreground mb-2">Time of Day</label>
+        <div className="pt-6">
+          <label className="block text-ml font-medium text-foreground mb-2">Time of Day</label>
           <div className="grid grid-cols-2 gap-2">
-            {timeOptions.map((option) => (
-              <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="time_of_day"
-                  value={option.value}
-                  checked={formData.time_of_day === option.value}
-                  onChange={(e) => handleChange('time_of_day', e.target.value)}
-                  className="text-primary focus:ring-ring"
-                />
-                <span className="text-xl text-foreground">{option.label}</span>
-              </label>
-            ))}
+            {timeOptions.map((option) => {
+              const isSelected = formData.time_of_day === option.value;
+              return (
+                <label
+                  key={option.value}
+                  className={`group flex items-center space-x-3 cursor-pointer p-3 rounded-lg border transition-all duration-200 hover:bg-accent hover:text-black ${
+                    isSelected ? 'border-primary bg-primary/5 shadow-sm' : 'border-border'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="time_of_day"
+                    value={option.value}
+                    checked={formData.time_of_day === option.value}
+                    onChange={(e) => handleChange('time_of_day', e.target.value)}
+                    className="text-primary focus:ring-ring"
+                  />
+                  <span className="text-sm text-foreground group-hover:text-black">
+                    {option.label}
+                  </span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
         {/* Emoji */}
-        <div>
-          <label className="block text-xl font-medium text-foreground mb-1">Emoji (optional)</label>
+        <div className="pt-6">
+          <label className="block text-ml font-medium text-foreground mb-1">Emoji (optional)</label>
           <div className="flex gap-2">
             <input
               type="text"
@@ -239,7 +279,7 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors"
+            className="px-4 py-2 text-white dark:text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors"
           >
             Cancel
           </button>

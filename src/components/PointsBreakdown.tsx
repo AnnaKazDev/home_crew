@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, TrendingUp, Trophy } from 'lucide-react';
+import { TrendingUp, Trophy } from 'lucide-react';
 
 interface DailyPoints {
   date: string;
@@ -74,9 +74,8 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
     return (
       <Card className="w-full p-6">
         <CardHeader className="px-0 py-0">
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-5 h-5" />
-            Points Summary - Last 7 Days
+          <CardTitle className="flex items-center gap-2 !text-xl">
+            ⭐ Points Summary - Last 7 Days
           </CardTitle>
         </CardHeader>
         <CardContent className="px-0 py-0">
@@ -100,9 +99,8 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
     return (
       <Card className="w-full p-6">
         <CardHeader className="px-0 py-0">
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-5 h-5" />
-            Points Summary - Last 7 Days
+          <CardTitle className="flex items-center gap-2 !text-xl">
+            ⭐ Points Summary - Last 7 Days
           </CardTitle>
         </CardHeader>
         <CardContent className="px-0 py-0">
@@ -118,9 +116,8 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
   return (
     <Card className="w-full p-6">
       <CardHeader className="px-0 py-0">
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="w-5 h-5" />
-          Points Summary - Last 7 Days
+        <CardTitle className="flex items-center gap-2 !text-xl">
+          ⭐ Points Summary - Last 7 Days
         </CardTitle>
         <div className="flex gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
@@ -167,7 +164,7 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
 
         {dailyPoints.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
-            <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <div className="text-4xl mx-auto mb-4 opacity-50">⭐</div>
             <p>No points data for the last 7 days</p>
             <p className="text-sm mt-1">Complete some tasks to see your summary!</p>
           </div>

@@ -3,6 +3,7 @@ import { useDrop } from 'react-dnd';
 import { ChoreCard } from './ChoreCard';
 import { ChoreCardSkeleton } from './ChoreCardSkeleton';
 import { AddChoreButton } from './AddChoreButton';
+import { Badge } from '@/components/ui/badge';
 import type { ChoreViewModel } from '@/types/daily-view.types';
 import type { MemberDTO } from '@/types';
 
@@ -46,16 +47,17 @@ export function ChoreColumn({
       ref={drop as unknown as React.Ref<HTMLDivElement>}
       data-testid={`chore-column-${status}`}
       data-test-id={`chore-column-${status}`}
-      className={`bg-card p-6 rounded-lg shadow min-h-[400px] transition-colors ${
+      className={`bg-card p-6 rounded-lg shadow min-h-[150px] md:min-h-[400px] transition-colors ${
         isOver ? 'bg-accent border-2 border-dashed border-accent' : ''
       }`}
     >
       <div className="flex items-center justify-between mb-4 min-h-[40px]">
-        <h2
-          className={`text-xl font-semibold ${status === 'todo' ? 'text-primary' : 'text-primary'}`}
-        >
-          {title} ({chores.length})
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-primary">{title}</h2>
+          <div className="inline-flex items-center justify-center w-7 h-7 rounded-full border-2 border-orange-500 text-orange-600 text-sm font-bold bg-transparent">
+            {chores.length}
+          </div>
+        </div>
         {status === 'todo' && onAddChoreClick && <AddChoreButton onClick={onAddChoreClick} />}
       </div>
 
@@ -83,7 +85,7 @@ export function ChoreColumn({
 
             {chores.length === 0 && (
               <div
-                className={`flex flex-col items-center justify-center h-[133px] text-muted-foreground border-2 border-dashed rounded-lg ${
+                className={`flex flex-col items-center justify-center h-[139px] text-muted-foreground border-2 border-dashed rounded-lg ${
                   isOver ? 'border-accent bg-accent/50' : 'border-border'
                 }`}
               >

@@ -72,21 +72,24 @@ export function AssignChoreModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby="chore-preview">
         <DialogHeader>
           <DialogTitle>Assign Chore</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           {/* Chore Preview */}
-          <div className="bg-muted/50 p-4 rounded-lg">
+          <div id="chore-preview" className="bg-muted/50 p-4 rounded-lg">
             <div className="flex items-start space-x-3">
               <span className="text-2xl">{chore?.catalogEmoji ?? '📋'}</span>
               <div>
                 <h3 className="font-medium text-foreground">{chore?.catalogTitle ?? 'Chore'}</h3>
                 <div className="flex items-center space-x-2 mt-1">
-                  <Badge variant="outline" className="text-xs">
-                    {chore?.points ?? 0} pts
+                  <Badge
+                    variant="outline"
+                    className="text-xs text-black dark:border-white dark:text-white"
+                  >
+                    ⭐ {chore?.points ?? 0} pts
                   </Badge>
                   <Badge variant="secondary" className="text-xs">
                     {chore?.catalogCategory ?? 'General'}

@@ -1,25 +1,25 @@
 # API Endpoint Implementation Plan: POST /v1/catalog – Add Custom Chore
 
-## 1. Przegląd punktu końcowego
+## 1. Endpoint Overview
 
-Dodaje nowe zadanie (chore) do katalogu gospodarstwa domowego. Umożliwia członkowi gospodarstwa utworzenie własnej pozycji w `chores_catalog`. Pozycje globalne (predefined) są dodawane administracyjnie i nie należą do zakresu tego endpointu.
+Adds a new chore to the household catalog. Allows a household member to create their own entry in `chores_catalog`. Global (predefined) entries are added administratively and are not within the scope of this endpoint.
 
-## 2. Szczegóły żądania
+## 2. Request Details
 
-- **Metoda HTTP:** `POST`
+- **HTTP Method:** `POST`
 - **URL:** `/v1/catalog`
-- **Autoryzacja:** wymagany ważny JWT Supabase (session) — endpoint dostępny tylko dla zalogowanych użytkowników.
-- **Parametry URL / query:** brak
+- **Authorization:** Valid Supabase JWT (session) required — endpoint available only for logged-in users.
+- **URL/query parameters:** None
 - **Request Body (JSON):**
-  | Pole | Typ | Wymagane | Walidacja |
-  |------|-----|----------|-----------|
-  | `title` | `string` | ✓ | niepuste, `≤50` znaków, `trim()` |
-  | `category` | `string` | ✓ | enum lub wolny tekst (wg spec), niepuste |
+  | Field | Type | Required | Validation |
+  |-------|------|----------|------------|
+  | `title` | `string` | ✓ | non-empty, `≤50` characters, `trim()` |
+  | `category` | `string` | ✓ | enum or free text (per spec), non-empty |
   | `points` | `number` | ✓ | `0 ≤ points ≤ 100` && `points % 5 === 0` |
-  | `time_of_day` | `'morning' \| 'afternoon' \| 'evening' \| 'night' \| 'any'` | ✗ | domyślnie `'any'` |
-  | `emoji` | `string` | ✗ | dowolny pojedynczy emoji / krótki tekst |
+  | `time_of_day` | `'morning' \| 'afternoon' \| 'evening' \| 'night' \| 'any'` | ✗ | default `'any'` |
+  | `emoji` | `string` | ✗ | any single emoji / short text |
 
-Przykład:
+Example:
 
 ```json
 {
@@ -31,70 +31,70 @@ Przykład:
 }
 ```
 
-## 3. Wykorzystywane typy
+## 3. Types Used
 
-- **CreateCatalogItemCmd** – z `src/types.ts` (po zmianie: opcjonalne `time_of_day`, `emoji`).
-- **CatalogItemDTO** – zwraca pełny rekord, w tym `created_by_user_id` oraz `deleted_at` (pozostaje `null` dla aktywnych pozycji).
+- **CreateCatalogItemCmd** – from `src/types.ts` (after change: optional `time_of_day`, `emoji`).
+- **CatalogItemDTO** – returns full record, including `created_by_user_id` and `deleted_at` (remains `null` for active entries).
 
-## 4. Szczegóły odpowiedzi
+## 4. Response Details
 
-| Kod stanu | Opis                                         | Treść (`application/json`)                |
-| --------- | -------------------------------------------- | ----------------------------------------- |
-| **201**   | Utworzono                                    | `CatalogItemDTO` nowo utworzonego wiersza |
-| 400       | Nieprawidłowe dane wejściowe (Walidacja Zod) | `{ error: "Validation error", details }`  |
-| 401       | Brak autoryzacji                             | `{ error: "Unauthorized" }`               |
-| 404       | Użytkownik nie należy do gospodarstwa        | `{ error: "Household not found" }`        |
-| 409       | Duplikat tytułu w katalogu                   | `{ error: "Duplicate title" }`            |
-| 500       | Błąd serwera                                 | `{ error: "Internal server error" }`      |
+| Status Code | Description                         | Content (`application/json`)             |
+| ----------- | ----------------------------------- | ---------------------------------------- |
+| **201**     | Created                             | `CatalogItemDTO` of newly created row    |
+| 400         | Invalid input data (Zod validation) | `{ error: "Validation error", details }` |
+| 401         | Unauthorized                        | `{ error: "Unauthorized" }`              |
+| 404         | User does not belong to household   | `{ error: "Household not found" }`       |
+| 409         | Duplicate title in catalog          | `{ error: "Duplicate title" }`           |
+| 500         | Server error                        | `{ error: "Internal server error" }`     |
 
-## 5. Przepływ danych
+## 5. Data Flow
 
-1. Klient wysyła `POST /v1/catalog` z JSON body.
+1. Client sends `POST /v1/catalog` with JSON body.
 2. Astro API route (`src/pages/api/v1/catalog/index.ts`):
-   1. Pobiera `supabase` z `context.locals` i sesję (`getSession()`).
-   2. Waliduje body poprzez Zod -> `CreateCatalogItemCmd`.
-   3. Ustala `userId = session.user.id`.
-   4. Pobiera gospodarstwo użytkownika (`SELECT household_id FROM household_members WHERE user_id = :userId`).
-   5. Wywołuje `createCatalogItem()` w serwisie.
-3. Serwis `src/lib/services/choresCatalog.ts#createCatalogItem`:
-   - Sprawdza duplikat: `SELECT 1 FROM chores_catalog WHERE household_id = :hh AND lower(title)=lower(:title) AND deleted_at IS NULL`.
-   - Wykonuje `INSERT INTO chores_catalog (...) VALUES (...) RETURNING *`.
-   - Mapuje rekord → `CatalogItemDTO` i zwraca.
-4. Endpoint zwraca `201` z danymi DTO.
+   1. Gets `supabase` from `context.locals` and session (`getSession()`).
+   2. Validates body via Zod -> `CreateCatalogItemCmd`.
+   3. Sets `userId = session.user.id`.
+   4. Gets user's household (`SELECT household_id FROM household_members WHERE user_id = :userId`).
+   5. Calls `createCatalogItem()` in service.
+3. Service `src/lib/services/choresCatalog.ts#createCatalogItem`:
+   - Checks duplicate: `SELECT 1 FROM chores_catalog WHERE household_id = :hh AND lower(title)=lower(:title) AND deleted_at IS NULL`.
+   - Executes `INSERT INTO chores_catalog (...) VALUES (...) RETURNING *`.
+   - Maps record → `CatalogItemDTO` and returns.
+4. Endpoint returns `201` with DTO data.
 
-## 6. Względy bezpieczeństwa
+## 6. Security Considerations
 
-- **Uwierzytelnianie:** Supabase JWT (middleware już sprawdza sesję).
-- **Autoryzacja:** RLS na `chores_catalog` + jawne sprawdzenie, że użytkownik należy do gospodarstwa.
-- **Mass-assignment:** Serwer ignoruje/generuje `household_id`, `predefined`, `created_by_user_id`, `created_at`.
-- **SQLi:** Supabase używa zapytań parametryzowanych.
-- **Rate-limit:** (do rozważenia) — middleware lub Reverse Proxy.
+- **Authentication:** Supabase JWT (middleware already checks session).
+- **Authorization:** RLS on `chores_catalog` + explicit check that user belongs to household.
+- **Mass-assignment:** Server ignores/generates `household_id`, `predefined`, `created_by_user_id`, `created_at`.
+- **SQLi:** Supabase uses parameterized queries.
+- **Rate-limit:** (to consider) — middleware or Reverse Proxy.
 
-## 7. Obsługa błędów
+## 7. Error Handling
 
-| Scenariusz                              | Kod | Obsługa                                                 |
-| --------------------------------------- | --- | ------------------------------------------------------- |
-| Brak JWT lub nieważna sesja             | 401 | Zwróć błąd `Unauthorized`.                              |
-| Użytkownik nie ma gospodarstwa          | 404 | „Household not found”.                                  |
-| Walidacja Zod nie przechodzi            | 400 | Szczegóły z Zod w `details`.                            |
-| Duplikat `(household_id, lower(title))` | 409 | Błąd unikalności Postgres — mapuj na `Duplicate title`. |
-| Inne błędy DB/serwera                   | 500 | Log `console.error`, zwróć generic.                     |
+| Scenario                                 | Code | Handling                                              |
+| ---------------------------------------- | ---- | ----------------------------------------------------- |
+| Missing JWT or invalid session           | 401  | Return `Unauthorized` error.                          |
+| User has no household                    | 404  | "Household not found".                                |
+| Zod validation fails                     | 400  | Zod details in `details`.                             |
+| Duplicate `(household_id, lower(title))` | 409  | Postgres uniqueness error — map to `Duplicate title`. |
+| Other DB/server errors                   | 500  | Log `console.error`, return generic.                  |
 
-## 8. Rozważania dotyczące wydajności
+## 8. Performance Considerations
 
-- Operacja pojedynczego inserta → O(1).
-- Indeks `idx_catalog_household_predefined` przyspiesza sprawdzenie duplikatu.`SELECT` używa tego indeksu.
-- Brak ciężkich obliczeń. Request time << 50 ms.
+- Single insert operation → O(1).
+- Index `idx_catalog_household_predefined` speeds up duplicate check. `SELECT` uses this index.
+- No heavy computations. Request time << 50 ms.
 
-## 9. Etapy wdrożenia
+## 9. Implementation Steps
 
-1. **Zod schema** (CreateCatalogItemCmdSchema) w `src/lib/choresCatalog.services.ts`.
-2. **Serwis** `createCatalogItem()` + export w tym pliku.
+1. **Zod schema** (CreateCatalogItemCmdSchema) in `src/lib/choresCatalog.services.ts`.
+2. **Service** `createCatalogItem()` + export in this file.
 3. **Endpoint** `src/pages/api/v1/catalog/index.ts`:
-   - GET session, walidacja, pobranie household, wywołanie serwisu, obsługa błędów.
-4. **Dokumentacja** README/API-ref — dodaj sekcję endpointu.
-5. **CI** — uruchom testy; brak zmian w migracjach.
-6. **Commit:** `feat(api): add POST /v1/catalog endpoint` (ticket prefix wg branch).
+   - GET session, validation, get household, call service, error handling.
+4. **Documentation** README/API-ref — add endpoint section.
+5. **CI** — run tests; no migration changes.
+6. **Commit:** `feat(api): add POST /v1/catalog endpoint` (ticket prefix per branch).
 
 ---
 

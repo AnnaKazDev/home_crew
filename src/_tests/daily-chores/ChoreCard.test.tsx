@@ -120,7 +120,7 @@ describe('ChoreCard', () => {
       expect(screen.getByText('🍽️')).toBeInTheDocument();
       expect(screen.getByText('Wash dishes')).toBeInTheDocument();
       expect(screen.getByText('Kitchen')).toBeInTheDocument();
-      expect(screen.getByText('5 pts')).toBeInTheDocument();
+      expect(screen.getByText('⭐ 5 pts')).toBeInTheDocument();
     });
 
     it('displays time of day when not "any"', () => {

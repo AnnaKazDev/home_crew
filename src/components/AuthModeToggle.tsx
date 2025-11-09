@@ -32,7 +32,7 @@ const AuthModeToggle: React.FC<AuthModeToggleProps> = ({ mode, onModeChange }) =
             variant={getButtonVariant('register')}
             size="sm"
             onClick={() => onModeChange('register')}
-            className="px-4 py-2 text-sm font-medium transition-all duration-200 dark:text-black dark:hover:text-black"
+            className="px-4 py-2 text-sm font-medium transition-all duration-200 dark:text-black dark:hover:text-black text-white hover:text-white"
           >
             Sign up
           </Button>

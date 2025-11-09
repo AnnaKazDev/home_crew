@@ -1,16 +1,33 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'http://127.0.0.1:54321';
-const supabaseKey = 'sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz';
+// Use environment variables for all configuration
+// Get Supabase values from: supabase status -o env
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const currentUserId = process.env.TEST_USER_ID;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+if (!supabaseUrl || !supabaseServiceKey || !currentUserId) {
+  console.error('Missing required environment variables:');
+  console.error('- SUPABASE_URL');
+  console.error('- SUPABASE_SERVICE_ROLE_KEY');
+  console.error('- TEST_USER_ID');
+  console.error('');
+  console.error('Get Supabase values by running: supabase status -o env');
+  console.error('Then add them to your .env.test file');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
 
 async function checkPoints() {
   console.log('Sprawdzanie punktów po migracji...');
 
   try {
-    const currentUserId = 'e9d12995-1f3e-491d-9628-3c4137d266d1';
-
     // Sprawdź wszystkie points_events z task_date
     const { data: allEvents, error: allEventsError } = await supabase
       .from('points_events')
@@ -36,7 +53,6 @@ async function checkPoints() {
     } else {
       console.log('Profil:', profile);
     }
-
   } catch (error) {
     console.error('Błąd:', error);
   }

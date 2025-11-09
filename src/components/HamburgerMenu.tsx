@@ -117,7 +117,9 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
                 {/* Navigation - takes up available space */}
                 <nav className="flex flex-col space-y-3 pt-12 flex-1">
                   {menuItems
-                    .filter((item) => item.label !== 'Sign out')
+                    .filter(
+                      (item) => !(typeof item.label === 'string' && item.label === 'Sign out')
+                    )
                     .map((item, index) =>
                       item.separator ? (
                         <div key={index} className="border-t border-border my-2"></div>
@@ -135,12 +137,18 @@ export default function HamburgerMenu({ menuItems }: HamburgerMenuProps) {
                 </nav>
 
                 {/* Sign out button above the image */}
-                {menuItems.find((item) => item.label === 'Sign out') && (
+                {menuItems.find(
+                  (item) => typeof item.label === 'string' && item.label === 'Sign out'
+                ) && (
                   <div className="mt-4">
                     <button
                       className="flex items-center gap-3 text-base font-medium text-foreground hover:text-primary transition-colors duration-200 px-4 py-2 rounded-md hover:bg-primary/5 text-left w-full"
                       onClick={() =>
-                        handleItemClick(menuItems.find((item) => item.label === 'Sign out')!)
+                        handleItemClick(
+                          menuItems.find(
+                            (item) => typeof item.label === 'string' && item.label === 'Sign out'
+                          )!
+                        )
                       }
                     >
                       <LogOut className="w-4 h-4 flex-shrink-0" />

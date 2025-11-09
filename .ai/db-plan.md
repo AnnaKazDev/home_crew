@@ -4,7 +4,7 @@
 
 ### 1.1 `profiles`
 
-Uzupełniająca tabela profilu użytkownika; główna tabela uwierzytelniania to `auth.users` tworzona przez Supabase. Kolumna `id` w `profiles` == `auth.users.id`.
+Supplementary user profile table; main authentication table is `auth.users` created by Supabase. Column `id` in `profiles` == `auth.users.id`.
 
 | Column       | Type        | Constraints                                                |
 | ------------ | ----------- | ---------------------------------------------------------- |
@@ -41,10 +41,10 @@ Uzupełniająca tabela profilu użytkownika; główna tabela uwierzytelniania to
 | role         | household_role | not null, default `'member'`, check in (`'admin'`,`'member'`) |
 | joined_at    | timestamptz    | not null, default `now()`                                     |
 
-Unique: `(user_id)` ensures jedno-gospodarstwo-per-user.
+Unique: `(user_id)` ensures one-household-per-user.
 
 Additional uniqueness & limits:
-• Trigger `household_members_limit` prevents więcej niż 10 członków w gospodarstwie (MVP wymóg).
+• Trigger `household_members_limit` prevents more than 10 members in household (MVP requirement).
 
 ---
 
