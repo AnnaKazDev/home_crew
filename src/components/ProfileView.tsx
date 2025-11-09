@@ -55,7 +55,7 @@ const ProfileView: React.FC = () => {
           className="text-3xl font-bold text-primary font-bold text-foreground mb-8"
           id="profile-title"
         >
-          Your Profile
+          Your Profile & Points
         </h1>
 
         <ProfileForm profile={profile} onUpdate={updateProfile} />

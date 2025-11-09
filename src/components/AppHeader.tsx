@@ -20,7 +20,7 @@ export default function AppHeader() {
       href: '/household',
     },
     {
-      label: 'Your Profile',
+      label: 'Your Profile & Points',
       href: '/profile',
     },
     { separator: true },

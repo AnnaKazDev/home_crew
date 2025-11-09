@@ -95,11 +95,11 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
   ];
 
   const timeOptions = [
+    { value: 'any', label: '🕐 Anytime' },
     { value: 'morning', label: '🌅 Morning' },
     { value: 'afternoon', label: '☀️ Afternoon' },
     { value: 'evening', label: '🌆 Evening' },
     { value: 'night', label: '🌙 Night' },
-    { value: 'any', label: '🕐 Anytime' },
   ];
 
   return (
@@ -111,8 +111,8 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
-        <div>
-          <label htmlFor="title" className="block text-xl font-medium text-foreground mb-1">
+        <div className="pt-6">
+          <label htmlFor="title" className="block text-ml font-medium text-foreground mb-1">
             Title *
           </label>
           <input
@@ -130,8 +130,8 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
         </div>
 
         {/* Category */}
-        <div>
-          <label htmlFor="category" className="block text-xl font-medium text-foreground mb-1">
+        <div className="pt-6">
+          <label htmlFor="category" className="block text-ml font-medium text-foreground mb-1">
             Category *
           </label>
           <select
@@ -153,8 +153,8 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
         </div>
 
         {/* Points */}
-        <div>
-          <label htmlFor="points" className="block text-xl font-medium text-foreground mb-1">
+        <div className="pt-6">
+          <label htmlFor="points" className="block text-ml font-medium text-foreground mb-1">
             Points (0-100, divisible by 5) *
           </label>
           <input
@@ -173,28 +173,38 @@ export function ChoreForm({ onSubmit, onCancel }: ChoreFormProps) {
         </div>
 
         {/* Time of Day */}
-        <div>
-          <label className="block text-xl font-medium text-foreground mb-2">Time of Day</label>
+        <div className="pt-6">
+          <label className="block text-ml font-medium text-foreground mb-2">Time of Day</label>
           <div className="grid grid-cols-2 gap-2">
-            {timeOptions.map((option) => (
-              <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="time_of_day"
-                  value={option.value}
-                  checked={formData.time_of_day === option.value}
-                  onChange={(e) => handleChange('time_of_day', e.target.value)}
-                  className="text-primary focus:ring-ring"
-                />
-                <span className="text-xl text-foreground">{option.label}</span>
-              </label>
-            ))}
+            {timeOptions.map((option) => {
+              const isSelected = formData.time_of_day === option.value;
+              return (
+                <label
+                  key={option.value}
+                  className={`group flex items-center space-x-3 cursor-pointer p-3 rounded-lg border-2 transition-all duration-200 hover:bg-accent hover:text-black ${
+                    isSelected
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-border'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="time_of_day"
+                    value={option.value}
+                    checked={formData.time_of_day === option.value}
+                    onChange={(e) => handleChange('time_of_day', e.target.value)}
+                    className="text-primary focus:ring-ring"
+                  />
+                  <span className="text-sm text-foreground group-hover:text-black">{option.label}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
         {/* Emoji */}
-        <div>
-          <label className="block text-xl font-medium text-foreground mb-1">Emoji (optional)</label>
+        <div className="pt-6">
+          <label className="block text-ml font-medium text-foreground mb-1">Emoji (optional)</label>
           <div className="flex gap-2">
             <input
               type="text"

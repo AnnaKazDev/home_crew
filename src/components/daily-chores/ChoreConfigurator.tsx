@@ -200,11 +200,17 @@ export function ChoreConfigurator({
         <div>
           <label className="block text-sm font-medium text-foreground mb-3">Assign to</label>
           <div className="space-y-2">
-            {sortedMembers.map((member) => (
-              <label
-                key={member.id}
-                className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border"
-              >
+            {sortedMembers.map((member) => {
+              const isSelected = config.assignee_id === member.user_id;
+              return (
+                <label
+                  key={member.id}
+                  className={`group flex items-center space-x-3 cursor-pointer p-3 rounded-lg border-2 transition-all duration-200 hover:bg-accent hover:text-black ${
+                    isSelected
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-border'
+                  }`}
+                >
                 <input
                   type="radio"
                   name="assignee"
@@ -243,9 +249,16 @@ export function ChoreConfigurator({
                   </div>
                 </div>
               </label>
-            ))}
+              );
+            })}
 
-            <label className="group flex items-center space-x-3 cursor-pointer p-3 rounded-lg hover:bg-accent hover:text-black border-2 border-border">
+            <label
+              className={`group flex items-center space-x-3 cursor-pointer p-3 rounded-lg border-2 transition-all duration-200 hover:bg-accent hover:text-black ${
+                config.assignee_id === null
+                  ? 'border-primary bg-primary/5 shadow-sm'
+                  : 'border-border'
+              }`}
+            >
               <input
                 type="radio"
                 name="assignee"
@@ -290,7 +303,7 @@ export function ChoreConfigurator({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="px-4 py-2 text-black dark:text-white bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-black dark:text-black bg-secondary rounded-md hover:bg-secondary/80 transition-colors disabled:opacity-50"
           >
             Back
           </button>

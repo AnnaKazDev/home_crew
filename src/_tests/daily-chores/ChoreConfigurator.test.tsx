@@ -325,7 +325,25 @@ describe('ChoreConfigurator', () => {
       expect(screen.getByText('Unassigned')).toBeInTheDocument();
     });
 
-    it('initializes with no assignee selected', () => {
+    it('initializes with current user selected when currentUserId is provided', () => {
+      render(
+        <ChoreConfigurator
+          selectedItem={mockSelectedItem}
+          customData={null}
+          members={mockMembers}
+          currentDate="2024-01-15"
+          currentUserId="user-123"
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+          isLoading={false}
+        />
+      );
+
+      const johnRadio = screen.getByDisplayValue('user-123');
+      expect(johnRadio).toBeChecked();
+    });
+
+    it('initializes with unassigned when no currentUserId is provided', () => {
       render(
         <ChoreConfigurator
           selectedItem={mockSelectedItem}
@@ -460,9 +478,9 @@ describe('ChoreConfigurator', () => {
         />
       );
 
-      // Ensure unassigned is selected (default)
+      // Select unassigned explicitly
       const unassignedRadio = screen.getByRole('radio', { name: /Unassigned/ });
-      expect(unassignedRadio).toBeChecked();
+      await user.click(unassignedRadio);
 
       // Submit
       const submitButton = screen.getByRole('button', { name: /Add Chore/ });
@@ -632,7 +650,7 @@ describe('ChoreConfigurator', () => {
         />
       );
 
-      // Unassigned should be selected by default
+      // Unassigned should be selected by default (no currentUserId provided)
       const unassignedRadio = screen.getByDisplayValue('');
       expect(unassignedRadio).toBeChecked();
 
