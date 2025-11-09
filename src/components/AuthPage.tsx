@@ -1,30 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useTheme } from './ThemeProvider';
 import AuthForm from './AuthForm';
 
 const AuthPage: React.FC = () => {
-  const [isDark, setIsDark] = useState(true);
+  const { theme } = useTheme();
   const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    // Check initial theme
-    const checkTheme = () => {
-      const hasDarkClass = document.documentElement.classList.contains('dark');
-      setIsDark(hasDarkClass);
-    };
-
-    checkTheme();
-
-    // Listen for theme changes
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const isDark = theme === 'dark';
 
   return (
     <div

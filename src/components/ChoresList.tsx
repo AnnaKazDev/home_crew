@@ -173,8 +173,8 @@ export default function ChoresList() {
                             </h4>
                           </div>
                           <div className="flex items-center space-x-2 flex-shrink-0">
-                            <span className="px-3 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-sm">
-                              {chore.points} pts
+                            <span className="px-3 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-sm border border-transparent dark:border-white">
+                              ⭐ {chore.points} pts
                             </span>
                             {!chore.predefined && (
                               <span className="px-2 py-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-medium rounded-full">

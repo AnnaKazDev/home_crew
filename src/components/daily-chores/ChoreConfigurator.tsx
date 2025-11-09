@@ -135,8 +135,8 @@ export function ChoreConfigurator({
                   <Badge variant="secondary" className="text-xs truncate text-black">
                     {currentItem?.category || 'No category'}
                   </Badge>
-                  <Badge variant="outline" className="text-xs flex-shrink-0">
-                    {currentItem?.points || 0} pts
+                  <Badge variant="outline" className="text-xs flex-shrink-0 text-black dark:border-white dark:text-white">
+                    ⭐ {currentItem?.points || 0} pts
                   </Badge>
                 </div>
               </div>

@@ -81,10 +81,10 @@ export function ChoreCard({ chore, members, onAssign, onDelete, onMarkDone }: Ch
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="text-xs flex-shrink-0"
+                  className="text-xs flex-shrink-0 text-black dark:border-white dark:text-white"
                   data-test-id="chore-card-points"
                 >
-                  {chore.points} pts
+                  ⭐ {chore.points} pts
                 </Badge>
               </div>
             </div>

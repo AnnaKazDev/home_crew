@@ -214,8 +214,8 @@ export function ChoreCatalogSelector({
                   <span className="text-xs px-2 py-1 rounded bg-primary text-primary-foreground border border-primary">
                     {item.category}
                   </span>
-                  <span className="text-xs text-muted-foreground px-2 py-1 rounded group-hover:text-black">
-                    {item.points} pts
+                  <span className="text-xs text-black px-2 py-1 rounded-full border border-black group-hover:text-black dark:border-white dark:text-white">
+                    ⭐ {item.points} pts
                   </span>
                 </div>
               </div>
@@ -239,7 +239,7 @@ export function ChoreCatalogSelector({
           onClick={onCreateCustom}
           className="w-full px-4 py-3 bg-emerald-500 text-white dark:text-black rounded-lg hover:bg-emerald-600 transition-colors font-medium"
         >
-          Add Custom Chore
+          <span style={{transform: 'scale(1.3)', display: 'inline-block'}}>✨</span> Add Custom Chore
         </button>
       </div>
     </div>
