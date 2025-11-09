@@ -1074,20 +1074,25 @@ GET /api/v1/points-events?cursor=eyJpZCI6MTIzfQ%3D%3D&limit=10
 ## Production Deployment
 
 ### Live Application
+
 🟢 **Home Crew is now live in production!**
+
 - **URL**: https://home-crew.vercel.app/
 - **Status**: ✅ Fully operational
 - **Database**: Supabase (PostgreSQL with RLS)
 - **Hosting**: Vercel
 
 ### Deployment Process
+
 The application has been successfully deployed using:
+
 - **Vercel** for hosting and serverless functions
 - **Supabase** for backend, database, and authentication
 - **29 database migrations** applied to production
 - **Row Level Security (RLS)** enabled for data protection
 
 ### Production Checklist ✅
+
 - [x] Astro + Vercel adapter configured
 - [x] Environment variables set in Vercel
 - [x] Database migrations applied
@@ -1101,12 +1106,14 @@ The application has been successfully deployed using:
 To deploy this application to production:
 
 1. **Set up Supabase Production Project**
+
    ```bash
    # Create new Supabase project via dashboard
    # Note: Free tier allows only 2 projects
    ```
 
 2. **Configure Vercel Environment Variables**
+
    ```bash
    PUBLIC_SUPABASE_URL=https://your-project.supabase.co
    PUBLIC_SUPABASE_ANON_KEY=your_anon_key
@@ -1114,11 +1121,13 @@ To deploy this application to production:
    ```
 
 3. **Link Supabase Project**
+
    ```bash
    npx supabase link --project-ref your-project-ref
    ```
 
 4. **Apply Database Migrations**
+
    ```bash
    npx supabase db push  # Applies all migrations to production
    ```
@@ -1129,6 +1138,7 @@ To deploy this application to production:
    - Monitor deployment logs for any issues
 
 ### Environment Variables Required
+
 - `PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `PUBLIC_SUPABASE_ANON_KEY` - Public anon key (safe for client-side)
 - `SUPABASE_SERVICE_ROLE_KEY` - Secret service role key (server-side only)
