@@ -732,7 +732,7 @@ describe('ChoreConfigurator', () => {
       expect(screen.getByText('📋')).toBeInTheDocument();
       expect(screen.getByText('Custom Chore')).toBeInTheDocument();
       expect(screen.getByText('No category')).toBeInTheDocument();
-      expect(screen.getByText('0 pts')).toBeInTheDocument();
+      expect(screen.getByText('⭐ 0 pts')).toBeInTheDocument();
     });
 
     it('handles invalid date strings', () => {
