@@ -54,6 +54,7 @@ const AuthPage: React.FC = () => {
               src="/logotype.png"
               alt="Home Crew Logo"
               className="w-[17rem] md:w-[25rem] h-auto mx-auto"
+              style={{ aspectRatio: '731/341' }}
             />
 
             <p
