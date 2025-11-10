@@ -50,6 +50,7 @@ export default function ChoresList() {
       .catch((err) => {
         setError('Failed to load chores');
         setLoading(false);
+        // eslint-disable-next-line no-console
         console.error('Error loading chores:', err);
       });
   }, []);
@@ -142,7 +143,7 @@ export default function ChoresList() {
               <div className="text-6xl mb-4">🔍</div>
               <div className="text-2xl gradient-text mb-2 font-semibold">No chores found</div>
               <div className="text-muted-foreground">Try adjusting your search term</div>
-              <div className="mt-4 text-sm text-muted-foreground">"{searchTerm}"</div>
+              <div className="mt-4 text-sm text-muted-foreground">&quot;{searchTerm}&quot;</div>
             </div>
           ) : (
             <div className="space-y-12">

@@ -3,7 +3,6 @@ import {
   CreateDailyChoreCmdSchema,
   getDailyChores,
   createDailyChore,
-  deleteDailyChore,
   deleteDailyChoresByDate,
 } from '@/lib/dailyChores.service';
 import { getHouseholdForUser } from '@/lib/households.service';
@@ -12,7 +11,6 @@ import {
   DEFAULT_USER_ID,
   type SupabaseClient,
 } from '@/db/supabase.client';
-import type { Database } from '@/db/database.types';
 
 export const prerender = false;
 

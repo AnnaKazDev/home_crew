@@ -7,7 +7,6 @@ import { DailyViewHeader } from './daily-chores/DailyViewHeader';
 import { ChoreColumns } from './daily-chores/ChoreColumns';
 import { AddChoreModal } from './daily-chores/AddChoreModal';
 import { AssignChoreModal } from './daily-chores/AssignChoreModal';
-import type { CreateDailyChoreCmd } from '@/types';
 import type { ChoreViewModel } from '@/types/daily-view.types';
 
 // Use ChoreViewModel from types

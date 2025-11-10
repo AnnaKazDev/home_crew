@@ -4,11 +4,7 @@
  *  – All types are directly based on entities from Supabase
  *  – When modifying the schema, simply update the `src/db/database.types.ts` file, and DTOs will be recompiled
  */
-// import type { Tables, Enums } from "@/db/database.types";
-
-// Temporary types until database.types.ts is generated
-type Tables<T extends string> = any;
-type Enums<T extends string> = any;
+import type { Tables, Enums } from '@/db/database.types';
 
 /* -------------------------------------------------- *
  * Helpers
