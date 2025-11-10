@@ -100,7 +100,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
           <div className="text-base font-semibold text-foreground">{formatDate(currentDate)}</div>
         </div>
         <div className="flex items-center justify-between w-full">
-          <Button onClick={handlePrevDay} className="">
+          <Button onClick={handlePrevDay} className="h-12 w-12 text-xl font-bold">
             ←
           </Button>
 
@@ -137,7 +137,7 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
             </PopoverContent>
           </Popover>
 
-          <Button onClick={handleNextDay} className="">
+          <Button onClick={handleNextDay} className="h-12 w-12 text-xl font-bold">
             →
           </Button>
         </div>
