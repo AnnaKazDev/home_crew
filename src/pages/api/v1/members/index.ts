@@ -14,7 +14,7 @@ export const prerender = false;
  *
  * Response: 200 OK with MemberDTO[] array
  */
-export const GET: APIRoute = async (context) => {
+export const GET: APIRoute = async () => {
   try {
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 

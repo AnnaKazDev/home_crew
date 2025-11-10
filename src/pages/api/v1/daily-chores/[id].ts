@@ -9,7 +9,6 @@ import {
   DEFAULT_USER_ID,
   type SupabaseClient,
 } from '@/db/supabase.client';
-import type { Database } from '@/db/database.types';
 
 export const prerender = false;
 

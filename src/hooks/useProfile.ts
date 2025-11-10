@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
 import { getUserPointsDateRange } from '@/lib/pointsEvents.service';
-import type { ProfileDTO, UpdateProfileCmd } from '@/types';
+import type { ProfileDTO } from '@/types';
 
 /**
  * Calculate fresh total points from current done tasks assigned to the user

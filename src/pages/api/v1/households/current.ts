@@ -15,7 +15,7 @@ export const prerender = false;
  *
  * Response: 200 OK with HouseholdDTO (PIN included only for admins)
  */
-export const GET: APIRoute = async (context) => {
+export const GET: APIRoute = async () => {
   try {
     const supabase = getSupabaseServiceClient() as SupabaseClient;
 

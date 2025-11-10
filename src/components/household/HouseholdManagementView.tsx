@@ -3,7 +3,6 @@ import { useHouseholdManagement } from '@/hooks/useHouseholdManagement';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import HouseholdInfo from './HouseholdInfo';
 import MembersList from './MembersList';
 import type { UpdateHouseholdCmd } from '@/types';

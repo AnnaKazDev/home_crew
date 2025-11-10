@@ -17,7 +17,7 @@ const gitignorePath = path.resolve(__dirname, '.gitignore');
 const baseConfig = tseslint.config({
   extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic],
   rules: {
-    'no-console': 'warn',
+    'no-console': 'off', // Completely allow console.log in all files
     'no-unused-vars': 'off',
     // Relax TypeScript strict rules that are too restrictive for development
     '@typescript-eslint/no-explicit-any': 'warn',

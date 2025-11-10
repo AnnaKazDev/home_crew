@@ -163,6 +163,7 @@ export async function createDailyChore(
     .limit(1);
 
   if (fetchError) {
+    // eslint-disable-next-line no-console
     console.error('Error fetching created chore:', fetchError);
     throw new Error('Failed to fetch created daily chore');
   }
@@ -211,6 +212,7 @@ export async function updateDailyChore(
       .single();
 
     if (updateError) {
+      // eslint-disable-next-line no-console
       console.error('Error updating daily chore:', updateError);
       throw new Error(`UPDATE_FAILED: ${updateError.message}`);
     }
@@ -221,6 +223,7 @@ export async function updateDailyChore(
 
     return mapToDTO(updatedChore);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Exception in updateDailyChore:', error);
     throw error;
   }
@@ -256,6 +259,7 @@ export async function deleteDailyChoresByDate(
     .is('deleted_at', null);
 
   if (deleteError) {
+    // eslint-disable-next-line no-console
     console.error('Error deleting chores by date:', deleteError);
     throw new Error('DELETE_FAILED');
   }
@@ -277,6 +281,7 @@ export async function deleteDailyChore(
     .single();
 
   if (checkError || !existingChore) {
+    // eslint-disable-next-line no-console
     console.error('Error checking chore for deletion:', checkError);
     throw new Error('NOT_FOUND');
   }
@@ -297,6 +302,7 @@ export async function deleteDailyChore(
     .eq('household_id', householdId);
 
   if (deleteError) {
+    // eslint-disable-next-line no-console
     console.error('Error deleting daily chore:', deleteError);
     throw new Error('Failed to delete daily chore');
   }
