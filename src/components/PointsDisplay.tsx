@@ -29,11 +29,11 @@ const PointsDisplay: React.FC<PointsDisplayProps> = React.memo(({ points, points
 
   return (
     <div className="mt-8 bg-card rounded-lg border p-6 shadow-sm">
-      <h2 className="text-xl font-semibold text-foreground mb-4">
-        Points earned between {dateRangeText}{' '}
+      <h2 className="text-xl font-semibold text-foreground mb-2">
+        Points earned between: <span className="text-lg">{dateRangeText}</span>
       </h2>
       <Badge variant="secondary" className="text-lg dark:text-black">
-        {points} points
+        <span className="text-3xl align-middle">⭐</span> {points} points
       </Badge>
     </div>
   );

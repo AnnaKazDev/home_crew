@@ -132,6 +132,34 @@ export async function createDailyChore(
     assignee_id: data.assignee_id || null,
   };
 
+  // Check for duplicate chore before inserting
+  let duplicateQuery = supabase
+    .from('daily_chores')
+    .select('id')
+    .eq('household_id', choreData.household_id)
+    .eq('date', choreData.date)
+    .eq('chore_catalog_id', choreData.chore_catalog_id)
+    .eq('time_of_day', choreData.time_of_day)
+    .is('deleted_at', null);
+
+  // Handle null assignee_id case
+  if (choreData.assignee_id === null) {
+    duplicateQuery = duplicateQuery.is('assignee_id', null);
+  } else {
+    duplicateQuery = duplicateQuery.eq('assignee_id', choreData.assignee_id);
+  }
+
+  const { data: existingChore, error: duplicateCheckError } = await duplicateQuery.maybeSingle();
+
+  if (duplicateCheckError) {
+    console.error('Error checking for duplicate chore:', duplicateCheckError);
+    throw new Error('Failed to check for duplicate chore');
+  }
+
+  if (existingChore) {
+    throw new Error('DUPLICATE_CHORE');
+  }
+
   // Prepare minimal chore data
   const minimalChoreData = {
     household_id: choreData.household_id,
@@ -154,7 +182,7 @@ export async function createDailyChore(
   const { data: createdChores, error: fetchError } = await supabase
     .from('daily_chores')
     .select(
-      'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at'
+      'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at, deleted_at'
     )
     .eq('household_id', householdId)
     .eq('date', data.date)
@@ -207,7 +235,7 @@ export async function updateDailyChore(
       .update(updatePayload)
       .eq('id', choreId)
       .select(
-        'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at'
+        'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at, deleted_at'
       )
       .single();
 

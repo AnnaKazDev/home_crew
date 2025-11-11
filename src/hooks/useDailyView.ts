@@ -44,6 +44,15 @@ export function useDailyView() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [selectedChore, setSelectedChore] = useState<ChoreViewModel | null>(null);
+  const [errorModal, setErrorModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+  }>({
+    isOpen: false,
+    title: '',
+    description: '',
+  });
 
   // Use authenticated user ID or fallback to development user
   const effectiveUserId = user?.id || 'e9d12995-1f3e-491d-9628-3c4137d266d1';
@@ -298,6 +307,11 @@ export function useDailyView() {
     setSelectedChore(null);
   }, []);
 
+  const closeErrorModal = useCallback(
+    () => setErrorModal({ isOpen: false, title: '', description: '' }),
+    []
+  );
+
   // Create chore mutation
   const createChoreMutation = useMutation({
     mutationFn: async (cmd: CreateDailyChoreCmd) => {
@@ -324,7 +338,21 @@ export function useDailyView() {
     },
     onError: (error) => {
       console.error('Failed to create chore:', error);
-      // TODO: Show error toast
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      if (errorMessage === 'DUPLICATE_CHORE') {
+        setErrorModal({
+          isOpen: true,
+          title: 'Duplicate Chore',
+          description: 'This chore has already been added for the selected date and assignee.',
+        });
+      } else {
+        setErrorModal({
+          isOpen: true,
+          title: 'Error',
+          description: 'Failed to create chore. Please try again.',
+        });
+      }
     },
   });
 
@@ -406,6 +434,7 @@ export function useDailyView() {
     isAddModalOpen,
     isAssignModalOpen,
     selectedChore,
+    errorModal,
 
     // Loading and error states
     isLoading,
@@ -417,6 +446,7 @@ export function useDailyView() {
     closeAddModal,
     openAssignModal,
     closeAssignModal,
+    closeErrorModal,
 
     // Mutations
     handleChoreCreate: createChoreMutation.mutate,

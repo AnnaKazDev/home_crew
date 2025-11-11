@@ -8,6 +8,7 @@ import { DailyViewSidebar } from './daily-chores/DailyViewSidebar';
 import { ChoreColumns } from './daily-chores/ChoreColumns';
 import { AddChoreModal } from './daily-chores/AddChoreModal';
 import { AssignChoreModal } from './daily-chores/AssignChoreModal';
+import { ErrorModal } from './daily-chores/ErrorModal';
 import type { ChoreViewModel } from '@/types/daily-view.types';
 
 // Use ChoreViewModel from types
@@ -28,6 +29,7 @@ export default function DailyView() {
     isAddModalOpen,
     isAssignModalOpen,
     selectedChore,
+    errorModal,
 
     // Loading and error states
     isLoading,
@@ -39,6 +41,7 @@ export default function DailyView() {
     closeAddModal,
     openAssignModal,
     closeAssignModal,
+    closeErrorModal,
 
     // Mutations
     handleChoreCreate,
@@ -141,7 +144,7 @@ export default function DailyView() {
               />
 
               {/* Footer */}
-              <div className="mt-12 mb-20 pb-30 text-center text-muted-foreground">
+              <div className="mt-12 mb-20 pb-[100px] text-center text-muted-foreground">
                 <p>🎉 Daily Chores View with working drag & drop! Move tasks between columns.</p>
                 <p className="text-sm mt-2">
                   Points update automatically when tasks are completed!
@@ -170,6 +173,14 @@ export default function DailyView() {
           currentUserId={currentUserId}
           onClose={closeAssignModal}
           onSubmit={handleAssignChore}
+        />
+
+        {/* Error Modal */}
+        <ErrorModal
+          isOpen={errorModal.isOpen}
+          title={errorModal.title}
+          description={errorModal.description}
+          onClose={closeErrorModal}
         />
       </div>
     </DndProvider>
