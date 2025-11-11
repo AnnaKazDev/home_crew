@@ -99,9 +99,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
   // Show success screen for admin registration
   if (successData) {
     return (
-      <Card className="w-full max-w-md mx-auto bg-green-50 border-green-200">
+      <Card className="w-full p-4 max-w-md mx-auto bg-green-50 border-green-200">
         <CardHeader className="text-center">
-          <CardTitle className="text-green-800 flex items-center justify-center gap-2">
+          <CardTitle className="text-green-800 text-2xl flex items-center justify-center gap-2">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -111,17 +111,19 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             </svg>
             Registration Successful!
           </CardTitle>
-          <CardDescription className="text-green-700">
-            Your household <strong>{successData.householdName}</strong> has been created.
+          <CardDescription className="text-green-700 my-4">
+            Your household
+            <div className="my-2 text-2xl font-bold">{successData.householdName}</div>
+            has been created.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-6 space-y-4">
           <div className="text-center">
             <p className="text-sm text-green-700 mb-2">
-              Share this PIN with your family members so they can join your household:
+              Share this PIN with your family members so they can join your household.
             </p>
             <p className="text-xs text-green-600 mb-2">
-              You can also find this PIN later in the Household settings
+              You can also find this PIN later in the Household settings in menu.
             </p>
             <div className="flex items-center gap-2">
               <div className="bg-green-100 border border-green-300 rounded-lg p-4 flex-1">
@@ -151,7 +153,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           <div className="flex gap-2">
             <Button
               type="button"
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white dark:text-black dark:hover:text-black"
+              className="flex-1 text-white dark:text-black dark:hover:text-black"
               onClick={() => (window.location.href = '/daily_chores')}
             >
               Continue to App
@@ -266,7 +268,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           <SelectContent>
             <SelectItem
               value="admin"
-              className="whitespace-normal [&:hover_.description-text]:text-black"
+              className="group whitespace-normal hover:!bg-transparent focus:!bg-transparent hover:!text-foreground focus:!text-foreground"
             >
               <div>
                 <div className="font-medium">Administrator</div>
@@ -277,7 +279,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             </SelectItem>
             <SelectItem
               value="member"
-              className="whitespace-normal [&:hover_.description-text]:text-black"
+              className="group whitespace-normal hover:!bg-transparent focus:!bg-transparent hover:!text-foreground focus:!text-foreground"
             >
               <div>
                 <div className="font-medium">Family member</div>

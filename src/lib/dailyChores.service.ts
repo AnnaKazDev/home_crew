@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/db/database.types';
+import { formatDateISO } from '@/lib/utils';
 import type { DailyChoreDTO } from '@/types';
 
 /**
@@ -59,7 +60,7 @@ export async function getDailyChores(
   } = {}
 ): Promise<DailyChoreDTO[]> {
   // Default to today's date if not specified
-  const targetDate = filters.date || new Date().toISOString().split('T')[0];
+  const targetDate = filters.date || formatDateISO(new Date());
 
   let query = supabase
     .from('daily_chores')
@@ -132,10 +133,38 @@ export async function createDailyChore(
     assignee_id: data.assignee_id || null,
   };
 
+  // Check for duplicate chore before inserting
+  let duplicateQuery = supabase
+    .from('daily_chores')
+    .select('id')
+    .eq('household_id', choreData.household_id)
+    .eq('date', choreData.date)
+    .eq('chore_catalog_id', choreData.chore_catalog_id)
+    .eq('time_of_day', choreData.time_of_day)
+    .is('deleted_at', null);
+
+  // Handle null assignee_id case
+  if (choreData.assignee_id === null) {
+    duplicateQuery = duplicateQuery.is('assignee_id', null);
+  } else {
+    duplicateQuery = duplicateQuery.eq('assignee_id', choreData.assignee_id);
+  }
+
+  const { data: existingChore, error: duplicateCheckError } = await duplicateQuery.maybeSingle();
+
+  if (duplicateCheckError) {
+    console.error('Error checking for duplicate chore:', duplicateCheckError);
+    throw new Error('Failed to check for duplicate chore');
+  }
+
+  if (existingChore) {
+    throw new Error('DUPLICATE_CHORE');
+  }
+
   // Prepare minimal chore data
   const minimalChoreData = {
     household_id: choreData.household_id,
-    date: new Date(choreData.date).toISOString().split('T')[0], // Ensure proper date format
+    date: formatDateISO(new Date(choreData.date)), // Ensure proper date format
     chore_catalog_id: choreData.chore_catalog_id,
     assignee_id: choreData.assignee_id,
     points: choreData.points,
@@ -154,7 +183,7 @@ export async function createDailyChore(
   const { data: createdChores, error: fetchError } = await supabase
     .from('daily_chores')
     .select(
-      'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at'
+      'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at, deleted_at'
     )
     .eq('household_id', householdId)
     .eq('date', data.date)
@@ -207,7 +236,7 @@ export async function updateDailyChore(
       .update(updatePayload)
       .eq('id', choreId)
       .select(
-        'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at'
+        'id, household_id, date, chore_catalog_id, assignee_id, time_of_day, status, points, created_at, updated_at, deleted_at'
       )
       .single();
 

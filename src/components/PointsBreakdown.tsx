@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, Trophy } from 'lucide-react';
+import { formatDateISO } from '@/lib/utils';
 
 interface DailyPoints {
   date: string;
@@ -30,13 +31,13 @@ const PointsBreakdown: React.FC<PointsBreakdownProps> = ({
       day: 'numeric',
     });
 
-    if (dateStr === today.toISOString().split('T')[0]) {
+    if (dateStr === formatDateISO(today)) {
       return `${date.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
         day: 'numeric',
       })} (Today)`;
-    } else if (dateStr === yesterday.toISOString().split('T')[0]) {
+    } else if (dateStr === formatDateISO(yesterday)) {
       return date.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',

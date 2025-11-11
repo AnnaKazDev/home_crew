@@ -45,6 +45,7 @@ vi.mock('lucide-react', () => ({
 
 vi.mock('@/lib/utils', () => ({
   cn: (...classes: any[]) => classes.filter(Boolean).join(' '),
+  formatDateISO: (date: Date) => date.toLocaleDateString('sv-SE'),
 }));
 
 describe('ChoreConfigurator', () => {

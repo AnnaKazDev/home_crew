@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/db/supabase.client';
 import { getUserDailyPointsSummary } from '@/lib/pointsEvents.service';
 import { useAuthStore } from '@/stores/auth.store';
+import { formatDateISO } from '@/lib/utils';
 
 interface DailyPoints {
   date: string;
@@ -30,7 +31,7 @@ export const useDailyPoints = (days = 7) => {
           const date = new Date(today);
           date.setDate(date.getDate() - i);
           mockData.push({
-            date: date.toISOString().split('T')[0],
+            date: formatDateISO(date),
             points: Math.floor(Math.random() * 50), // Mock data
           });
         }

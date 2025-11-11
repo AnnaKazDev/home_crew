@@ -1,8 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import AuthPageWithTheme from '../components/AuthPageWithTheme';
+import AuthPage from '../components/AuthPage';
 ---
 
 <Layout title="Authentication - Home Crew">
-  <AuthPageWithTheme client:load />
+  <AuthPage client:only />
 </Layout>

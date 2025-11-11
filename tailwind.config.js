@@ -10,6 +10,18 @@ export default {
       spacing: {
         32: '8rem', // 128px
       },
+      animation: {
+        'star-celebrate': 'star-celebrate 0.8s ease-in-out',
+      },
+      keyframes: {
+        'star-celebrate': {
+          '0%': { transform: 'scale(1) rotate(0deg)' },
+          '25%': { transform: 'scale(1.3) rotate(-10deg)' },
+          '50%': { transform: 'scale(1.5) rotate(10deg)' },
+          '75%': { transform: 'scale(1.3) rotate(-5deg)' },
+          '100%': { transform: 'scale(1) rotate(0deg)' },
+        },
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

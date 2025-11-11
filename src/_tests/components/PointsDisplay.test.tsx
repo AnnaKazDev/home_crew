@@ -24,7 +24,7 @@ describe('PointsDisplay', () => {
   it('handles null date range gracefully', () => {
     render(<PointsDisplay points={100} pointsDateRange={null} />);
 
-    expect(screen.getByText('Points earned between')).toBeInTheDocument();
+    expect(screen.getByText(/Points earned between/)).toBeInTheDocument();
     expect(screen.getByText('100 points')).toBeInTheDocument();
   });
 

@@ -81,7 +81,7 @@ export class AddChoreFlow {
     return {
       ...selectedChore,
       assigneeName: userName,
-      date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      date: date ? date.toLocaleDateString('sv-SE') : new Date().toLocaleDateString('sv-SE'),
       id: uniqueId,
     };
   }

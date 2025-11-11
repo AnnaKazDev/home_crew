@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatDateISO } from '@/lib/utils';
 
 interface DateNavigatorProps {
   currentDate: string;
@@ -14,18 +14,18 @@ export function DateNavigator({ currentDate, onDateChange }: DateNavigatorProps)
   const handlePrevDay = () => {
     const date = new Date(currentDate);
     date.setDate(date.getDate() - 1);
-    onDateChange(date.toISOString().split('T')[0]);
+    onDateChange(formatDateISO(date));
   };
 
   const handleNextDay = () => {
     const date = new Date(currentDate);
     date.setDate(date.getDate() + 1);
-    onDateChange(date.toISOString().split('T')[0]);
+    onDateChange(formatDateISO(date));
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      onDateChange(date.toISOString().split('T')[0]);
+      onDateChange(formatDateISO(date));
     }
   };
 

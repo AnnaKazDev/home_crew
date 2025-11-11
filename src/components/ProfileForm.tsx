@@ -118,7 +118,7 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
           )}
         </div>
 
-        {/* Avatar URL */}
+        {/* Avatar URL
         <div>
           <label htmlFor="avatar_url" className="block text-sm font-medium text-foreground mb-1">
             Avatar URL (optional)
@@ -139,7 +139,7 @@ const ProfileForm: React.FC<ProfileFormProps> = React.memo(({ profile, onUpdate 
               {form.formState.errors.avatar_url.message}
             </p>
           )}
-        </div>
+        </div> */}
 
         {/* Buttons */}
         <div className="flex justify-end space-x-3 pt-4">

@@ -164,6 +164,11 @@ describe('DailyView Integration', () => {
     isAddModalOpen: false,
     isAssignModalOpen: false,
     selectedChore: null,
+    errorModal: {
+      isOpen: false,
+      title: '',
+      description: '',
+    },
 
     // Loading and error states
     isLoading: false,
@@ -175,6 +180,7 @@ describe('DailyView Integration', () => {
     closeAddModal: vi.fn(),
     openAssignModal: vi.fn(),
     closeAssignModal: vi.fn(),
+    closeErrorModal: vi.fn(),
 
     // Mutations
     handleChoreCreate: vi.fn(),

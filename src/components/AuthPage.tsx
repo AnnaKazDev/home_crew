@@ -1,53 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTheme } from './ThemeProvider';
 import AuthForm from './AuthForm';
 
 const AuthPage: React.FC = () => {
-  const { theme } = useTheme();
   const [showSuccess, setShowSuccess] = useState(false);
-  const isDark = theme === 'dark';
 
   return (
-    <div
-      className={`relative w-full mx-auto min-h-screen p-4 sm:p-8 ${
-        isDark ? 'bg-black' : 'bg-gradient-to-br from-indigo-50 via-blue-50/80 to-purple-50'
-      }`}
-      style={{
-        backgroundColor: isDark ? '#000000' : undefined,
-        background: isDark
-          ? '#000000'
-          : 'linear-gradient(to bottom right, rgb(248 250 252), rgb(239 246 255 / 0.3), rgb(238 242 255 / 0.4))',
-      }}
-    >
+    <div className="relative w-full mx-auto min-h-screen p-4 sm:p-8 bg-background">
       {/* Animated background elements - only show in light mode */}
-      {!isDark && (
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-full blur-3xl animate-float"></div>
-          <div
-            className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-3xl animate-float"
-            style={{ animationDelay: '2s' }}
-          ></div>
-          <div
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-300/10 to-purple-400/10 rounded-full blur-3xl animate-float"
-            style={{ animationDelay: '4s' }}
-          ></div>
-        </div>
-      )}
+      <div className="absolute inset-0 overflow-hidden dark:hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-full blur-3xl animate-float"></div>
+        <div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: '2s' }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-300/10 to-purple-400/10 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: '4s' }}
+        ></div>
+      </div>
 
-      <div
-        className={`relative max-w-md mx-auto backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-12 border mt-[88px] ${
-          isDark
-            ? 'bg-gray-900/90 text-white border-gray-700/50'
-            : 'bg-white/90 text-gray-900 border-white/20'
-        }`}
-        style={{
-          backgroundColor: isDark ? 'rgba(31, 41, 55, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-          color: isDark ? '#ffffff' : '#111827',
-          borderColor: isDark ? 'rgba(75, 85, 99, 0.5)' : 'rgba(255, 255, 255, 0.2)',
-        }}
-      >
+      <div className="relative max-w-md mx-auto backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-12 border mt-[88px] bg-card/90 text-card-foreground border-border/20">
         {!showSuccess && (
           <div className="text-center space-y-6 mb-8">
             <img
@@ -57,11 +31,7 @@ const AuthPage: React.FC = () => {
               style={{ aspectRatio: '731/341' }}
             />
 
-            <p
-              className={`text-lg max-w-sm mx-auto leading-relaxed ${
-                isDark ? 'text-gray-300' : 'text-gray-600'
-              }`}
-            >
+            <p className="text-lg max-w-sm mx-auto leading-relaxed text-muted-foreground">
               Sign in to your account or create a new one to manage household chores.
             </p>
           </div>
