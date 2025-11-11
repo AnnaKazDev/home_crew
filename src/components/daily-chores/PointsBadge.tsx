@@ -39,7 +39,11 @@ export function PointsBadge({ totalPoints }: PointsBadgeProps) {
   }, [totalPoints]);
 
   return (
-    <Badge variant="secondary" className="text-lg p-4 text-white dark:text-black" data-testid="points-badge">
+    <Badge
+      variant="secondary"
+      className="text-lg p-4 text-white dark:text-black"
+      data-testid="points-badge"
+    >
       <span className={`text-3xl align-middle ${isAnimating ? 'animate-star-celebrate' : ''}`}>
         ⭐
       </span>{' '}

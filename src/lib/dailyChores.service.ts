@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/db/database.types';
+import { formatDateISO } from '@/lib/utils';
 import type { DailyChoreDTO } from '@/types';
 
 /**
@@ -59,7 +60,7 @@ export async function getDailyChores(
   } = {}
 ): Promise<DailyChoreDTO[]> {
   // Default to today's date if not specified
-  const targetDate = filters.date || new Date().toISOString().split('T')[0];
+  const targetDate = filters.date || formatDateISO(new Date());
 
   let query = supabase
     .from('daily_chores')
@@ -163,7 +164,7 @@ export async function createDailyChore(
   // Prepare minimal chore data
   const minimalChoreData = {
     household_id: choreData.household_id,
-    date: new Date(choreData.date).toISOString().split('T')[0], // Ensure proper date format
+    date: formatDateISO(new Date(choreData.date)), // Ensure proper date format
     chore_catalog_id: choreData.chore_catalog_id,
     assignee_id: choreData.assignee_id,
     points: choreData.points,

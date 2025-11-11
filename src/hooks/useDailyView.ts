@@ -12,6 +12,7 @@ import { getHouseholdMembers } from '@/lib/household-members.service';
 import { getHouseholdForUser } from '@/lib/households.service';
 import { getProfile } from '@/lib/profiles.service';
 import { useAuthStore } from '@/stores/auth.store';
+import { formatDateISO } from '@/lib/utils';
 import type { ChoreViewModel, DailyViewState } from '@/types/daily-view.types';
 import type { MemberDTO, DailyChoreDTO, CreateDailyChoreCmd, UpdateDailyChoreCmd } from '@/types';
 
@@ -37,7 +38,7 @@ export function useDailyView() {
 
   // Initialize with today's date
   const [currentDate, setCurrentDate] = useState(() => {
-    return new Date().toISOString().split('T')[0];
+    return formatDateISO(new Date());
   });
 
   // Modal states

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatDateISO } from '@/lib/utils';
 import type { CatalogItemDTO, MemberDTO } from '@/types';
 
 interface ChoreConfiguratorProps {
@@ -78,7 +78,7 @@ export function ChoreConfigurator({
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const dateString = date.toISOString().split('T')[0];
+      const dateString = formatDateISO(date);
       handleChange('date', dateString);
       setIsCalendarOpen(false);
     }

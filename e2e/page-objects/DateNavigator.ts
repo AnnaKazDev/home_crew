@@ -22,7 +22,7 @@ export class DateNavigator {
     await this.page.waitForSelector('[data-radix-popper-content-wrapper]', { state: 'visible' });
 
     // Format date for calendar selection
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = date.toLocaleDateString('sv-SE');
     const dateObj = new Date(dateString);
     const day = dateObj.getDate().toString();
 
