@@ -266,7 +266,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
           <SelectContent>
             <SelectItem
               value="admin"
-              className="whitespace-normal [&:hover_.description-text]:text-black"
+              className="group whitespace-normal hover:!bg-transparent focus:!bg-transparent hover:!text-foreground focus:!text-foreground"
             >
               <div>
                 <div className="font-medium">Administrator</div>
@@ -277,7 +277,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onError, onLoading, loading
             </SelectItem>
             <SelectItem
               value="member"
-              className="whitespace-normal [&:hover_.description-text]:text-black"
+              className="group whitespace-normal hover:!bg-transparent focus:!bg-transparent hover:!text-foreground focus:!text-foreground"
             >
               <div>
                 <div className="font-medium">Family member</div>
