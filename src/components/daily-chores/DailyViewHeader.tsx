@@ -21,16 +21,17 @@ export function DailyViewHeader({
 
   return (
     <div className="space-y-6">
-      {/* Welcome image */}
-      <div className="flex justify-center">
+      {/* Welcome image - hidden on lg+ screens (shown in sidebar) */}
+      <div className="flex justify-center lg:hidden">
         <img
           src="/nice_to_see_you.png"
           alt="Nice to see you"
           className="h-40 md:h-60 w-auto object-contain"
         />
       </div>
-      {/* Points badge */}
-      <div className="flex justify-center">
+
+      {/* Points badge - hidden on lg+ screens (shown in sidebar) */}
+      <div className="flex justify-center lg:hidden">
         <PointsBadge totalPoints={totalPoints} />
       </div>
 

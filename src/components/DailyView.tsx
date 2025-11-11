@@ -4,6 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDailyView } from '@/hooks/useDailyView';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 import { DailyViewHeader } from './daily-chores/DailyViewHeader';
+import { DailyViewSidebar } from './daily-chores/DailyViewSidebar';
 import { ChoreColumns } from './daily-chores/ChoreColumns';
 import { AddChoreModal } from './daily-chores/AddChoreModal';
 import { AssignChoreModal } from './daily-chores/AssignChoreModal';
@@ -108,32 +109,45 @@ export default function DailyView() {
         data-test-id="daily-view"
         className="min-h-screen bg-background mt-[88px] pt-[2rem] md:pt-[2.5rem] px-4 md:px-8"
       >
-        <div className="max-w-4xl mx-auto">
-          {/* Header with Shadcn components */}
-          <DailyViewHeader
-            currentDate={currentDate}
-            totalPoints={totalPoints}
-            choresCount={chores.length}
-            onDateChange={setCurrentDate}
-          />
+        <div className="max-w-7xl mx-auto">
+          {/* Desktop layout: sidebar + centered main content */}
+          <div className="lg:flex lg:gap-8">
+            {/* Sidebar - sticky positioned on the left */}
+            <div className="lg:sticky lg:top-[120px] lg:h-fit lg:w-[280px] xl:w-[320px] lg:flex lg:flex-col lg:items-center lg:flex-shrink-0">
+              <DailyViewSidebar totalPoints={totalPoints} />
+            </div>
 
-          {/* Chore Columns with Drag & Drop */}
-          <ChoreColumns
-            todoChores={todoChores}
-            doneChores={doneChores}
-            members={members}
-            isLoading={isLoading}
-            onChoreDrop={handleChoreDrop}
-            onChoreAssign={openAssignModal}
-            onChoreDelete={handleChoreDelete}
-            onChoreMarkDone={handleMarkDone}
-            onAddChoreClick={handleAddChoreClick}
-          />
+            {/* Main content - takes remaining space and is centered */}
+            <div className="lg:flex-1 lg:max-w-none space-y-6">
+              {/* Header with Shadcn components */}
+              <DailyViewHeader
+                currentDate={currentDate}
+                totalPoints={totalPoints}
+                choresCount={chores.length}
+                onDateChange={setCurrentDate}
+              />
 
-          {/* Footer */}
-          <div className="mt-12 text-center text-muted-foreground">
-            <p>🎉 Daily Chores View with working drag & drop! Move tasks between columns.</p>
-            <p className="text-sm mt-2">Points update automatically when tasks are completed!</p>
+              {/* Chore Columns with Drag & Drop */}
+              <ChoreColumns
+                todoChores={todoChores}
+                doneChores={doneChores}
+                members={members}
+                isLoading={isLoading}
+                onChoreDrop={handleChoreDrop}
+                onChoreAssign={openAssignModal}
+                onChoreDelete={handleChoreDelete}
+                onChoreMarkDone={handleMarkDone}
+                onAddChoreClick={handleAddChoreClick}
+              />
+
+              {/* Footer */}
+              <div className="mt-12 mb-20 pb-30 text-center text-muted-foreground">
+                <p>🎉 Daily Chores View with working drag & drop! Move tasks between columns.</p>
+                <p className="text-sm mt-2">
+                  Points update automatically when tasks are completed!
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
