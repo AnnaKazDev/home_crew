@@ -58,7 +58,7 @@ _Target success metric_: **≥ 2 chores added per active member per day**.
 ### Testing & Quality Assurance
 
 - **Vitest** – unit testing framework with React Testing Library
-- **Playwright** – end-to-end testing across all modern browsers
+- **Playwright** – end-to-end (e2e) testing across all modern browsers
 
 ### Tooling & Infrastructure
 
